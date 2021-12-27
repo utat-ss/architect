@@ -1,0 +1,9 @@
+.DS_Store
+.env
+.pytest_cache
+.vscode
+__pycache__
+logs
+output
+scrap.txt
+tmp

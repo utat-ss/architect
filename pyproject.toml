@@ -1,0 +1,61 @@
+[tool.poetry]
+name = "payload-designer"
+version = "0.1.0"
+description = ""
+authors = ["DM1122 <34867698+DM1122@users.noreply.github.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+docopts = "^0.6.1"
+
+[tool.poetry.dev-dependencies]
+black = "^21.12b0"
+isort = "^5.10.1"
+pre-commit = "^2.16.0"
+pylint = "^2.12.2"
+pylint-runner = "^0.6.0"
+pytest = "^6.2.5"
+pytest-cov = "^3.0.0"
+pytest-html = "^3.1.1"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+sections="FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+import_heading_stdlib="stdlib"
+import_heading_thirdparty="external"
+import_heading_firstparty="project"
+
+[tool.pytest.ini_options]
+addopts = "--html=logs/pytest/pytest-report.html --self-contained-html --cov=./" 
+testpaths = ["tests"]
+log_cli = false
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+log_level = "DEBUG"
+log_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_date_format = "%Y-%m-%d %H:%M:%S"
+log_auto_indent = true
+markers = [
+    "slow: tests that are slow to run (deselect with '-m \"not slow\"').",
+    "plot: tests that produce plots.",
+    "timed: tests that run many times using timeit module.",
+    "star: a starred test. Marker should be removed once testing is complete."
+]
+
+[tool.pylint.messages_control]
+max-line-length = 88
+disable = ["invalid-name","too-many-arguments", "too-many-locals", "arguments-differ", "unnecessary-lambda", "too-many-instance-attributes", "protected-access", "duplicate-code", "too-few-public-methods", "logging-fstring-interpolation", "not-callable", "too-many-statements", "pointless-statement", "not-context-manager","fixme","too-many-branches"]
+generated-members=["numpy.*","torch.*","pygame.*"] # https://github.com/pytorch/pytorch/issues/701
+
+[tool.coverage.run]
+data_file = "logs/pytest/pytest-coverage"
+omit = ["tests/*"]

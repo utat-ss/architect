@@ -1,0 +1,31 @@
+name: Pytest
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@master
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python -
+        poetry install
+    - name: Pytest
+      run: |
+        poetry run pytest -v --cov-report=xml
+    - name: Upload coverage to Codecov 
+      uses: codecov/codecov-action@v1
+      with:
+        files: coverage.xml
+        name: codecov-umbrella
+        fail_ci_if_error: true
