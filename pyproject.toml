@@ -2,11 +2,14 @@
 name = "payload-designer"
 version = "0.1.0"
 description = ""
-authors = ["DM1122 <34867698+DM1122@users.noreply.github.com>"]
+authors = ["UTAT"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.7"
 docopts = "^0.6.1"
+plotly = "^5.5.0"
+numpy = "^1.21.5"
+pandas = "^1.3.5"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"

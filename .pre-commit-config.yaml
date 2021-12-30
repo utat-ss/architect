@@ -14,4 +14,4 @@ repos:
   rev: v2.12.2
   hooks:
   - id: pylint
-    additional_dependencies: [pytest]
+    additional_dependencies: [pytest, numpy, plotly]
