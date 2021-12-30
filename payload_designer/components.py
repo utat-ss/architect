@@ -161,7 +161,7 @@ class ThinFocuser:
         f (float, optional): focal length. Defaults to None.
         h (float, optional): image height above optical axis. Defaults to None.
         a_in (float, optional): incoming ray angle relative to optical axis.
-            Defaults to None.
+            Defaults to None. test
     """
 
     def __init__(self, f=None, h=None, a_in=None):
