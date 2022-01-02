@@ -191,3 +191,48 @@ class ThinFocuser:
         h = np.matmul(f, np.transpose(np.tan(a_in)))
 
         return h
+
+
+class Sensor:
+    """Sensor component model.
+
+    Args:
+        px_x (array_like[int], optional): Pixel count in cross-track direction.
+            Defaults to None.
+        px_y (array_like[int], optional): Pixel count in along-track direction.
+            Defaults to None.
+        p (array_like[float], optional): Pixel pitch in micrometers.
+            Defaults to None.
+        t_int (array_like[float], optional): Integration time in seconds.
+            Defaults to None.
+        d_well (array_like[int], optional): Well depth in electrons/pixel.
+            Defaults to None.
+        r_dyn (array_like[int], optional): Dynamic range in bits. Defaults to None.
+        i_dark (array_like[int], optional): Dark current in electrons/pixel/second.
+            Defaults to None.
+        n_read (array_like[int], optional): Readout noise in electrons/pixel.
+            Defaults to None.
+        sen (str, optional): filepath to sensitivity LUT. Defaults to None.
+    """
+
+    def __init__(
+        self,
+        px_x=None,
+        px_y=None,
+        p=None,
+        t_int=None,
+        d_well=None,
+        r_dyn=None,
+        i_dark=None,
+        n_read=None,
+        sen=None,
+    ):
+        self.px_x = px_x
+        self.px_y = px_y
+        self.p = p
+        self.t_int = t_int
+        self.d_well = d_well
+        self.r_dyn = r_dyn
+        self.i_dark = i_dark
+        self.n_read = n_read
+        self.sen = sen  # filepath to sensitivity curve
