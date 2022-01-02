@@ -158,17 +158,28 @@ class ThinFocuser:
     """Thin lens focuser component.
 
     Args:
-        f (float, optional): focal length. Defaults to None.
-        h (float, optional): image height above optical axis. Defaults to None.
-        a_in (float, optional): incoming ray angle relative to optical axis.
-            Defaults to None. test
+        f (array_like[float], optional): focal length. Defaults to None.
+        h (array_like[float], optional): image height above optical axis.
+            Defaults to None.
+        a_in (array_like[float], optional): incoming ray angle relative to optical axis.
+            Defaults to None.
     """
 
-    def __init__(self, f=None, h=None, a_in=None):
-
+    def __init__(
+        self,
+        f=None,
+        h=None,
+        a_in=None,
+        trans_ratio=None,
+        trans_ratio_in=None,
+        trans_ratio_out=None,
+    ):
         self.f = f
         self.h = h
         self.a_in = a_in
+        self.trans_ratio = trans_ratio
+        self.trans_ratio_out = trans_ratio_out
+        self.trans_ratio_in = trans_ratio_in
 
     def get_image_height(self):
         """Calculate the image height along the focal plane.
@@ -191,3 +202,16 @@ class ThinFocuser:
         h = np.matmul(f, np.transpose(np.tan(a_in)))
 
         return h
+
+    def get_trans_ratio_out(self):
+        """Calculates the outgoing transmittance ratio of the componenet.
+
+        Returns:
+            array_like[float]: Outgoing transmittance ratio.
+        """
+        assert self.trans_ratio_in is not None, "trans_ratio_in is not set."
+        assert self.trans_ratio is not None, "trans_ratio is not set."
+
+        trans_ratio_out = self.trans_ratio_in * self.trans_ratio
+
+        return trans_ratio_out
