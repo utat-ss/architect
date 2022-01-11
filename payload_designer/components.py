@@ -154,32 +154,94 @@ class VPHGrism:
         return dl
 
 
-class ThinFocuser:
-    """Thin lens focuser component.
+class ThinLens:
+    """Thin singlet lens component.
 
     Args:
-        f (array_like[float], optional): focal length. Defaults to None.
+        a_in (array_like[float], optional): incoming ray angle relative to optical axis.
+            Defaults to None.
+        a_out (array_like[float], optional): outgoing ray angle relative to optical
+            axis. Defaults to None.
+        d_i (array_like[float], optional): distance to image. Defaults to None.
+        d_o (array_like[float], optional): distance from object. Defaults to None.
+        f (array_like[float], optional): focal length in m. Defaults to None.
         h (array_like[float], optional): image height above optical axis.
             Defaults to None.
-        a_in (array_like[float], optional): incoming ray angle relative to optical axis.
+        trans_ratio (array_like[float], optional): transmission ratio of component.
+            Defaults to None.
+        trans_ratio_in (array_like[float], optional): incoming transmission ratio.
+            Defaults to None.
+        trans_ratio_out (array_like[float], optional): outgoing tranmission ratio.
             Defaults to None.
     """
 
     def __init__(
         self,
+        a_in=None,
+        a_out=None,
+        d_i=None,
+        d_o=None,
         f=None,
         h=None,
-        a_in=None,
         trans_ratio=None,
         trans_ratio_in=None,
         trans_ratio_out=None,
     ):
+        self.a_in = a_in
+        self.a_out = a_out
+        self.d_i = d_i
+        self.d_o = d_o
         self.f = f
         self.h = h
-        self.a_in = a_in
         self.trans_ratio = trans_ratio
-        self.trans_ratio_out = trans_ratio_out
         self.trans_ratio_in = trans_ratio_in
+        self.trans_ratio_out = trans_ratio_out
+
+    def get_image_distance(self):
+        """Calculate image distance for focuser.
+
+        Returns:
+            float: image distance in  m.
+        """
+        assert self.f is not None, "f is not set."
+
+        d_i = self.f
+
+        return d_i
+
+    def get_source_distance(self):
+        """Calculate source distance for collimator.
+
+        Returns:
+            float: source distance in m.
+        """
+        assert self.f is not None, "f is not set."
+
+        d_o = self.f
+
+        return d_o
+
+    def get_focal_length(self):
+        """Calculate focal length.
+
+        Returns:
+            float: focal length in m.
+        """
+
+        if self.d_i is not None:
+            f = self.d_i
+        elif self.d_o is not None:
+            f = self.d_o
+        elif self.h is not None and self.a_in is not None:
+            a_in = np.radians(self.a_in)  # deg to rad
+            f = self.h / np.tan(a_in)
+        elif self.h is not None and self.a_out is not None:
+            a_out = np.radians(self.a_out)  # deg to rad
+            f = self.h / np.tan(a_out)
+        else:
+            raise ValueError("d_i or d_o or h and a_in or h and a_out must be set.")
+
+        return f
 
     def get_image_height(self):
         """Calculate the image height along the focal plane.
@@ -202,6 +264,9 @@ class ThinFocuser:
         h = np.matmul(f, np.transpose(np.tan(a_in)))
 
         return h
+
+    def get_source_height(self):
+        """[summary]"""
 
     def get_trans_ratio_out(self):
         """Calculates the outgoing transmittance ratio of the componenet.

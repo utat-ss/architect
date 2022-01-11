@@ -21,7 +21,7 @@ def test_ThinFocuser_get_image_height():
     a_in = 30
 
     # component instantiation
-    focuser = components.ThinFocuser(f=f, a_in=a_in)
+    focuser = components.ThinLens(f=f, a_in=a_in)
 
     # evaluation
     h = focuser.get_image_height()
@@ -38,7 +38,7 @@ def test_ThinFocuser_get_image_height_vectorized():
     a_in = np.array([15, 30, 45])
 
     # component instantiation
-    focuser = components.ThinFocuser(f=f, a_in=a_in)
+    focuser = components.ThinLens(f=f, a_in=a_in)
 
     # evaluation
     h = focuser.get_image_height()
