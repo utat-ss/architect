@@ -192,6 +192,11 @@ class ThinFocuser:
         return h
 
 class ThickLens:
+    """Thick singlet lens component.
+
+    Args:
+        
+    """
 
     def __init__(
         self, 
@@ -204,8 +209,6 @@ class ThickLens:
         R2=None,
         f_air=None,
         f_medium=None,
-        n_m=None,
-        n_l=None,
         s_i=None, 
         s_o=None,
         x_i=None,
@@ -222,8 +225,6 @@ class ThickLens:
         self.R2 = R2
         self.f_air = f_air
         self.f_medium = f_medium
-        self.n_m = n_m
-        self.n_l = n_l
         self.s_i = s_i
         self.s_o = s_o
         self.x_i = x_i
@@ -231,35 +232,23 @@ class ThickLens:
         self.h_i = h_i
         self.h_o = h_o
 
-    def get_focal_length(n_m, n_l, R1, R2, d):
-        """Calculate the focal length of a thick lens.
+    def get_focal_length(n, R1, R2, d):
+        """Calculate the focal length of a thick lens in a vacuum.
 
         Returns:
             float: focal length in m.
         """
 
-        if n_m == n_l: # lens is in air
-            n = n_l
-            f_thick = (n * R1 * R2) / ((R2 - R1) * (n - 1) * n + ((n - 1) ** 2) * d)
-        else:
-            f_thick = ((n_m ** 2) * n_l * R1 * R2) / ((R2 - R1) * (n_l - n_m) * n_m * n_l + ((n_l - n_m) ** 2) * d)
+        f_thick = (n * R1 * R2) / ((R2 - R1) * (n - 1) * n + ((n - 1) ** 2) * d)
 
         return f_thick
     
     def get_principal_planes(f_thick, R1, R2, n, d):
-        """
-        docstring stuff
-        """
+        """Calculate the position of the primary and secondary principal planes of the thick lens.
 
-        '''
-        assert self.h1 is not None, "h1 is not set."
-        assert self.h2 is not None, "h2 is not set."
-        assert self.f_thick is not None, "f_thick is not set."
-        assert self.n is not None, "n is not set."
-        assert self.d is not None, "d is not set."
-        assert self.R1 is not None, "R1 is not set."
-        assert self.R2 is not None, "R2 is not set."
-        '''
+        Returns:
+            float: 
+        """
 
         h1 = - (f_thick * (n - 1) * d) / (R2 * n)
         h2 = - (f_thick * (n - 1) * d) / (R1 * n)
