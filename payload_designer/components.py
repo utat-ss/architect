@@ -190,3 +190,111 @@ class ThinFocuser:
         h = np.matmul(f, np.transpose(np.tan(a_in)))
 
         return h
+
+class ThickLens:
+
+    def __init__(
+        self, 
+        h1=None, 
+        h2=None,
+        f_thick=None,
+        n=None,
+        d=None,
+        R1=None,
+        R2=None,
+        f_air=None,
+        f_medium=None,
+        n_m=None,
+        n_l=None,
+        s_i=None, 
+        s_o=None,
+        x_i=None,
+        x_o=None,
+        h_i=None,
+        h_o=None    
+    ):
+        self.h1 = h1 
+        self.h2 = h2
+        self.f_thick = f_thick
+        self.n = n
+        self.d = d
+        self.R1 = R1
+        self.R2 = R2
+        self.f_air = f_air
+        self.f_medium = f_medium
+        self.n_m = n_m
+        self.n_l = n_l
+        self.s_i = s_i
+        self.s_o = s_o
+        self.x_i = x_i
+        self.x_o = x_o
+        self.h_i = h_i
+        self.h_o = h_o
+
+    def get_focal_length(n_m, n_l, R1, R2, d):
+        """Calculate the focal length of a thick lens.
+
+        Returns:
+            float: focal length in m.
+        """
+
+        if n_m == n_l: # lens is in air
+            n = n_l
+            f_thick = (n * R1 * R2) / ((R2 - R1) * (n - 1) * n + ((n - 1) ** 2) * d)
+        else:
+            f_thick = ((n_m ** 2) * n_l * R1 * R2) / ((R2 - R1) * (n_l - n_m) * n_m * n_l + ((n_l - n_m) ** 2) * d)
+
+        return f_thick
+    
+    def get_principal_planes(f_thick, R1, R2, n, d):
+        """
+        docstring stuff
+        """
+
+        '''
+        assert self.h1 is not None, "h1 is not set."
+        assert self.h2 is not None, "h2 is not set."
+        assert self.f_thick is not None, "f_thick is not set."
+        assert self.n is not None, "n is not set."
+        assert self.d is not None, "d is not set."
+        assert self.R1 is not None, "R1 is not set."
+        assert self.R2 is not None, "R2 is not set."
+        '''
+
+        h1 = - (f_thick * (n - 1) * d) / (R2 * n)
+        h2 = - (f_thick * (n - 1) * d) / (R1 * n)
+
+        return h1, h2
+    
+    def get_image_distance_principal_plane(f_thick, s_o):
+        """Calculate the image distance along the focal length from the principal plane.
+
+        Returns:
+            float: image distance in m.
+        """
+        s_i = (s_o * f_thick) / (s_o - f_thick)
+
+        return s_i
+
+    def get_image_distance_focal_point(f_thick, x_o):
+        """Calculate the image distance along the focal length from the focal point.
+
+        Returns:
+            float: image distance in m.
+        """
+        # x_o = s_o - f_thick VERIFY THIS
+        x_i = (f_thick ** 2) / x_o
+
+        return x_i
+    
+    def get_image_height(h_o, s_o, s_i):
+        """Calculate the image height from the magnification of the lens.
+
+        Returns:
+            float: image height in m.
+        """
+        h_i = - (h_o ** s_i) / s_o
+
+        return h_i
+
+    # MAKE SURE I'M WORKING IN THE RIGHT BRANCH, BOTTOM LEFT CORNER!
