@@ -1,15 +1,79 @@
 """Component classes."""
 
 # stdlib
+from gettext import install
 import logging
 
 # external
 import numpy as np
+poetry install
 
 # project
 from payload_designer.libs import physlib
 
 LOG = logging.getLogger(__name__)
+
+class Foreoptics:
+    """Foreoptics component.
+
+    Args:
+        d_a (float, optional): aperture diameter. Defaults to None.
+        bfl (float, optional): back focal length. Defaults to None.
+        efl (float, optional): effective focal length. Defaults to None.
+        n (float, optional): f-number. Defaults to None.
+        d_i (float, optional): image diameter. Defaults to None.
+        m (float, optional): mass. Defaults to None.
+        a_in_max (float, optional): maximum angle of incidence. Defaults to None.
+        l (float, optional): mechanical length. Defaults to None.
+        na (float, optional): numerical aperture. Defaults to None.
+        t (float, optional): spectral transmittance. Defaults to None.
+    """
+
+    def __init__(
+        self,
+        d_a=None,
+        bfl=None,
+        efl=None,
+        n=None,
+        d_i=None,
+        m=None,
+        a_in_max=None,
+        l=None,
+        na=None,
+        t=None,
+    ):
+        self.d_a = d_a
+        self.bfl = bfl
+        self.efl = efl
+        self.n = n
+        self.d_i = d_i
+        self.m = m
+        self.a_in_max = a_in_max
+        self.l = l
+        self.na = na
+        self.t = t
+
+    def get_(self):
+        """Calculate the image height along the focal plane.
+
+        Returns:
+            float: image height in m.
+        """
+        assert self.f is not None, "f is not set."
+        assert self.a_in is not None, "a_in is not set."
+
+        # region vectorization
+        f = np.array(self.f).reshape(-1, 1)
+        a_in = np.array(self.a_in).reshape(-1, 1)
+        # endregion
+
+        # region unit conversions
+        a_in = np.radians(a_in)  # deg to rad
+        # endregion
+
+        h = np.matmul(f, np.transpose(np.tan(a_in)))
+
+        return h
 
 
 class VPHGrism:
