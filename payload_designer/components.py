@@ -207,14 +207,12 @@ class ThickLens:
         d=None,
         R1=None,
         R2=None,
-        f_air=None,
-        f_medium=None,
         s_i=None, 
         s_o=None,
-        x_i=None,
-        x_o=None,
         h_i=None,
-        h_o=None    
+        h_o=None,    
+        a_in=None,
+        a_out=None
     ):
         self.h1 = h1 
         self.h2 = h2
@@ -223,14 +221,12 @@ class ThickLens:
         self.d = d
         self.R1 = R1
         self.R2 = R2
-        self.f_air = f_air
-        self.f_medium = f_medium
         self.s_i = s_i
         self.s_o = s_o
-        self.x_i = x_i
-        self.x_o = x_o
         self.h_i = h_i
         self.h_o = h_o
+        self.a_in = a_in
+        self.a_out = a_out
 
     def get_focal_length(n, R1, R2, d):
         """Calculate the focal length of a thick lens in a vacuum.
@@ -247,7 +243,7 @@ class ThickLens:
         """Calculate the position of the primary and secondary principal planes of the thick lens.
 
         Returns:
-            float: 
+            float: distance from lens vertices to principal planes in m.
         """
 
         h1 = - (f_thick * (n - 1) * d) / (R2 * n)
@@ -255,35 +251,25 @@ class ThickLens:
 
         return h1, h2
     
-    def get_image_distance_principal_plane(f_thick, s_o):
-        """Calculate the image distance along the focal length from the principal plane.
+    def get_object_or_image_distance(f_thick, s_o, s_i):
+        """Calculate the object or image distance along the focal length from the principal plane.
 
         Returns:
-            float: image distance in m.
+            float: object or image distance in m.
         """
-        s_i = (s_o * f_thick) / (s_o - f_thick)
-
-        return s_i
-
-    def get_image_distance_focal_point(f_thick, x_o):
-        """Calculate the image distance along the focal length from the focal point.
-
-        Returns:
-            float: image distance in m.
-        """
-        # x_o = s_o - f_thick VERIFY THIS
-        x_i = (f_thick ** 2) / x_o
-
-        return x_i
+        if s_o == inf: # focuser
+            s_i = f_thick
+            return s_i
+        else: # collimator
+            s_o = f_thick
+            return s_o
     
-    def get_image_height(h_o, s_o, s_i):
-        """Calculate the image height from the magnification of the lens.
+    def get_object_or_image_height(a_in, a_out, s_o, s_i):
+        """Calculate the object or image height.
 
         Returns:
-            float: image height in m.
+            float: object or image height in m.
         """
-        h_i = - (h_o ** s_i) / s_o
-
-        return h_i
+        
 
     # MAKE SURE I'M WORKING IN THE RIGHT BRANCH, BOTTOM LEFT CORNER!
