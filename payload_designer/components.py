@@ -251,18 +251,27 @@ class ThickLens:
 
         return h1, h2
     
-    def get_object_or_image_distance(f_thick, s_o, s_i):
-        """Calculate the object or image distance along the focal length from the principal plane.
+    def get_focuser_image_distance(f_thick):
+        """Calculate the image distance along the focal length from the principal plane.
 
         Returns:
             float: object or image distance in m.
         """
-        if s_o == inf: # focuser
-            s_i = f_thick
-            return s_i
-        elif s_i == inf: # collimator
-            s_o = f_thick
-            return s_o
+        
+        s_i = f_thick
+
+        return s_i
+
+    def get_collimator_object_distance(f_thick):
+        """Calculate the object distance along the focal length from the principal plane.
+
+        Returns:
+            float: object or image distance in m.
+        """
+        
+        s_o = f_thick
+
+        return s_o
     
     def get_focuser_image_height(a1, x1, d, h2, f):
         """Calculate the image height (focuser).
@@ -289,5 +298,3 @@ class ThickLens:
         a2 = (a1 * h1 / f) - (x1 / f)
 
         return np.degrees(a2)        
-
-    # MAKE SURE I'M WORKING IN THE RIGHT BRANCH, BOTTOM LEFT CORNER!
