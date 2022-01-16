@@ -264,13 +264,30 @@ class ThickLens:
             s_o = f_thick
             return s_o
     
-    def get_image_height(a_in, a_out, s_o, s_i):
+    def get_focuser_image_height(a1, x1, d, h2, f):
         """Calculate the image height (focuser).
 
         Returns:
             float: image height in m.
         """
-        if s_o == inf: # focuser, a_in is given? 
-            
+        
+        a1 = np.radians(a1)
+
+        x2 = (a1 * (f - h2 + d)) + ((x1 * h2) / f)
+
+        return x2
+
+    def get_collimator_emergent_ray_angle(a1, x1, h1, f):
+        """Calculate the emergent ray angle (collimator).
+
+        Returns:
+            float: emergent ray angle in deg.
+        """
+
+        a1 = np.radians(a1)
+
+        a2 = (a1 * h1 / f) - (x1 / f)
+
+        return np.degrees(a2)        
 
     # MAKE SURE I'M WORKING IN THE RIGHT BRANCH, BOTTOM LEFT CORNER!
