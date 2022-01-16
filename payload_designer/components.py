@@ -6,7 +6,6 @@ import logging
 
 # external
 import numpy as np
-poetry install
 
 # project
 from payload_designer.libs import physlib
@@ -53,7 +52,7 @@ class Foreoptics:
         self.na = na
         self.t = t
 
-    def get_(self):
+    def get_magnification(self):
         """Calculate the image height along the focal plane.
 
         Returns:
