@@ -2,7 +2,6 @@
 
 # stdlib
 import logging
-import math
 
 # external
 import numpy as np
@@ -85,14 +84,14 @@ class VPHGrism:
         assert self.l is not None, "l is not set."
 
         # region vectorization
-        a_in = np.expand_dims(self.a_in, axis=1)
-        n_1 = np.expand_dims(self.n_1, axis=1)
-        n_2 = np.expand_dims(self.n_2, axis=1)
-        n_3 = np.expand_dims(self.n_3, axis=1)
-        m = np.expand_dims(self.m, axis=1)
-        a = np.expand_dims(self.a, axis=1)
-        v = np.expand_dims(self.v, axis=1)
-        l = np.expand_dims(self.l, axis=1)
+        a_in = np.array(self.a_in).reshape(-1, 1)
+        n_1 = np.array(self.n_1).reshape(-1, 1)
+        n_2 = np.array(self.n_2).reshape(-1, 1)
+        n_3 = np.array(self.n_3).reshape(-1, 1)
+        m = np.array(self.m).reshape(-1, 1)
+        a = np.array(self.a).reshape(-1, 1)
+        v = np.array(self.v).reshape(-1, 1)
+        l = np.array(self.l).reshape(-1, 1)
         # endregion
 
         # region unit conversions
@@ -106,7 +105,7 @@ class VPHGrism:
         angle_3 = a - angle_2
         angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=n_2, n_2=n_3)
         angle_5 = angle_4
-        angle_6 = np.arcsin(math.sin(angle_5) - m * np.matmul(v, np.transpose(l)))
+        angle_6 = np.arcsin(np.sin(angle_5) - m * np.matmul(v, np.transpose(l)))
         angle_7 = angle_6
         angle_8 = physlib.snell_angle_2(angle_1=angle_7, n_1=n_3, n_2=n_2)
         angle_9 = angle_8 - a
@@ -253,8 +252,8 @@ class ThinLens:
         assert self.a_in is not None, "a_in is not set."
 
         # region vectorization
-        f = np.expand_dims(self.f, axis=1)
-        a_in = np.expand_dims(self.a_in, axis=1)
+        f = np.array(self.f).reshape(-1, 1)
+        a_in = np.array(self.a_in).reshape(-1, 1)
         # endregion
 
         # region unit conversions
