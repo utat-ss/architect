@@ -260,16 +260,17 @@ class ThickLens:
         if s_o == inf: # focuser
             s_i = f_thick
             return s_i
-        else: # collimator
+        elif s_i == inf: # collimator
             s_o = f_thick
             return s_o
     
-    def get_object_or_image_height(a_in, a_out, s_o, s_i):
-        """Calculate the object or image height.
+    def get_image_height(a_in, a_out, s_o, s_i):
+        """Calculate the image height (focuser).
 
         Returns:
-            float: object or image height in m.
+            float: image height in m.
         """
-        
+        if s_o == inf: # focuser, a_in is given? 
+            
 
     # MAKE SURE I'M WORKING IN THE RIGHT BRANCH, BOTTOM LEFT CORNER!
