@@ -267,7 +267,7 @@ class ThickLens:
         """Calculate the image distance along the focal length from the principal plane.
 
         Returns:
-            float: object or image distance in m.
+            float: image distance in m.
         """
         
         s_i = f_thick
@@ -278,7 +278,7 @@ class ThickLens:
         """Calculate the object distance along the focal length from the principal plane.
 
         Returns:
-            float: object or image distance in m.
+            float: object distance in m.
         """
         
         s_o = f_thick
@@ -304,8 +304,6 @@ class ThickLens:
         Returns:
             float: emergent ray angle in deg.
         """
-
-        a1 = np.radians(a1)
 
         a2 = -x1 / f
 
