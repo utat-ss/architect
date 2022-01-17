@@ -289,7 +289,7 @@ class ThickLens:
         """Calculate the emergent ray height at the lens vertex (focuser).
 
         Returns:
-            float: image height in m.
+            float: emergent ray height in m.
         """
         
         a1 = np.radians(a1)
