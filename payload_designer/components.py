@@ -195,7 +195,19 @@ class ThickLens:
     """Thick singlet lens component.
 
     Args:
-        
+        h1 (float, optional): distance from the primary vertex to the primary principal plane. Defaults to None.
+        h2 (float, optional): distance from the secondary vertex to the secondary principal plane. Defaults to None.
+        f_thick (float, optional): effective focal length. Defaults to None.
+        n (float, optional): index of refraction of the thick lens. Defaults to None.
+        d (float, optional): the thickness of the thick lens. Defaults to None.
+        R1 (float, optional): the radius of curvature of the first lens surface. Defaults to None.
+        R2 (float, optional): the radius of curvature of the second lens surface. Defaults to None.
+        s_i (float, optional): the distance from the secondary principal plane to the image. Defaults to None.
+        s_o (float, optional): the distance from the object to the primary principal plane. Defaults to None.
+        a1 (float, optional): the incident ray angle relative to the optical axis. Defaults to None.
+        a2 (float, optional): the emergent ray angle relative to the optical axis. Defaults to None.
+        x1 (float, optional): the height of the incident ray along the primary vertex of the lens. Defaults to None.
+        x2 (float, optional): the height of the incident ray along the secondary vertex of the lens. Defaults to None.
     """
 
     def __init__(
@@ -208,11 +220,11 @@ class ThickLens:
         R1=None,
         R2=None,
         s_i=None, 
-        s_o=None,
-        h_i=None,
-        h_o=None,    
-        a_in=None,
-        a_out=None
+        s_o=None,    
+        a1=None,
+        a2=None,
+        x1=None,
+        x2=None
     ):
         self.h1 = h1 
         self.h2 = h2
@@ -223,10 +235,10 @@ class ThickLens:
         self.R2 = R2
         self.s_i = s_i
         self.s_o = s_o
-        self.h_i = h_i
-        self.h_o = h_o
-        self.a_in = a_in
-        self.a_out = a_out
+        self.a1 = a1
+        self.a2 = a2
+        self.x1 = x1
+        self.x2 = x2
 
     def get_focal_length(n, R1, R2, d):
         """Calculate the focal length of a thick lens in a vacuum.
@@ -273,8 +285,8 @@ class ThickLens:
 
         return s_o
     
-    def get_focuser_image_height(a1, x1, d, h2, f):
-        """Calculate the image height (focuser).
+    def get_focuser_emergent_ray_height(a1, d, f, n, R1, R2):
+        """Calculate the emergent ray height at the lens vertex (focuser).
 
         Returns:
             float: image height in m.
@@ -282,11 +294,11 @@ class ThickLens:
         
         a1 = np.radians(a1)
 
-        x2 = (a1 * (f - h2 + d)) + ((x1 * h2) / f)
+        x2 = a1 * (f * (1 - ((n - 1) * d) / (n * R1)) * (1 + ((n - 1) * d) / (n * R2)) + (d/n))
 
         return x2
 
-    def get_collimator_emergent_ray_angle(a1, x1, h1, f):
+    def get_collimator_emergent_ray_angle(x1, f):
         """Calculate the emergent ray angle (collimator).
 
         Returns:
@@ -295,6 +307,6 @@ class ThickLens:
 
         a1 = np.radians(a1)
 
-        a2 = (a1 * h1 / f) - (x1 / f)
+        a2 = -x1 / f
 
         return np.degrees(a2)        
