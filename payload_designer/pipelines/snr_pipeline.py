@@ -2,7 +2,7 @@
 
 # stdlib
 import logging
-from datetime import datetime
+import logging.config
 from pathlib import Path
 
 # external
@@ -17,51 +17,40 @@ output_path = Path(f"output/{filename}")
 log_path = Path(f"logs/{filename}")
 
 # region logging config
-LOG = logging.getLogger()  # TODO: move to yaml
-LOG.setLevel(logging.DEBUG)
-
 log_path.mkdir(parents=True, exist_ok=True)
-log_timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
-log_file_path = log_path / f"{log_timestamp}.log"
-
-# formatter
-LogFormatter = logging.Formatter(
-    "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
-)
-
-# file handler
-LogFileHandler = logging.FileHandler(log_file_path)
-LogFileHandler.setFormatter(LogFormatter)
-LogFileHandler.setLevel(logging.DEBUG)
-LOG.addHandler(LogFileHandler)
-
-# cli handler
-LogCLIHandler = logging.StreamHandler()
-LogCLIHandler.setFormatter(LogFormatter)
-LogCLIHandler.setLevel(logging.INFO)
-LOG.addHandler(LogCLIHandler)
+logging.config.fileConfig(fname="log.conf", defaults={"path": log_path})
+LOG = logging.getLogger(__name__)
 # endregion
 
+# region parameter config
+L = np.linspace(start=1600, stop=1700, num=100)  # wavelengths [nm]
+
+# LUTS
+foreoptic_LUT_path = Path("data/foreoptic_lut.csv")
+collimator_LUT_path = Path("data/collimator_lut.csv")
+filter_LUT_path = Path("data/filter_lut.csv")
+focuser_LUT_path = Path("data/focuser_lut.csv")
+sensor_LUT_path = Path("data/sensor_qe_lut.csv")
+# endregion
 
 if __name__ == "__main__":
 
-    # region parameters
-    l = np.linspace(start=1600, stop=1700, num=100)  # wavelengths in nm
-    lut_grism_efficiency_path = Path("data/lut_grism_efficiency.csv")
-    # endregion
-
     # region component instantiation
-    foreoptic = components.Foreoptic()
+    foreoptic = components.Foreoptic(T=foreoptic_LUT_path)
     slit = components.Slit()
-    collimator = components.AchromDoublet()
-    filter = components.Filter()
-    grating = components.VPHGrism()
-    focuser = components.AchromDoublet()
-    sensor = components.Sensor()
+    collimator = components.AchromDoublet(T=collimator_LUT_path)
+    bandfilter = components.Filter(T=filter_LUT_path)
+    diffractor = components.VPHGrism()
+    focuser = components.AchromDoublet(T=focuser_LUT_path)
+    sensor = components.Sensor(qe=sensor_LUT_path)
     # endregion
 
     # region pipeline
-    snr = sensor.get_snr()
+    T_sys = (
+        foreoptic.T(L) * collimator.T(L) * filter.T(L) * diffractor.T(L) * focuser.T(L)
+    )
+
+    snr = sensor.get_snr(T_sys=T_sys)
     # endregion
 
-    fig = plotlib.line(x=l, y=snr)
+    fig = plotlib.line(x=L, y=snr)
