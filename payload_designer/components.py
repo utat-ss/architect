@@ -2,6 +2,7 @@
 
 # stdlib
 import logging
+import math
 
 # external
 import numpy as np
@@ -20,7 +21,7 @@ class VPHGrism:
         t (float, optional): transmision ratio. Defaults to None.
         a_in (float, optional): incident ray angle in degrees. Defaults to None.
         a_out (float, optional): outgoing ray angle in degrees. Defaults to None.
-        R (float, optional): resolvance. Defaults to None.
+        R (float, optional): resolvance from wavelength and spectral resolution. Defaults to None.
         l (array_like[float], optional): wavelength in nm. Defaults to None.
         l_g (float, optional): undeviated wavelength in nm. Defaults to None.
         a (float, optional): apex angle. Defaults to None.
@@ -30,8 +31,12 @@ class VPHGrism:
         n_3 (float, optional): grating substrate index of refraction.
             Defaults to None.
         v (float, optional): fringe frequency. Defaults to None.
-        dl (float, optional): spectral resolution. Defaults to None.
+        dl (float, optional): spectral resolution in nm. Defaults to None.
         N (float, optional): Number of illumated fringes. Defaults to None.
+        w (float, optional): slit width in m. Defaults to None.
+        n (float, optional): groove density in lines/m. Defaults to None.
+        n_g (float, optional): index modulation contrast. Defaults to None.
+        n_p (float, optional): diffraction efficiency. Defaults to None.
     """
 
     def __init__(
@@ -51,6 +56,9 @@ class VPHGrism:
         v=None,
         dl=None,
         N=None,
+        w=None,
+        n=None,
+        n_p=None,
     ):
         self.d = d
         self.t = t
@@ -67,6 +75,9 @@ class VPHGrism:
         self.v = v
         self.dl = dl
         self.N = N
+        self.n = n
+        self.w = w
+        self.n_p = n_p
 
     def get_angle_out(self):
         """Calculates the outgoing angle from the grism.
@@ -116,8 +127,10 @@ class VPHGrism:
 
         return angle_out
 
+    ###def get_undeviated_wavelength():
+
     def get_resolvance(self):
-        """Caculates the grism resolvance.
+        """Calculates the grism resolvance.
 
         Raises:
             ValueError: if required parameters are not set.
@@ -125,17 +138,25 @@ class VPHGrism:
         Returns:
             float: resolvance.
         """
+        # vectorization
+
+        # unit conversions
+        l = l * 10 ** -9
+        dl = dl * 10 ** -9
+        w = w * 10 ** -9
+
         if self.l is not None and self.dl is not None:
             R = self.l / self.dl
         elif self.m is not None and self.N is not None:
             R = self.m * self.N
+        elif self.m is not None and self.n is not None and self.w is not None:
+            R = self.m * self.n * self.w
         else:
-            raise ValueError("l and dl or m and N must be set.")
-
+            raise ValueError("l and dl or m and N or m and n and w must be set.")
         return R
 
     def get_resolution(self):
-        """Caclulates the grism optically-limited spectral resolution.
+        """Calculates the grism optically-limited spectral resolution.
 
         Raises:
             ValueError: if required parameters are not set.
@@ -143,14 +164,78 @@ class VPHGrism:
         Returns:
             float: resolution in nm.
         """
+
+        # vectorization
+
+        # unit conversion
+        l = l * 10 ** -9
+        w = w * 10 ** -6
+
         if self.l is not None and self.R is not None:
             dl = self.l / self.R
         elif self.l is not None and self.m is not None and self.N is not None:
             dl = self.l / (self.m * self.N)
+        elif (
+            self.l is not None
+            and self.m is not None
+            and self.n is not None
+            and self.w is not None
+        ):
+            dl = self.l / (self.m * self.n * self.w)
         else:
-            raise ValueError("l and R or l and m and N must be set.")
+            raise ValueError(
+                "l and R or l and m and N or l and m and n and w must be set."
+            )
 
         return dl
+
+    def get_diffraction_efficiency(self):
+        """Calculates the grism diffraction_efficiency.
+
+        Raises:
+            ValueError: if required parameters are not set.
+
+        Returns:
+            float: diffraction efficiency.
+        """
+        assert self.a_in is not None, "a_in is not set."
+        assert self.a_out is not None, "a_out is not set."
+        assert self.d is not None, "d is not set."
+        assert self.l is not None, "l is not set."
+        assert self.v is not None, "v is not set."
+        assert self.n_g is not None, "n_g is not set"
+
+        # vectorization
+
+        # unit conversion
+        a_in = np.radians(a_in)
+        angle_
+        angle_6 = np.radians(angle_6)
+        l = l * 10 ** -9  # nm to m
+        # d probably needs one too
+
+        ###get angle_5 and 6
+        angle_1 = a_in + a
+        angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=n_1, n_2=n_2)
+        angle_3 = a - angle_2
+        angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=n_2, n_2=n_3)
+        angle_5 = angle_4
+        angle_6 = np.arcsin(np.sin(angle_5) - m * np.matmul(v, np.transpose(l)))
+
+        # check Q
+        L = 1 / v
+        Q = (2 * math.pi * l * d) / (n_g * L ** 2)
+        if Q < 10:
+            raise ValueError(
+                "Q requirement not met, diffraction efficiency formula not valid"
+            )
+
+        # diffraction efficiency
+        eta_s = np.sin((math.pi * n_g * d) / (l * np.cos(a_in))) ** 2
+        n_p = eta_s * np.cos(a_in + a_out)
+
+        ###add consideration for grism material
+        return n_p
 
 
 class ThinFocuser:
