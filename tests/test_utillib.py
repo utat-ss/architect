@@ -8,14 +8,14 @@ from pathlib import Path
 import numpy as np
 
 # project
-from payload_designer.libs import plotlib, utillib
+from payload_designer.libs import utillib
 
 LOG = logging.getLogger(__name__)
 
 
 def test_LUT_call():
     """Test the LUT class call method."""
-    lut_data = Path("data/lut_test.csv")
+    lut_data = Path("data/test_LUT.csv")
 
     lut = utillib.LUT(lut_data)
     LOG.debug(f"LUT x:\n{lut.x}")

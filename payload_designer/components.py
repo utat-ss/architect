@@ -5,9 +5,10 @@ import logging
 
 # external
 import numpy as np
+import scipy.constants as sc
 
 # project
-from payload_designer.libs import physlib
+from payload_designer.libs import physlib, utillib
 
 LOG = logging.getLogger(__name__)
 
@@ -161,13 +162,14 @@ class ThinFocuser:
         h (float, optional): image height above optical axis. Defaults to None.
         a_in (float, optional): incoming ray angle relative to optical axis.
             Defaults to None.
+        T (path-like, optional): path to transmittance LUT data. Defaults to None.
     """
 
-    def __init__(self, f=None, h=None, a_in=None):
-
+    def __init__(self, f=None, h=None, a_in=None, T=None):
         self.f = f
         self.h = h
         self.a_in = a_in
+        self.T = utillib.LUT(T)
 
     def get_image_height(self):
         """Calculate the image height along the focal plane.
@@ -211,27 +213,66 @@ class Sensor:
             Defaults to None.
         n_read (array_like[int], optional): Readout noise in electrons/pixel.
             Defaults to None.
-        sen (str, optional): filepath to sensitivity LUT. Defaults to None.
+        qe (path-like, optional): path to quantum efficiency LUT. Defaults to None.
     """
 
     def __init__(
         self,
-        px_x=None,
-        px_y=None,
-        p=None,
-        t_int=None,
         d_well=None,
-        r_dyn=None,
         i_dark=None,
         n_read=None,
-        sen=None,
+        p=None,
+        px_x=None,
+        px_y=None,
+        qe=None,
+        r_dyn=None,
+        t_int=None,
     ):
-        self.px_x = px_x
-        self.px_y = px_y
-        self.p = p
-        self.t_int = t_int
         self.d_well = d_well
-        self.r_dyn = r_dyn
         self.i_dark = i_dark
         self.n_read = n_read
-        self.sen = sen  # filepath to sensitivity curve
+        self.p = p
+        self.px_x = px_x
+        self.px_y = px_y
+        self.qe = utillib.LUT(qe)
+        self.r_dyn = r_dyn
+        self.t_int = t_int
+
+    def get_sensor_detector_area(self):
+        A_d = self.p * self.p
+        return A_d
+
+    def get_sensor_area(self):
+        A_s = self.get_sensor_detector_area() * self.px_x * self.px_y
+        return A_s
+
+    def get_snr(self, R, T, f_n):
+        """Calculates the signal to noise ratio from the sensor and system parameters.
+
+        Args:
+            R (path-like): path to atmospheric radiance LUT.
+            T (array-like[float]): transmittance of the optical system.
+            f_n (float): f-number of optical system.
+
+        Returns:
+            [type]: [description]
+        """
+
+        R = utillib.LUT(R)
+        A_d = self.get_sensor_detector_area()
+        T
+
+        sc.h
+        sc.c
+
+        # region signal
+        signal = 1
+        # endregion
+
+        # region noise
+        noise = np.sqrt()
+        # endregion
+
+        snr = signal / noise
+
+        return snr
