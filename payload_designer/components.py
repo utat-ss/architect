@@ -59,8 +59,8 @@ class Foreoptics:
         Returns:
             float: magnification (unitless).
         """
-        assert self.ds_i is not None, "f is not set."
-        assert self.ds_o is not None, "a_in is not set."
+        assert self.ds_i is not None, "ds_i is not set."
+        assert self.ds_o is not None, "ds_o is not set."
 
         m = np.divide(self.ds_i,self.ds_o)
 
@@ -72,8 +72,8 @@ class Foreoptics:
         Returns:
             float: f/# (unitless).
         """
-        assert self.ds_i is not None, "f is not set."
-        assert self.dm_a is not None, "a_in is not set."
+        assert self.ds_i is not None, "ds_i is not set."
+        assert self.dm_a is not None, "dm_a is not set."
 
         n = self.ds_i/self.dm_a
 
@@ -85,8 +85,8 @@ class Foreoptics:
         Returns:
             float: aperture diameter (mm).
         """
-        assert self.ds_i is not None, "f is not set."
-        assert self.n is not None, "a_in is not set."
+        assert self.ds_i is not None, "ds_i is not set."
+        assert self.n is not None, "n is not set."
 
         dm_a = self.ds_i/self.n
 
@@ -98,8 +98,8 @@ class Foreoptics:
         Returns:
             float: effective focal length (length).
         """
-        assert self.ds_i is not None, "f is not set."
-        assert self.ds_o is not None, "a_in is not set."
+        assert self.ds_i is not None, "ds_i is not set."
+        assert self.ds_o is not None, "ds_o is not set."
 
         efl = np.divide(self.ds_o + self.ds_i, np.multiply(self.ds_o, self.ds_i))
 
@@ -111,7 +111,7 @@ class Foreoptics:
         Returns:
             float: numerical aperture (unitless).
         """
-        assert self.a_in_max is not None, "a_in is not set."
+        assert self.a_in_max is not None, "a_in_max is not set."
 
         # region unit conversions
         a_in_max = np.radians(self.a_in_max)  # deg to rad
@@ -127,8 +127,8 @@ class Foreoptics:
         Returns:
             float: geometric etendue (length^2).
         """
-        assert self.s is not None, "f is not set."
-        assert self.a_in_max is not None, "a_in is not set."
+        assert self.s is not None, "s is not set."
+        assert self.a_in_max is not None, "a_in_max is not set."
 
         # region unit conversions
         a_in_max = np.radians(self.a_in_max)  # deg to rad
@@ -144,8 +144,8 @@ class Foreoptics:
         Returns:
             float: flux (watt).
         """
-        assert self.b is not None, "f is not set."
-        assert self.g is not None, "a_in is not set."
+        assert self.b is not None, "b is not set."
+        assert self.g is not None, "g is not set."
 
         f = np.multiply(self.b, self.g)
 
