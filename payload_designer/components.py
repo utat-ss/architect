@@ -11,6 +11,146 @@ from payload_designer.libs import physlib
 
 LOG = logging.getLogger(__name__)
 
+class ThickLens:
+    """Thick singlet lens component.
+
+    Args:
+        h1 (float, optional): distance from the primary vertex to the primary principal plane. Defaults to None.
+        h2 (float, optional): distance from the secondary vertex to the secondary principal plane. Defaults to None.
+        f_thick (float, optional): effective focal length. Defaults to None.
+        n (float, optional): index of refraction of the thick lens. Defaults to None.
+        d (float, optional): the thickness of the thick lens. Defaults to None.
+        R1 (float, optional): the radius of curvature of the first lens surface. Defaults to None.
+        R2 (float, optional): the radius of curvature of the second lens surface. Defaults to None.
+        s_i (float, optional): the distance from the secondary principal plane to the image. Defaults to None.
+        s_o (float, optional): the distance from the object to the primary principal plane. Defaults to None.
+        a1 (float, optional): the incident ray angle relative to the optical axis. Defaults to None.
+        a2 (float, optional): the emergent ray angle relative to the optical axis. Defaults to None.
+        x1 (float, optional): the height of the incident ray along the primary vertex of the lens. Defaults to None.
+        x2 (float, optional): the height of the incident ray along the secondary vertex of the lens. Defaults to None.
+    """
+
+    def __init__(
+        self, 
+        h1=None, 
+        h2=None,
+        f_thick=None,
+        n=None,
+        d=None,
+        R1=None,
+        R2=None,
+        s_i=None, 
+        s_o=None,    
+        a1=None,
+        a2=None,
+        x1=None,
+        x2=None
+    ):
+        self.h1 = h1 
+        self.h2 = h2
+        self.f_thick = f_thick
+        self.n = n
+        self.d = d
+        self.R1 = R1
+        self.R2 = R2
+        self.s_i = s_i
+        self.s_o = s_o
+        self.a1 = a1
+        self.a2 = a2
+        self.x1 = x1
+        self.x2 = x2
+
+    def get_focal_length(self):
+        """Calculate the focal length of a thick lens in a vacuum.
+
+        Returns:
+            float: focal length in m.
+        """
+
+        assert self.n is not None, "n is not set."
+        assert self.R1 is not None, "R1 is not set."
+        assert self.R2 is not None, "R2 is not set."
+        assert self.d is not None, "d is not set."
+
+        f_thick = (self.n * self.R1 * self.R2) / ((self.R2 - self.R1) * (self.n - 1) * self.n + ((self.n - 1) ** 2) * self.d)
+
+        return f_thick
+    
+    def get_principal_planes(self):
+        """Calculate the position of the primary and secondary principal planes of the thick lens.
+
+        Returns:
+            float: distance from lens vertices to principal planes in m.
+        """
+
+        assert self.d is not None, "d is not set."
+        assert self.n is not None, "n is not set."
+        assert self.R1 is not None, "R1 is not set."
+        assert self.R2 is not None, "R2 is not set."
+        assert self.f_thick is not None, "f_thick is not set."
+
+        h1 = - (self.f_thick * (self.n - 1) * self.d) / (self.R2 * self.n)
+        h2 = - (self.f_thick * (self.n - 1) * self.d) / (self.R1 * self.n)
+
+        return h1, h2
+    
+    def get_focuser_image_distance(self):
+        """Calculate the image distance along the focal length from the principal plane.
+
+        Returns:
+            float: image distance in m.
+        """
+
+        assert self.f_thick is not None, "f_thick is not set."
+        
+        s_i = self.f_thick
+
+        return s_i
+
+    def get_collimator_object_distance(self):
+        """Calculate the object distance along the focal length from the principal plane.
+
+        Returns:
+            float: object distance in m.
+        """
+
+        assert self.f_thick is not None, "f_thick is not set."
+        
+        s_o = self.f_thick
+
+        return s_o
+    
+    def get_focuser_emergent_ray_height(self):
+        """Calculate the emergent ray height at the lens vertex (focuser).
+
+        Returns:
+            float: emergent ray height in m.
+        """
+
+        assert self.d is not None, "d is not set."
+        assert self.n is not None, "n is not set."
+        assert self.R1 is not None, "R1 is not set."
+        assert self.R2 is not None, "R2 is not set."
+        assert self.f_thick is not None, "f_thick is not set."
+        assert self.a1 is not None, "a1 is not set."
+        
+        x2 = np.radians(self.a1) * (self.f_thick * (1 - ((self.n - 1) * self.d) / (self.n * self.R1)) * (1 + ((self.n - 1) * self.d) / (self.n * self.R2)) + (self.d / self.n))
+
+        return x2
+
+    def get_collimator_emergent_ray_angle(self):
+        """Calculate the emergent ray angle (collimator).
+
+        Returns:
+            float: emergent ray angle in deg.
+        """
+
+        assert self.x1 is not None, "x1 is not set."
+        assert self.f_thick is not None, "f_thick is not set."
+
+        a2 = -self.x1 / self.f_thick
+
+        return np.degrees(a2)        
 
 class VPHGrism:
     """Volume-Phase Holographic grating grism component.
@@ -190,121 +330,3 @@ class ThinFocuser:
         h = np.matmul(f, np.transpose(np.tan(a_in)))
 
         return h
-
-class ThickLens:
-    """Thick singlet lens component.
-
-    Args:
-        h1 (float, optional): distance from the primary vertex to the primary principal plane. Defaults to None.
-        h2 (float, optional): distance from the secondary vertex to the secondary principal plane. Defaults to None.
-        f_thick (float, optional): effective focal length. Defaults to None.
-        n (float, optional): index of refraction of the thick lens. Defaults to None.
-        d (float, optional): the thickness of the thick lens. Defaults to None.
-        R1 (float, optional): the radius of curvature of the first lens surface. Defaults to None.
-        R2 (float, optional): the radius of curvature of the second lens surface. Defaults to None.
-        s_i (float, optional): the distance from the secondary principal plane to the image. Defaults to None.
-        s_o (float, optional): the distance from the object to the primary principal plane. Defaults to None.
-        a1 (float, optional): the incident ray angle relative to the optical axis. Defaults to None.
-        a2 (float, optional): the emergent ray angle relative to the optical axis. Defaults to None.
-        x1 (float, optional): the height of the incident ray along the primary vertex of the lens. Defaults to None.
-        x2 (float, optional): the height of the incident ray along the secondary vertex of the lens. Defaults to None.
-    """
-
-    def __init__(
-        self, 
-        h1=None, 
-        h2=None,
-        f_thick=None,
-        n=None,
-        d=None,
-        R1=None,
-        R2=None,
-        s_i=None, 
-        s_o=None,    
-        a1=None,
-        a2=None,
-        x1=None,
-        x2=None
-    ):
-        self.h1 = h1 
-        self.h2 = h2
-        self.f_thick = f_thick
-        self.n = n
-        self.d = d
-        self.R1 = R1
-        self.R2 = R2
-        self.s_i = s_i
-        self.s_o = s_o
-        self.a1 = a1
-        self.a2 = a2
-        self.x1 = x1
-        self.x2 = x2
-
-    def get_focal_length(n, R1, R2, d):
-        """Calculate the focal length of a thick lens in a vacuum.
-
-        Returns:
-            float: focal length in m.
-        """
-
-        f_thick = (n * R1 * R2) / ((R2 - R1) * (n - 1) * n + ((n - 1) ** 2) * d)
-
-        return f_thick
-    
-    def get_principal_planes(f_thick, R1, R2, n, d):
-        """Calculate the position of the primary and secondary principal planes of the thick lens.
-
-        Returns:
-            float: distance from lens vertices to principal planes in m.
-        """
-
-        h1 = - (f_thick * (n - 1) * d) / (R2 * n)
-        h2 = - (f_thick * (n - 1) * d) / (R1 * n)
-
-        return h1, h2
-    
-    def get_focuser_image_distance(f_thick):
-        """Calculate the image distance along the focal length from the principal plane.
-
-        Returns:
-            float: image distance in m.
-        """
-        
-        s_i = f_thick
-
-        return s_i
-
-    def get_collimator_object_distance(f_thick):
-        """Calculate the object distance along the focal length from the principal plane.
-
-        Returns:
-            float: object distance in m.
-        """
-        
-        s_o = f_thick
-
-        return s_o
-    
-    def get_focuser_emergent_ray_height(a1, d, f, n, R1, R2):
-        """Calculate the emergent ray height at the lens vertex (focuser).
-
-        Returns:
-            float: emergent ray height in m.
-        """
-        
-        a1 = np.radians(a1)
-
-        x2 = a1 * (f * (1 - ((n - 1) * d) / (n * R1)) * (1 + ((n - 1) * d) / (n * R2)) + (d/n))
-
-        return x2
-
-    def get_collimator_emergent_ray_angle(x1, f):
-        """Calculate the emergent ray angle (collimator).
-
-        Returns:
-            float: emergent ray angle in deg.
-        """
-
-        a2 = -x1 / f
-
-        return np.degrees(a2)        
