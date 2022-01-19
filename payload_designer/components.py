@@ -17,62 +17,139 @@ class Foreoptics:
 
     Args:
         d_a (float, optional): aperture diameter. Defaults to None.
-        bfl (float, optional): back focal length. Defaults to None.
-        efl (float, optional): effective focal length. Defaults to None.
+        ds_i (float, optional): image distance. Defaults to None.
+        ds_o (float, optional): object distance. Defaults to None.
         n (float, optional): f-number. Defaults to None.
-        d_i (float, optional): image diameter. Defaults to None.
-        m (float, optional): mass. Defaults to None.
+        dm_a (float, optional): aperture diameter. Defaults to None.
         a_in_max (float, optional): maximum angle of incidence. Defaults to None.
-        l (float, optional): mechanical length. Defaults to None.
         na (float, optional): numerical aperture. Defaults to None.
-        t (float, optional): spectral transmittance. Defaults to None.
+        b (float, optional): source radiance. Defaults to None.
+        g (float, optional): geometric etendue. Defaults to None.
+        s (float, optional): area of emitting source. Defaults to None.
+
     """
 
     def __init__(
         self,
         d_a=None,
-        bfl=None,
-        efl=None,
+        ds_i=None,
+        ds_o=None,
         n=None,
-        d_i=None,
-        m=None,
+        dm_a=None,
         a_in_max=None,
-        l=None,
         na=None,
-        t=None,
+        b=None,
+        g=None,
+        s=None
     ):
         self.d_a = d_a
-        self.bfl = bfl
-        self.efl = efl
+        self.ds_i = ds_i
+        self.ds_o = ds_o
         self.n = n
-        self.d_i = d_i
-        self.m = m
+        self.dm_a = dm_a
         self.a_in_max = a_in_max
-        self.l = l
         self.na = na
-        self.t = t
+        self.b = b
+        self.g = g
+        self.s = s
 
     def get_magnification(self):
-        """Calculate the image height along the focal plane.
+        """Calculate the magnification of the foreoptics.
 
         Returns:
-            float: image height in m.
+            float: magnification (unitless).
         """
-        assert self.f is not None, "f is not set."
-        assert self.a_in is not None, "a_in is not set."
+        assert self.ds_i is not None, "f is not set."
+        assert self.ds_o is not None, "a_in is not set."
 
-        # region vectorization
-        f = np.array(self.f).reshape(-1, 1)
-        a_in = np.array(self.a_in).reshape(-1, 1)
-        # endregion
+        m = np.divide(self.ds_i,self.ds_o)
+
+        return m
+    
+    def get_f_number(self):
+        """Calculate the f number (f/#).
+
+        Returns:
+            float: f/# (unitless).
+        """
+        assert self.ds_i is not None, "f is not set."
+        assert self.dm_a is not None, "a_in is not set."
+
+        n = self.ds_i/self.dm_a
+
+        return n
+    
+    def get_aperture_diameter(self):
+        """Calculate the aperture diameter.
+
+        Returns:
+            float: aperture diameter (mm).
+        """
+        assert self.ds_i is not None, "f is not set."
+        assert self.n is not None, "a_in is not set."
+
+        dm_a = self.ds_i/self.n
+
+        return dm_a
+    
+    def get_effective_focal_length(self):
+        """Calculate the effective focal length.
+
+        Returns:
+            float: effective focal length (length).
+        """
+        assert self.ds_i is not None, "f is not set."
+        assert self.ds_o is not None, "a_in is not set."
+
+        efl = np.divide(self.ds_o + self.ds_i, np.multiply(self.ds_o, self.ds_i))
+
+        return efl
+    
+    def get_numerical_aperture(self):
+        """Calculate the numerical aperture.
+
+        Returns:
+            float: numerical aperture (unitless).
+        """
+        assert self.a_in_max is not None, "a_in is not set."
 
         # region unit conversions
-        a_in = np.radians(a_in)  # deg to rad
+        a_in_max = np.radians(self.a_in_max)  # deg to rad
         # endregion
 
-        h = np.matmul(f, np.transpose(np.tan(a_in)))
+        na = np.sin(a_in_max)
 
-        return h
+        return na
+    
+    def get_geometric_etendue(self):
+        """Calculate the geometric etendue.
+
+        Returns:
+            float: geometric etendue (length^2).
+        """
+        assert self.s is not None, "f is not set."
+        assert self.a_in_max is not None, "a_in is not set."
+
+        # region unit conversions
+        a_in_max = np.radians(self.a_in_max)  # deg to rad
+        # endregion
+
+        g = np.multiply(np.pi, self.s, np.power(np.sin(a_in_max), 2))
+
+        return g
+    
+    def get_radiant_flux(self):
+        """Calculate the flux.
+
+        Returns:
+            float: flux (watt).
+        """
+        assert self.b is not None, "f is not set."
+        assert self.g is not None, "a_in is not set."
+
+        f = np.multiply(self.b, self.g)
+
+        return f
 
 
 class VPHGrism:
