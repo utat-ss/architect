@@ -190,3 +190,77 @@ class ThinFocuser:
         h = np.matmul(f, np.transpose(np.tan(a_in)))
 
         return h
+
+class BandpassFilter:
+    def __init__(
+        self,
+        A = None,
+        lambda_theta = None,
+        lambda_0 = None, 
+        theta = None, 
+        n_0 = None, 
+        n_star = None,
+        epsilon_1 = None, 
+        epsilon_2 = None, 
+        N = None, 
+        n = None, 
+        k = None, 
+        phi_e = None, 
+        R = None, 
+        T = None, 
+        T_1 = None, 
+        T_2 = None, 
+        omega = None, 
+        J = None, 
+        ):
+        self.A = A
+        self.lambda_theta = lambda_theta
+        self.lambda_0 = lambda_0
+        self.theta = theta
+        self.n_0 = n_0
+        self.n_star = n_star
+        self.epsilon_1 = epsilon_1 
+        self.epsilon_2 = epsilon_2 
+        self.N = N
+        self.n = n 
+        self.k = k 
+        self.phi_e = phi_e 
+        self.R = R
+        self.T = T
+        self.T_1 = T_1 
+        self.T_2 = T_2 
+        self.omega = omega
+        self.J = J
+        
+    def effective_refractive_index(self):
+        assert self.epsilon_1 is not None, "epsilon_1 is not set."
+        assert self.epsilon_2 is not None, "epsilon_2 is not set."
+        assert self.N is not None, "N is not set."
+        assert self.k is not None, "k is not set."
+        assert self.n is not None, "n is not set."
+        assert self.J is not None, "J is not set."
+        
+        A = (self.epsilon_1+self.epsilon_2+ self.N*np.pi)
+        n_star = ((0.5*A + self.k*np.pi)/((0.5*A/self.n**2)+2*self.J))**0.5
+        return n_star
+        
+    def phase_shift(self):
+        assert self.lambda_0 is not None, "lambda_not is not set."
+        assert self.n_0 is not None, "n_0 is not set."
+        assert self.n_star is not None, "n_star is not set."
+        assert self.theta is not None, "theta is not set."
+        
+        lambda_theta = self.lambda_0*(1 - ((self.n_0/self.n_star)*np.sin(self.theta)))**2)
+        
+        return lambda_theta
+    
+    def reflected_beam(self):
+        assert self.n_star is not None, "n_star is not set."
+        assert self.n_0 is not None, "n_0 is not set."
+        
+        R = ((self.n_star - self.n_0)/(self.n_star + self.n_0))**2
+        return R
+        
+    def transmitted_beam(self):
+        
+    
