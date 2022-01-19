@@ -11,6 +11,50 @@ from payload_designer.libs import physlib
 
 LOG = logging.getLogger(__name__)
 
+class Slit:
+    """Entrance slit component.
+
+    Args:
+        w_i (float, optional): image width. Defaults to None.
+        m (float, optional): magnification of the optical bench. Defaults to None.
+        w_s (float, optional): slit width. Defaults to None.
+        w_o (float, optional): object width. Defaults to None.
+        w_d (float, optional): detector width. Defaults to None.
+    """
+
+    def __init__(self, w_i=None, m=None, w_s=None, w_o=None, w_d=None):
+        self.w_i = w_i
+        self.m = m
+        self.w_s = w_s
+        self.w_o = w_o
+        self.w_d = w_d
+
+    def get_image_width(self):
+        """Caculates the image width.
+
+        Returns:
+            float: image width.
+        """
+        assert self.m is not None, "m is not set."
+        assert self.w_s is not None, "w_s is not set."
+        assert self.w_o is not None, "w_o is not set."
+
+        w_i = np.power(np.multiply(np.power(self.m, 2), np.power(self.w_s, 2)) + np.power(self.w_o, 2), 0.2)
+
+        return w_i
+    
+    def get_slit_width(self):
+        """Caculates the slit width.
+
+        Returns:
+            float: slit width (micrometer).
+        """
+        assert self.m is not None, "m is not set."
+        assert self.w_d is not None, "w_d is not set."
+
+        w_s = np.divide(self.w_d, self.m)
+
+        return w_s
 
 class VPHGrism:
     """Volume-Phase Holographic grating grism component.
