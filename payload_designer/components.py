@@ -7,7 +7,7 @@ import logging
 import numpy as np
 
 # project
-from payload_designer.libs import physlib
+from payload_designer.libs import physlib, utillib
 
 LOG = logging.getLogger(__name__)
 
@@ -153,27 +153,81 @@ class VPHGrism:
         return dl
 
 
-class ThinFocuser:
-    """Thin lens focuser component.
+class ThinLens:
+    """Thin singlet lens component.
 
     Args:
-        f (float, optional): focal length. Defaults to None.
-        h (float, optional): image height above optical axis. Defaults to None.
-        a_in (float, optional): incoming ray angle relative to optical axis.
+        D (float, optional): diameter of the lens [mm]. Defaults to None.
+        M (float, optional): mass of lens [g]. Defaults to None.
+        T (path-like, optional): path to transmittace LUT data.
+        a_in (array_like[float], optional): incoming ray angle relative to optical
+            axis [°]. Defaults to None.
+        a_out (array_like[float], optional): outgoing ray angle relative to optical
+            axis [°]. Defaults to None.
+        d_i (array_like[float], optional): distance to image plane [mm]. Defaults to
+            None.
+        d_o (array_like[float], optional): distance from object plane [mm]. Defaults to
+            None.
+        f (array_like[float], optional): focal length [mm]. Defaults to None.
+        h_i (array_like[float], optional): image height above optical axis [mm].
+            Defaults to None.
+        h_o (array_like[float], optional): source height above optical axis [mm].
             Defaults to None.
     """
 
-    def __init__(self, f=None, h=None, a_in=None):
-
-        self.f = f
-        self.h = h
+    def __init__(
+        self,
+        D=None,
+        M=None,
+        T=None,
+        a_in=None,
+        a_out=None,
+        d_i=None,
+        d_o=None,
+        f=None,
+        h_i=None,
+        h_o=None,
+    ):
+        self.D = D
+        self.M = M
+        self.T = utillib.LUT(T)
         self.a_in = a_in
+        self.a_out = a_out
+        self.d_i = d_i
+        self.d_o = d_o
+        self.f = f
+        self.h_i = h_i
+        self.h_o = h_o
 
-    def get_image_height(self):
-        """Calculate the image height along the focal plane.
+    def get_image_distance(self):
+        """Calculate image distance for focuser.
 
         Returns:
-            float: image height in m.
+            float: image distance [mm].
+        """
+        assert self.f is not None, "f is not set."
+
+        d_i = self.f
+
+        return d_i
+
+    def get_source_distance(self):
+        """Calculate source distance for collimator.
+
+        Returns:
+            float: source distance [mm].
+        """
+        assert self.f is not None, "f is not set."
+
+        d_o = self.f
+
+        return d_o
+
+    def get_image_height(self):
+        """Calculate the image height along the focal plane for focuser.
+
+        Returns:
+            float: image height [mm].
         """
         assert self.f is not None, "f is not set."
         assert self.a_in is not None, "a_in is not set."
@@ -187,6 +241,64 @@ class ThinFocuser:
         a_in = np.radians(a_in)  # deg to rad
         # endregion
 
-        h = np.matmul(f, np.transpose(np.tan(a_in)))
+        h_i = np.matmul(f, np.transpose(np.tan(a_in)))
 
-        return h
+        return h_i
+
+    def get_source_height(self):
+        """Calculate the source height along the focal plane for collimator.
+
+        Returns:
+            float: source height [mm].
+        """
+        assert self.f is not None, "f is not set."
+        assert self.a_out is not None, "a_out is not set."
+
+        # region vectorization
+        f = np.array(self.f).reshape(-1, 1)
+        a_out = np.array(self.a_out).reshape(-1, 1)
+        # endregion
+
+        # region unit conversions
+        a_out = np.radians(a_out)  # deg to rad
+        # endregion
+
+        h_o = np.matmul(f, np.transpose(np.tan(a_out)))
+
+        return h_o
+
+    def get_focal_length(self):
+        """Calculate focal length.
+
+        Returns:
+            float: focal length [mm].
+        """
+
+        if self.d_i is not None:  # from image distance
+
+            f = self.d_i
+
+        elif self.d_o is not None:  # from source distance
+
+            f = self.d_o
+
+        elif self.h_i is not None and self.a_in is not None:  # from image height
+
+            # region unit conversions
+            a_in = np.radians(self.a_in)  # deg to rad
+            # endregion
+
+            f = self.h_i / np.tan(a_in)
+
+        elif self.h_o is not None and self.a_out is not None:  # from source height
+
+            # region unit conversions
+            a_out = np.radians(self.a_out)  # deg to rad
+            # endregion
+
+            f = self.h_o / np.tan(a_out)
+
+        else:
+            raise ValueError("d_i or d_o or h_i and a_in or h_o and a_out must be set.")
+
+        return f
