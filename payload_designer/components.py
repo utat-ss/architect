@@ -37,6 +37,7 @@ class VPHGrism:
         n (float, optional): groove density in lines/m. Defaults to None.
         n_g (float, optional): index modulation contrast. Defaults to None.
         n_p (float, optional): diffraction efficiency. Defaults to None.
+        eff_mat (float, optional): efficiency of prism material. Defaults to None.
     """
 
     def __init__(
@@ -59,6 +60,7 @@ class VPHGrism:
         w=None,
         n=None,
         n_p=None,
+        eff_mat=None,
     ):
         self.d = d
         self.t = t
@@ -78,6 +80,7 @@ class VPHGrism:
         self.n = n
         self.w = w
         self.n_p = n_p
+        self.eff_mat = eff_mat
 
     def get_angle_out(self):
         """Calculates the outgoing angle from the grism.
@@ -128,7 +131,14 @@ class VPHGrism:
         return angle_out
 
     ###def get_undeviated_wavelength():
+        """Calculates the grism undeviated wavelength.
 
+        Raises:
+            ValueError: if required parameters are not set.
+
+        Returns:
+            float: undeviated wavelength.
+        """
     def get_resolvance(self):
         """Calculates the grism resolvance.
 
@@ -199,22 +209,22 @@ class VPHGrism:
             float: diffraction efficiency.
         """
         assert self.a_in is not None, "a_in is not set."
-        assert self.a_out is not None, "a_out is not set."
+        #assert self.a_out is not None, "a_out is not set."
         assert self.d is not None, "d is not set."
         assert self.l is not None, "l is not set."
         assert self.v is not None, "v is not set."
         assert self.n_g is not None, "n_g is not set"
+        assert self.eff_mat is not None, "prism material efficiency is not set"
+
 
         # vectorization
 
         # unit conversion
         a_in = np.radians(a_in)
-        angle_
-        angle_6 = np.radians(angle_6)
         l = l * 10 ** -9  # nm to m
         # d probably needs one too
 
-        ###get angle_5 and 6
+        ###get angle_5 and 6 and replace angle_out and angle_in
         angle_1 = a_in + a
         angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=n_1, n_2=n_2)
         angle_3 = a - angle_2
@@ -231,10 +241,12 @@ class VPHGrism:
             )
 
         # diffraction efficiency
-        eta_s = np.sin((math.pi * n_g * d) / (l * np.cos(a_in))) ** 2
-        n_p = eta_s * np.cos(a_in + a_out)
-
+        eta_s = np.sin((math.pi * n_g * d) / (l * np.cos(angle_5))) ** 2
+        n_p = eta_s * np.cos(angle_5 + angle_6)
+        
+        ##l or l_g?
         ###add consideration for grism material
+        n_p = n_p * eff_mat * eff_mat
         return n_p
 
 
