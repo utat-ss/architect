@@ -194,7 +194,7 @@ class ThinFocuser:
 class BandpassFilter:
     def __init__(
         self,
-        A = None,
+        A = None
         lambda_theta = None,
         lambda_0 = None, 
         theta = None, 
