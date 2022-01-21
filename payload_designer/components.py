@@ -218,25 +218,25 @@ class Sensor:
 
     def __init__(
         self,
-        d_well=None,
+        dt=None,
         i_dark=None,
+        n_bit=None,
         n_read=None,
+        n_well=None,
         p=None,
         px_x=None,
         px_y=None,
         qe=None,
-        r_dyn=None,
-        t_int=None,
     ):
-        self.d_well = d_well
+        self.dt = dt
         self.i_dark = i_dark
+        self.n_bit = n_bit
         self.n_read = n_read
+        self.n_well = n_well
         self.p = p
         self.px_x = px_x
         self.px_y = px_y
         self.qe = utillib.LUT(qe)
-        self.r_dyn = r_dyn
-        self.t_int = t_int
 
     def get_sensor_detector_area(self):
         A_d = self.p * self.p
@@ -250,8 +250,8 @@ class Sensor:
         """Calculates the signal to noise ratio from the sensor and system parameters.
 
         Args:
-            R (path-like): path to atmospheric radiance LUT.
-            T (array-like[float]): transmittance of the optical system.
+            L (path-like): path to atmospheric radiance LUT.
+            T (array-like[float]): transmittance of the optical system by wavelength.
             f_n (float): f-number of optical system.
 
         Returns:
