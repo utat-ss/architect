@@ -66,7 +66,7 @@ def test_VPHGrism_get_resolvance():
 
 
 def test_VPHGrism_get_resolution():
-    """tests get_resolvance"""
+    """tests get_resolution"""
     # parameter definition
     l = np.linspace(start=1600, stop=1700, num=100)
     n = 600 * 10 ** 3  # lines/m

@@ -229,10 +229,9 @@ class VPHGrism:
         Returns:
             float: diffraction efficiency.
         """
-
+        
         assert self.a_in is not None, "a_in is not set."
         assert self.a is not None, "a is not set."
-        # assert self.a_out is not None, "a_out is not set."
         assert self.d is not None, "d is not set."
         assert self.l is not None, "l is not set."
         assert self.v is not None, "v is not set."
@@ -251,13 +250,11 @@ class VPHGrism:
         v = v * (1 / 10 ** 6)  # lines/mm to lines/nm
         d = d * (1 * 10 ** 3)  # microns to nm
 
-        ###get angle_5 and 6 and replace angle_out and angle_in
         angle_1 = a_in + a
         angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=n_1, n_2=n_2)
         angle_3 = a - angle_2
         angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=n_2, n_2=n_3)
         angle_5 = angle_4
-        # check Q
         L = 1 / v  # nm/lines
 
         Q = (l ** 2) / (n_g * n_3 * L ** 2)
