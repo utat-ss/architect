@@ -115,8 +115,12 @@ class Foreoptics:
             float: numerical aperture (unitless).
         """
 
-        if self.a_in_max is not None:
-            na = np.sin(self.a_in_max)
+        # region unit conversions
+        a_in_max = np.radians(self.a_in_max)  # deg to rad
+        # endregion        
+
+        if a_in_max is not None:
+            na = np.sin(a_in_max)
         elif self.n is not None:
             na = np.divide(1, 2*self.n)
         else:
@@ -140,7 +144,7 @@ class Foreoptics:
         g = np.multiply(np.pi, np.multiply(self.s, np.power(np.sin(a_in_max), 2)))
 
         return g
-    
+
     def get_radiant_flux(self):
         """Calculate the flux.
 

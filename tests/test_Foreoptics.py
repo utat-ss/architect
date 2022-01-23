@@ -33,8 +33,8 @@ def test_Foreoptics_get_magnification():
     """Test Foreoptics.get_magnification()."""
 
     # parameters
-    ds_i = 10^-1
-    ds_o = 2*10^5
+    ds_i = 10
+    ds_o = 20
 
     # component instantiation
     foreoptic = components.Foreoptics(ds_i=ds_i, ds_o=ds_o)
@@ -43,7 +43,7 @@ def test_Foreoptics_get_magnification():
     m = foreoptic.get_magnification()
     LOG.info(f"Magnification: {m}")
 
-    assert m == pytest.approx(5*10^(-7))
+    assert m == 1/2
 
 def test_Foreoptics_get_f_number():
     """Test Foreoptics.get_f_number()."""
@@ -90,7 +90,7 @@ def test_Foreoptics_get_numerical_aperture():
     na = foreoptic.get_numerical_aperture()
     LOG.info(f"Numerical aperture: {na}")
 
-    assert na == 1/2
+    assert na == pytest.approx(1/2)
 
 def test_Foreoptics_get_geometric_etendue():
     """Test Foreoptics.get_geometric_etendue()."""
