@@ -12,7 +12,6 @@ from payload_designer import components
 
 LOG = logging.getLogger(__name__)
 
-# @pytest.mark.star # will only run these tests # pytest -v -m star
 def test_ThickLens_get_focal_length():
     """Test ThickLens.get_focal_length()."""
 
@@ -31,7 +30,6 @@ def test_ThickLens_get_focal_length():
 
     assert h == pytest.approx(4800/179)
 
-# @pytest.mark.plot # will not run these tests # pytest -v -m "not plot"
 def test_ThickLens_get_principal_planes():
     """Test ThickLens.get_principal_planes()."""
 
@@ -101,7 +99,7 @@ def test_ThickLens_get_focuser_emergent_ray_height():
     h = thicklens.get_focuser_emergent_ray_height()
     LOG.info(f"Focuser emergent ray height: {h}")
 
-    assert h == pytest.approx((2351*np.pi)/96)
+    assert h == pytest.approx((np.pi/6)*(7213/288))
 
 def test_ThickLens_get_collimator_emergent_ray_angle():
     """Test ThickLens.get_collimator_emergent_ray_angle()."""
@@ -117,4 +115,4 @@ def test_ThickLens_get_collimator_emergent_ray_angle():
     h = thicklens.get_collimator_emergent_ray_angle()
     LOG.info(f"Collimator emergent ray angle: {h}")
 
-    assert h == pytest.approx(-179/192)
+    assert h == pytest.approx(np.degrees(-179/192))

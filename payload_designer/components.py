@@ -24,8 +24,8 @@ class ThickLens:
         R2 (float, optional): the radius of curvature of the second lens surface. Defaults to None.
         s_i (float, optional): the distance from the secondary principal plane to the image. Defaults to None.
         s_o (float, optional): the distance from the object to the primary principal plane. Defaults to None.
-        a1 (float, optional): the incident ray angle relative to the optical axis. Defaults to None.
-        a2 (float, optional): the emergent ray angle relative to the optical axis. Defaults to None.
+        a1 (float, optional): the incident ray angle relative to the optical axis in deg. Defaults to None.
+        a2 (float, optional): the emergent ray angle relative to the optical axis in deg. Defaults to None.
         x1 (float, optional): the height of the incident ray along the primary vertex of the lens. Defaults to None.
         x2 (float, optional): the height of the incident ray along the secondary vertex of the lens. Defaults to None.
     """
