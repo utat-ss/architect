@@ -136,7 +136,7 @@ class ThickLens:
         assert self.f_thick is not None, "f_thick is not set."
         assert self.a1 is not None, "a1 is not set."
         
-        x2 = np.radians(self.a1) * (self.f_thick * (1 - ((self.n - 1) * self.d) / (self.n * self.R1)) * (1 + ((self.n - 1) * self.d) / (self.n * self.R2)) + (self.d / self.n))
+        x2 = np.radians(self.a1) * self.f_thick
 
         return x2
 
