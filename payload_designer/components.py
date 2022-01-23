@@ -20,7 +20,7 @@ class Foreoptics:
         ds_o (float, optional): object distance. Defaults to None.
         n (float, optional): f-number. Defaults to None.
         dm_a (float, optional): aperture diameter. Defaults to None.
-        a_in_max (float, optional): maximum angle of incidence. Defaults to None.
+        a_in_max (float, optional): maximum angle of incidence in degrees. Defaults to None.
         na (float, optional): numerical aperture. Defaults to None.
         b (float, optional): source radiance. Defaults to None.
         g (float, optional): geometric etendue. Defaults to None.
@@ -54,7 +54,7 @@ class Foreoptics:
         """Calculate the aperture diamter.
 
         Returns:
-            float: aperture diameter (length).
+            float: aperture diameter (mm).
         """
         assert self.ds_i is not None, "ds_i is not set."
 
@@ -114,13 +114,13 @@ class Foreoptics:
         Returns:
             float: numerical aperture (unitless).
         """
-        assert self.a_in_max is not None, "a_in_max is not set."
 
-        # region unit conversions
-        a_in_max = np.radians(self.a_in_max)  # deg to rad
-        # endregion
-
-        na = np.sin(a_in_max)
+        if self.a_in_max is not None:
+            na = np.sin(self.a_in_max)
+        elif self.n is not None:
+            na = np.divide(1, 2*self.n)
+        else:
+            raise ValueError("a_in_max or n must be set.")       
 
         return na
     
