@@ -85,15 +85,11 @@ def test_ThickLens_get_focuser_image_height():
     """Test ThickLens.get_focuser_image_height()."""
 
     # parameters
-    d = 1
-    n = 1.5
-    R1 = 20
-    R2 = -40
     f_thick = 4800/179
     a1 = 30
 
     # component instantiation
-    thicklens = components.ThickLens(d=d, n=n, R1=R1, R2=R2, f_thick=f_thick, a1=a1)
+    thicklens = components.ThickLens(f_thick=f_thick, a1=a1)
 
     # evaluation
     h = thicklens.get_focuser_image_height()

@@ -129,10 +129,6 @@ class ThickLens:
             float: image height.
         """
 
-        assert self.d is not None, "d is not set."
-        assert self.n is not None, "n is not set."
-        assert self.R1 is not None, "R1 is not set."
-        assert self.R2 is not None, "R2 is not set."
         assert self.f_thick is not None, "f_thick is not set."
         assert self.a1 is not None, "a1 is not set."
         
