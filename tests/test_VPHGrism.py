@@ -1,6 +1,7 @@
 """VPH Grism component tests."""
 # stdlib
 import logging
+import pytest
 
 # external
 import numpy as np
@@ -38,62 +39,66 @@ def test_VPHGrism_get_angle_out():
 
 def test_get_undeviated_wavelength():
     """tests get_undeviated_wavelength"""
-    # parameter definition
+    # parameter definition - fill in with real values later 
     m = 1
-    v = 300
-    a = 45
+    v = 1000
+    a = 90
     a_in = 0
-    grism = components.VPHGrism(m=m, v=v, a=a, a_in=a_in)
+    n_1 = 1.0
+    n_2 = 1.52
+    n_3 = 1.3
+    grism = components.VPHGrism(m=m, v=v, a=a, a_in=a_in, n_1=n_1, n_2=n_2, n_3=n_3)
     undeviated_wavelength = grism.get_undeviated_wavelength()
-    # LOG.info(f"Undeviated Wavelength: {undeviated_wavelength}°")
+    LOG.info(f"Undeviated Wavelength: {undeviated_wavelength}°")
+    assert undeviated_wavelength == pytest.approx(1761.118)
 
 
 def test_VPHGrism_get_resolvance():
     """tests get_resolvance"""
     # parameter definition
-    l = np.linspace(start=1600, stop=1700, num=100)  # nm -> converted to m in func
-    dl = 2  # nm -> converted to m in func
+    l = 1600 #np.linspace(start=1600, stop=1700, num=100)  # nm
+    dl = 2  # nm 
     # N =
     # m = 1
-    # n = 600 * 10 ** 3  # lines/m
-    # w = 770  # in microns -> converted to m in func
+    # v = 600  # lines/mm
+    # w = 2  # in mm -> 
 
     grism = components.VPHGrism(l=l, dl=dl)
-    # grism = components.VPHGrism(m=1, n=n, w=w)
+    # grism = components.VPHGrism(m=1, v=v, w=w)
     # grism = components.VPHGrism(m=m, N=N)
     resolvance = grism.get_resolvance()
-    # LOG.info(f"Resolvance: {resolvance}°")
-
+    LOG.info(f"Resolvance: {resolvance}°")
+    assert resolvance == pytest.approx(800)
 
 def test_VPHGrism_get_resolution():
     """tests get_resolution"""
     # parameter definition
-    l = np.linspace(start=1600, stop=1700, num=100)
-    n = 600 * 10 ** 3  # lines/m
-    w = 770  # in microns -> converted to m in func
+    l = 1600 #np.linspace(start=1600, stop=1700, num=100)
+    v = 1000  # lines/mm
+    w = 2  # in mm
     # R =
     # N =
     # m = 1
 
-    grism = components.VPHGrism(m=1, n=n, w=w, l=l)
+    grism = components.VPHGrism(m=1, v=v, w=w, l=l)
     # grism = components.VPHGrism(l=l, R=R)
     # grism = components.VPHGrism(m=1, N=N, l=l)
 
     resolution = grism.get_resolution()
-    # LOG.info(f"Resolution: {resolution}°")
-
+    LOG.info(f"Resolution: {resolution}°")
+    assert resolution == pytest.approx(0.8)
 
 def test_VPHGrism_get_diffraction_efficiency():
-    """tests get_diffraction efficiency"""
+    """tests get_diffraction_efficiency"""
     # parameter definition
     a_in = 0
-    a = 45
+    a = 90
     d = 2
-    l = np.linspace(start=1600, stop=1700, num=100)
-    v = 300
+    l = 1600 #np.linspace(start=1600, stop=1700, num=100)
+    v = 1000
     n_g = 0.1
-    n_3 = 1.0
-    n_2 = 1.0
+    n_3 = 1.3
+    n_2 = 1.52
     n_1 = 1.0
     eff_mat = 0.9
 
@@ -111,4 +116,5 @@ def test_VPHGrism_get_diffraction_efficiency():
     )
 
     diffraction_efficiency = grism.get_diffraction_efficiency()
-    # LOG.info(f"Diffraction Efficiency: {diffraction_efficiency}°")
+    LOG.info(f"Diffraction Efficiency: {diffraction_efficiency}°")
+    assert diffraction_efficiency == pytest.approx(0.5185951)

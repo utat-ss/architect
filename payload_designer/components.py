@@ -33,8 +33,7 @@ class VPHGrism:
         v (float, optional): fringe frequency in lines/mm. Defaults to None.
         dl (float, optional): spectral resolution in nm. Defaults to None.
         N (float, optional): Number of illumated fringes. Defaults to None.
-        w (float, optional): slit width in m. Defaults to None.
-        n (float, optional): groove density in lines/m. Defaults to None.
+        w (float, optional): slit width in mm. Defaults to None.
         n_g (float, optional): index modulation contrast. Defaults to None.
         n_p (float, optional): diffraction efficiency. Defaults to None.
         eff_mat (float, optional): efficiency of prism material. Defaults to None.
@@ -59,7 +58,6 @@ class VPHGrism:
         dl=None,
         N=None,
         w=None,
-        n=None,
         n_p=None,
         eff_mat=None,
     ):
@@ -79,7 +77,6 @@ class VPHGrism:
         self.v = v
         self.dl = dl
         self.N = N
-        self.n = n
         self.w = w
         self.n_p = n_p
         self.eff_mat = eff_mat
@@ -145,17 +142,20 @@ class VPHGrism:
         assert self.v is not None, "v is not set."
         assert self.a is not None, "a is not set."
         assert self.a_in is not None, "a_in is not set."
+        assert self.n_1 is not None, "n_1 is not set"
+        assert self.n_2 is not None, "n_2 is not set"
+        assert self.n_3 is not None, "n_3 is not set"        
         # unit conversions
-        a_in = np.radians(a_in)  # deg to rad
+        a_in = np.radians(self.a_in)  # deg to rad
         a = np.radians(self.a)
-        v = v * (1 / (10 ** 6))  # lines/mm to lines/nm
+        v = self.v * 10 ** -6  # lines/mm to lines/nm
 
         angle_1 = a_in + a
-        angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=n_1, n_2=n_2)
+        angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=self.n_1, n_2=self.n_2)
         angle_3 = a - angle_2
-        angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=n_2, n_2=n_3)
+        angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=self.n_2, n_2=self.n_3)
         angle_5 = angle_4
-        l_g = 2 * (np.sin(angle_5) / (m * v))
+        l_g = 2 * (np.sin(angle_5) / (self.m * v))
         return l_g  # in nm
 
     def get_resolvance(self):
@@ -170,17 +170,13 @@ class VPHGrism:
         # vectorization
 
         # unit conversions
-        l = l * 10 ** -9
-        dl = dl * 10 ** -9
-        w = w * 10 ** -9
-        n = n * (1 / (10 ** 9))
 
         if self.l is not None and self.dl is not None:
-            R = self.l / self.dl
+            R = (self.l) / (self.dl) #both in nm
         elif self.m is not None and self.N is not None:
             R = self.m * self.N
-        elif self.m is not None and self.n is not None and self.w is not None:
-            R = self.m * self.n * self.w
+        elif self.m is not None and self.v is not None and self.w is not None:
+            R = self.m * (self.v * (1 / (10 ** -3))) * (self.w*10**-3) #v -> lines/mm to lines/m. w -> mm to m
         else:
             raise ValueError("l and dl or m and N or m and n and w must be set.")
         return R
@@ -198,27 +194,24 @@ class VPHGrism:
         # vectorization
 
         # unit conversion
-        l = l * 10 ** -9
-        w = w * 10 ** -6
-        n = n * (1 / (10 ** 9))
-
+        
         if self.l is not None and self.R is not None:
-            dl = self.l / self.R
+            dl = (self.l) / self.R #no unit conversion so dl is in nm
         elif self.l is not None and self.m is not None and self.N is not None:
-            dl = self.l / (self.m * self.N)
+            dl = (self.l) / (self.m * self.N) #no unit conversion so dl is in nm
         elif (
             self.l is not None
             and self.m is not None
-            and self.n is not None
+            and self.v is not None
             and self.w is not None
         ):
-            dl = self.l / (self.m * self.n * self.w)
+            dl = (self.l) / (self.m * (self.v *10 ** -6) * self.w * 10 ** 6) #### mm to nm
         else:
             raise ValueError(
                 "l and R or l and m and N or l and m and n and w must be set."
             )
 
-        return dl
+        return dl #in nm
 
     def get_diffraction_efficiency(self):
         """Calculates the grism diffraction_efficiency.
@@ -229,50 +222,50 @@ class VPHGrism:
         Returns:
             float: diffraction efficiency.
         """
-        
+
         assert self.a_in is not None, "a_in is not set."
         assert self.a is not None, "a is not set."
         assert self.d is not None, "d is not set."
         assert self.l is not None, "l is not set."
         assert self.v is not None, "v is not set."
         assert self.n_g is not None, "n_g is not set"
-        assert self.n_1 is not None, "n_3 is not set"
-        assert self.n_2 is not None, "n_3 is not set"
+        assert self.n_1 is not None, "n_1 is not set"
+        assert self.n_2 is not None, "n_2 is not set"
         assert self.n_3 is not None, "n_3 is not set"
         assert self.eff_mat is not None, "prism material efficiency is not set"
 
         # vectorization
 
         # unit conversion
-        a_in = np.radians(a_in)
-        a = np.radians(a)
-        l = l * 10 ** -9  # nm to m
-        v = v * (1 / 10 ** 6)  # lines/mm to lines/nm
-        d = d * (1 * 10 ** 3)  # microns to nm
+        a_in = np.radians(self.a_in)
+        a = np.radians(self.a)
+        l = self.l  # nm
+        v = self.v * 10 ** -6  # lines/mm to lines/nm
+        d = self.d * 10 ** 3  # microns to nm
 
         angle_1 = a_in + a
-        angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=n_1, n_2=n_2)
+        angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=self.n_1, n_2=self.n_2)
         angle_3 = a - angle_2
-        angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=n_2, n_2=n_3)
+        angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=self.n_2, n_2=self.n_3)
         angle_5 = angle_4
         L = 1 / v  # nm/lines
 
-        Q = (l ** 2) / (n_g * n_3 * L ** 2)
-        if Q < 10:
+        Q = (l ** 2) / (self.n_g * self.n_3 * L ** 2)
+        if np.any(Q < 10):
             raise ValueError(
                 "Q requirement not met, diffraction efficiency formula not valid"
             )
         # diffraction efficiency
-        n_p = ((1 / 2) * (np.sin((math.pi * n_g * d) / (l * np.cos(angle_5)))) ** 2) + (
+        n_p = (np.sin((math.pi * self.n_g * d) / (l * np.cos(angle_5))) ** 2) + (
             (1 / 2)
             * (
                 np.sin(
-                    ((math.pi * n_g * d) * np.cos(2 * angle_5)) / (l * np.cos(angle_5))
+                    ((math.pi * self.n_g * d) * np.cos(2 * angle_5)) / (l * np.cos(angle_5))
                 )
             )
             ** 2
         )  # angle_5 being close to bragg angle = more efficiency
-        n_p = n_p * eff_mat * eff_mat
+        n_p = n_p * self.eff_mat * self.eff_mat
         return n_p
 
 
