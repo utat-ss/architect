@@ -190,3 +190,69 @@ class ThinFocuser:
         h = np.matmul(f, np.transpose(np.tan(a_in)))
 
         return h
+
+    
+class AchromDoublet:
+    """Achromatic doublet component.
+
+    Args:
+        f_1 (float, optional): Focal length of first element (mm). Defaults to None.
+        f_2 (float, optional): Focal length of second element (mm). Defaults to None.
+        f_eq (float, optional): Effective focal length of system (mm). Defaults to None.
+        V_1 (float, optional): Abbe number for first element. Defaults to None.
+        V_2 (float, optional): Abbe number for second element. Defaults to None.
+    """
+
+    def __init__(
+        self,
+        f_1=None,
+        f_2=None,
+        f_eq=None,
+        V_1=None,
+        V_2=None,
+    ):
+        self.f_1 = f_1
+        self.f_2 = f_2
+        self.f_eq = f_eq
+        self.V_1 = V_1
+        self.V_2 = V_2
+
+    def focal_length_1(self):
+        assert self.V_1 is not None, "V_1 is not set."
+        assert self.V_2 is not None, "V_2 is not set."
+        assert self.f_eq is not None, "f_eq is not set."
+
+        # region unit conversions
+        f_eq = self.f_eq * 10 ** -3  # mm to m
+        # endregion
+
+        f_1 = f_eq * (self.V_1 - self.V_2) / self.V_1
+        return f_1
+
+    def focal_length_2(self):
+        assert self.V_1 is not None, "V_1 is not set."
+        assert self.V_2 is not None, "V_2 is not set."
+        assert self.f_eq is not None, "f_eq is not set."
+
+        # region unit conversions
+        f_eq = self.f_eq * 10 ** -3  # mm to m
+        # endregion
+
+        f_2 = -f_eq * (self.V_1 - self.V_2) / self.V_2
+        return f_2
+
+    def effective_focal_length(self):
+
+        # region unit conversions
+        f_1 = self.f_1 * 10 ** -3  # mm to m
+        f_2 = self.f_2 * 10 ** -3  # mm to m
+        # endregion
+
+        if f_1 is not None:
+            f_eq = f_1 * self.V_1 / (self.V_1 - self.V_2)
+        elif f_2 is not None:
+            f_eq = -f_2 * self.V_2 / (self.V_1 - self.V_2)
+        else:
+            raise ValueError("f_1 or f_2 must be set.")
+
+        return f_eq
