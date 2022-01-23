@@ -50,7 +50,7 @@ class Foreoptics:
         self.g = g
         self.s = s
 
-    def get_aperture_diamter(self):
+    def get_aperture_diameter(self):
         """Calculate the aperture diamter.
 
         Returns:
@@ -137,7 +137,7 @@ class Foreoptics:
         a_in_max = np.radians(self.a_in_max)  # deg to rad
         # endregion
 
-        g = np.multiply(np.pi, self.s, np.power(np.sin(a_in_max), 2))
+        g = np.multiply(np.pi, np.multiply(self.s, np.power(np.sin(a_in_max), 2)))
 
         return g
     
