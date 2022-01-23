@@ -16,7 +16,6 @@ class Foreoptics:
     """Foreoptics component.
 
     Args:
-        d_a (float, optional): aperture diameter. Defaults to None.
         ds_i (float, optional): image distance. Defaults to None.
         ds_o (float, optional): object distance. Defaults to None.
         n (float, optional): f-number. Defaults to None.
@@ -31,7 +30,6 @@ class Foreoptics:
 
     def __init__(
         self,
-        d_a=None,
         ds_i=None,
         ds_o=None,
         n=None,
@@ -42,7 +40,6 @@ class Foreoptics:
         g=None,
         s=None
     ):
-        self.d_a = d_a
         self.ds_i = ds_i
         self.ds_o = ds_o
         self.n = n
@@ -52,6 +49,23 @@ class Foreoptics:
         self.b = b
         self.g = g
         self.s = s
+
+    def get_aperture_diamter(self):
+        """Calculate the aperture diamter.
+
+        Returns:
+            float: aperture diameter (length).
+        """
+        assert self.ds_i is not None, "ds_i is not set."
+
+        if self.n is not None:
+            dm_a = np.divide(self.ds_i, self.n)
+        elif self.na is not None:
+            dm_a = 2*np.multiply(self.ds_i, self.na)
+        else:
+            raise ValueError("n or na must be set.")
+
+        return dm_a
 
     def get_magnification(self):
         """Calculate the magnification of the foreoptics.
@@ -72,25 +86,14 @@ class Foreoptics:
         Returns:
             float: f/# (unitless).
         """
-        assert self.ds_i is not None, "ds_i is not set."
-        assert self.dm_a is not None, "dm_a is not set."
-
-        n = self.ds_i/self.dm_a
+        if self.na is not None:
+            n = np.divide(1, 2*self.na)
+        elif self.ds_i is not None and self.dm_a is not None:
+            n = np.divide(self.ds_i, self.dm_a)
+        else:
+            raise ValueError("ds_i and dm_a or na must be set.")
 
         return n
-    
-    def get_aperture_diameter(self):
-        """Calculate the aperture diameter.
-
-        Returns:
-            float: aperture diameter (mm).
-        """
-        assert self.ds_i is not None, "ds_i is not set."
-        assert self.n is not None, "n is not set."
-
-        dm_a = self.ds_i/self.n
-
-        return dm_a
     
     def get_effective_focal_length(self):
         """Calculate the effective focal length.
