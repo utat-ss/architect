@@ -30,7 +30,7 @@ class VPHGrism:
         n_2 (float, optional): prism index of refraction. Defaults to None.
         n_3 (float, optional): grating substrate index of refraction.
             Defaults to None.
-        v (float, optional): fringe frequency. Defaults to None.
+        v (float, optional): fringe frequency in lines/mm. Defaults to None.
         dl (float, optional): spectral resolution in nm. Defaults to None.
         N (float, optional): Number of illumated fringes. Defaults to None.
         w (float, optional): slit width in m. Defaults to None.
@@ -130,7 +130,7 @@ class VPHGrism:
 
         return angle_out
 
-    ###def get_undeviated_wavelength():
+    def get_undeviated_wavelength(self):
         """Calculates the grism undeviated wavelength.
 
         Raises:
@@ -139,6 +139,24 @@ class VPHGrism:
         Returns:
             float: undeviated wavelength.
         """
+        assert self.m is not None, "m is not set."
+        assert self.v is not None, "v is not set."
+        assert self.a is not None, "a is not set."
+        assert self.a_in is not None, "a_in is not set."
+        #unit conversions
+        a_in = np.radians(a_in)  # deg to rad
+        a = np.radians(self.a)
+        v = v * ( 1 / 10**6 ) #lines/mm to lines/nm
+
+        angle_1 = a_in + a
+        angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=n_1, n_2=n_2)
+        angle_3 = a - angle_2
+        angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=n_2, n_2=n_3)
+        angle_5 = angle_4
+        l_g = 2 * ( np.sin(angle_5)/(m * v) )
+        return l_g #in nm
+
+
     def get_resolvance(self):
         """Calculates the grism resolvance.
 
@@ -208,21 +226,25 @@ class VPHGrism:
         Returns:
             float: diffraction efficiency.
         """
+
         assert self.a_in is not None, "a_in is not set."
-        #assert self.a_out is not None, "a_out is not set."
+        assert self.a is not None, "a is not set."
+        # assert self.a_out is not None, "a_out is not set."
         assert self.d is not None, "d is not set."
         assert self.l is not None, "l is not set."
         assert self.v is not None, "v is not set."
         assert self.n_g is not None, "n_g is not set"
         assert self.eff_mat is not None, "prism material efficiency is not set"
 
-
         # vectorization
 
         # unit conversion
         a_in = np.radians(a_in)
+        a = np.radians(a)
         l = l * 10 ** -9  # nm to m
+        v = v * ( 1 / 10**6 ) #lines/mm to lines/nm
         # d probably needs one too
+
 
         ###get angle_5 and 6 and replace angle_out and angle_in
         angle_1 = a_in + a
@@ -233,19 +255,17 @@ class VPHGrism:
         angle_6 = np.arcsin(np.sin(angle_5) - m * np.matmul(v, np.transpose(l)))
 
         # check Q
-        L = 1 / v
+        L = 1 / v #nm/lines
         Q = (2 * math.pi * l * d) / (n_g * L ** 2)
         if Q < 10:
             raise ValueError(
                 "Q requirement not met, diffraction efficiency formula not valid"
             )
-
         # diffraction efficiency
         eta_s = np.sin((math.pi * n_g * d) / (l * np.cos(angle_5))) ** 2
         n_p = eta_s * np.cos(angle_5 + angle_6)
-        
+
         ##l or l_g?
-        ###add consideration for grism material
         n_p = n_p * eff_mat * eff_mat
         return n_p
 
