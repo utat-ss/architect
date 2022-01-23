@@ -27,7 +27,7 @@ def test_Slit_get_horizontal_field_of_view():
     fov = slit.get_horizontal_field_of_view()
     LOG.info(f"Horizontal field of view: {fov}")
 
-    assert fov == pytest.approx(2 * np.arctan(1/140))
+    assert fov == pytest.approx(360 * np.arctan(1/140) / np.pi)
 
 def test_Slit_get_vertical_field_of_view():
     """Test ThinFocuser.get_vertical_field_of_view()."""
@@ -43,7 +43,7 @@ def test_Slit_get_vertical_field_of_view():
     fov = slit.get_vertical_field_of_view()
     LOG.info(f"Vertical field of view: {fov}")
 
-    assert fov == pytest.approx(2 * np.arctan(1/7000))
+    assert fov == pytest.approx(360 * np.arctan(1/14000) / np.pi)
 
 def test_Slit_get_image_width():
     """Test ThinFocuser.get_image_width()."""
@@ -60,7 +60,7 @@ def test_Slit_get_image_width():
     w = slit.get_image_width()
     LOG.info(f"Image width: {w}")
 
-    assert w == pytest.approx((1/80)^(1/2))
+    assert w == pytest.approx(np.sqrt(13/5000))
 
 def test_Slit_get_slit_width():
     """Test ThinFocuser.get_slit_width()."""

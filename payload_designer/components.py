@@ -22,8 +22,8 @@ class Slit:
         l_s (float, optional): slit length. Defaults to None.
         w_o (float, optional): object width. Defaults to None.
         w_d (float, optional): detector width. Defaults to None.
-        fov_h (float, optional): horizontal field of view. Defaults to None.
-        fov_v (float, optional): vertical field of view. Defaults to None.
+        fov_h (float, optional): horizontal field of view in degrees. Defaults to None.
+        fov_v (float, optional): vertical field of view in degrees. Defaults to None.
     """
 
     def __init__(self, w_i=None, m=None, f=None, w_s=None, l_s=None, w_o=None, w_d=None, fov_h=None, fov_v=None):
@@ -48,7 +48,7 @@ class Slit:
 
         fov_h = 2*np.arctan(np.divide(self.l_s, 2*self.f))
         
-        return fov_h
+        return np.divide(np.multiply(fov_h, 180), np.pi)
 
     def get_vertical_field_of_view(self):
         """Caculates the vertical field of view.
@@ -61,7 +61,7 @@ class Slit:
 
         fov_v = 2*np.arctan(np.divide(self.w_s, 2*self.f))
         
-        return fov_v
+        return np.divide(np.multiply(fov_v, 180), np.pi)
 
     def get_image_width(self):
         """Caculates the image width.
@@ -73,7 +73,7 @@ class Slit:
         assert self.w_s is not None, "w_s is not set."
         assert self.w_o is not None, "w_o is not set."
 
-        w_i = np.power(np.multiply(np.power(self.m, 2), np.power(self.w_s, 2)) + np.power(self.w_o, 2), 0.5)
+        w_i = np.sqrt(np.multiply(np.power(self.m, 2), np.power(self.w_s, 2)) + np.power(self.w_o, 2))
 
         return w_i
     
