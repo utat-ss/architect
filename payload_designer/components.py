@@ -28,6 +28,8 @@ class ThickLens:
         a2 (float, optional): the emergent ray angle relative to the optical axis in deg. Defaults to None.
         x1 (float, optional): the height of the incident ray along the primary vertex of the lens. Defaults to None.
         x2 (float, optional): the height of the incident ray along the secondary vertex of the lens. Defaults to None.
+
+    Distances and heights can be in any units (e.g., mm, cm, m, etc.) as long as the units are consistent. 
     """
 
     def __init__(
@@ -64,7 +66,7 @@ class ThickLens:
         """Calculate the focal length of a thick lens in a vacuum.
 
         Returns:
-            float: focal length in m.
+            float: focal length.
         """
 
         assert self.n is not None, "n is not set."
@@ -80,7 +82,7 @@ class ThickLens:
         """Calculate the position of the primary and secondary principal planes of the thick lens.
 
         Returns:
-            float: distance from lens vertices to principal planes in m.
+            float: distance from lens vertices to principal planes.
         """
 
         assert self.d is not None, "d is not set."
@@ -98,7 +100,7 @@ class ThickLens:
         """Calculate the image distance along the focal length from the principal plane.
 
         Returns:
-            float: image distance in m.
+            float: image distance.
         """
 
         assert self.f_thick is not None, "f_thick is not set."
@@ -111,7 +113,7 @@ class ThickLens:
         """Calculate the object distance along the focal length from the principal plane.
 
         Returns:
-            float: object distance in m.
+            float: object distance.
         """
 
         assert self.f_thick is not None, "f_thick is not set."
@@ -124,7 +126,7 @@ class ThickLens:
         """Calculate the emergent ray height at the lens vertex (focuser).
 
         Returns:
-            float: emergent ray height in m.
+            float: emergent ray height.
         """
 
         assert self.d is not None, "d is not set."
