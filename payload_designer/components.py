@@ -2,6 +2,7 @@
 
 # stdlib
 import logging
+from this import d
 
 # external
 import numpy as np
@@ -164,7 +165,6 @@ class ThinFocuser:
     """
 
     def __init__(self, f=None, h=None, a_in=None):
-
         self.f = f
         self.h = h
         self.a_in = a_in
@@ -190,3 +190,222 @@ class ThinFocuser:
         h = np.matmul(f, np.transpose(np.tan(a_in)))
 
         return h
+
+
+class SRGrating:
+   """Surface-Relief Diffraction Grating component.
+
+    Args:
+        alpha (float, optional): incident angle of light. Defaults to None.
+        beta (float, optional): diffraction angle. Defaults to None.
+        G (float, optional): groove density. Defaults to None.
+        lmda (float, optional): wavelength of incident light. Defaults to None.
+        m (integer, optional): diffraction order. Defaults to None.
+        W (float, optional): ruled width of grating. Defaults to None.
+        R (float, optional): resolving power. Defaults to None.
+    """
+
+    def __init__(
+        self,
+        alpha=None,
+        beta=None,
+        G=None,
+        lmda=None,
+        m=None,
+        W=None,
+        R=None,
+    ):
+        self.alpha = alpha
+        self.beta = beta
+        self.G = G
+        self.lmda = lmda
+        self.m = m
+        self.W = W
+        self.R = R
+
+    def get_angle_out(self):
+        """Calculates the angle of the diffracted light exiting the diffraction grating.
+
+        Returns:
+            float: diffracted angle in radians.
+        """
+        assert self.alpha is not None, "alpha is not set."
+        assert self.G is not None, "G is not set."
+        assert self.lmda is not None, "lmda is not set."
+        assert self.m is not None, "m is not set."
+
+        # region vectorization
+        alpha = np.array(self.alpha).reshape(-1, 1)
+        G = np.array(self.G).reshape(-1, 1)
+        lmda = np.array(self.lmda).reshape(-1, 1)
+        m = np.array(self.m).reshape(-1, 1)
+        # endregion
+
+        # region unit conversions
+        G = G * 10 ** 3 # 1/mm to 1/m
+        lmda = lmda * 10 ** (-9) # nm to m
+        alpha = np.radians(alpha)  # deg to rad
+        # endregion
+
+        beta = np.arcsin(G * m * lmda - np.sin(alpha))
+
+        return beta
+
+    def get_angular_dispersion(self):
+        """Calculates the angular dispersion of a grating
+
+        Returns:
+            float: angular dispersion in rad/nm.
+        """
+        assert self.alpha is not None, "alpha is not set."
+        assert self.lmda is not None, "lmda is not set."
+
+        # region vectorization
+        alpha = np.array(self.alpha).reshape(-1, 1)
+        lmda = np.array(self.lmda).reshape(-1, 1)
+        # endregion
+
+        # region unit conversions
+        alpha = np.radians(alpha)  # deg to rad
+        # endregion
+
+        ang_disp = lmda/(2 * np.tan(alpha))
+
+        return ang_disp
+
+    def get_resolving_power(self):
+        """Calculates the resolving power of the diffraction grating.
+
+        Returns:
+            float: resolving power in radians.
+        """
+        assert self.alpha is not None, "alpha is not set."
+        assert self.beta is not None, "beta is not set."
+        assert self.G is not None, "G is not set."
+        assert self.lmda is not None, "lmda is not set."
+        assert self.W is not None, "W is not set."
+        assert self.R is not None, "R is not set."
+
+        # region vectorization
+        alpha = np.array(self.alpha).reshape(-1, 1)
+        beta = np.array(self.beta).reshape(-1, 1)
+        lmda = np.array(self.lmda).reshape(-1, 1)
+        W = np.array(self.W).reshape(-1, 1)
+        # endregion
+
+        # region unit conversions
+        alpha = np.radians(alpha)  # deg to rad
+        # endregion
+
+        R = W * (np.sin(alpha) + np.sin(beta)) / lmda
+
+        return R
+
+
+class VPHGrating:
+    """Volume-Phase Holographic grating component.
+
+    Args:
+        a_0 (float, optional): incident ray angle in degrees. Defaults to None.
+        n_0 (float, optional): external index of refraction. Defaults to None.
+        n_1 (float, optional): glass substrate index of refraction. Defaults to None.
+        n_2 (float, optional): DCG layer index of refraction.
+        Lmda (float, optional): separation between the fringes of the DCG layer. Defaults to None.
+        phi (float, optional): slant angle between the grating normal and the plane of the fringes
+        lmda (float, optional): wavelength of incident light. Defaults to None.
+        m (integer, optional): diffraction order. Defaults to None.
+        delta_n2 (float, optional): semiamplitude of the refractive-index modulation. Defaults to None.
+        d (float, optional): grating thickness. Defaults to None.
+
+    """
+
+    def __init__(
+        self,
+        a_0=None,
+        n_0=None,
+        n_1=None,
+        n_2=None,
+        Lmda=None,
+        lmda=None,
+        m=None,
+        delta_n2=None,
+        d=None,
+        phi=None
+    ):
+
+        self.a_0 = a_0
+        self.n_0 = n_0
+        self.n_1 = n_1
+        self.n_2 = n_2
+        self.Lmda = Lmda
+        self.lmda = lmda
+        self.m = m
+        self.delta_n2 = delta_n2
+        self.d = d
+        self.phi = phi
+
+    def get_angle_out(self):
+
+        """Calculates the angle of the diffracted light exiting the diffraction grating.
+
+        Returns:
+            float: diffracted angle in radians.
+        """
+        assert self.a_0  is not None, "a_0 is not set."
+        assert self.n_0  is not None, "a_0 is not set."
+        assert self.Lmda is not None, "Lmda is not set."
+        assert self.lmda is not None, "lmda is not set."
+        assert self.m is not None, "m is not set."
+        assert self.phi is not None, "phi is not set."
+
+        # region vectorization
+        a_0 = np.array(self.a_0).reshape(-1, 1)
+        n_0 = np.array(self.n_0).reshape(-1, 1)
+        Lmda = np.array(self.Lmda).reshape(-1, 1)
+        lmda = np.array(self.lmda).reshape(-1, 1)
+        m = np.array(self.m).reshape(-1, 1)
+        phi = np.array(self.phi).reshape(-1, 1)
+        # endregion
+
+        # region unit conversions
+        a_0 = np.radians(a_0)  # deg to rad
+        Lmda = Lmda * 10 ** (-9) # nm to m
+        lmda = lmda * 10 ** (-9) # nm to m
+        # endregion
+
+        Lmda_g = Lmda / np.cos(phi)
+        b_0 = np.arcsin((m*lmda)/(n_0*Lmda_g) - np.sin(a_0))
+
+        return b_0
+
+    def get_Kogelnik_efficiency(self):
+        """Calculates the Kogelnik efficiency for unpolarized light.
+        
+        Returns:
+            float: Kogelnik efficiency.
+        """
+        assert self.delta_n2  is not None, "delta_n2 is not set."
+        assert self.n_2  is not None, "a_2 is not set."
+        assert self.d is not None, "d is not set."
+        assert self.lmda is not None, "lmda is not set."
+        assert self.Lmda is not None, "lmda is not set."
+        assert self.m is not None, "m is not set."
+
+        # region vectorization
+        delta_n2 = np.array(self.m).reshape(-1, 1)
+        n_2 = np.array(self.n_2).reshape(-1, 1)
+        d = np.array(self.d).reshape(-1, 1)
+        lmda = np.array(self.lmda).reshape(-1, 1)
+        Lmda = np.array(self.lmda).reshape(-1, 1)
+        m = np.array(self.m).reshape(-1, 1)
+        # endregion
+
+        # region unit conversions
+        d = d * 10 ** (-3) # mm to m
+        # endregion
+        
+        a_2b = np.arcsin((m * lmda)/(2 * n_2 * Lmda))
+        mu_s = np.sin((np.pi * delta_n2 * d)/(lmda * np.cos(a_2b)))^2 + 0.5 * np.sin((np.pi * delta_n2 * d * np.cos(2*a_2b))/(lmda * np.cos(a_2b)))^2
+
+        return mu_s
+
