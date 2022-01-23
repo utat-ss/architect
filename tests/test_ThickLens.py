@@ -49,9 +49,9 @@ def test_ThickLens_get_principal_planes():
     h = thicklens.get_principal_planes()
     LOG.info(f"Principal planes: {h}")
 
-    (x, y) = h
+    (h1, h2) = h
 
-    assert x == pytest.approx(40/179) and y == pytest.approx(-80/179)
+    assert h1 == pytest.approx(40/179) and h2 == pytest.approx(-80/179)
 
 def test_ThickLens_get_focuser_image_distance():
     """Test ThickLens.get_focuser_image_distance()."""
