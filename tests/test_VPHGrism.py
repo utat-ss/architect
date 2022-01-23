@@ -2,7 +2,6 @@
 # stdlib
 import logging
 
-
 # external
 import numpy as np
 
@@ -37,32 +36,47 @@ def test_VPHGrism_get_angle_out():
     fig.show()
 
 
-def test_VPHGrism_get_resolvance():
+def test_get_undeviated_wavelength():
+    """tests get_undeviated_wavelength"""
+    # parameter definition
+    m = 1
+    v = 300
+    a = 45
+    a_in = 0
+    grism = components.VPHGrism(m=m, v=v, a=a, a_in=a_in)
+    undeviated_wavelength = grism.get_undeviated_wavelength()
+    # LOG.info(f"Undeviated Wavelength: {undeviated_wavelength}°")
 
+
+def test_VPHGrism_get_resolvance():
+    """tests get_resolvance"""
     # parameter definition
     l = np.linspace(start=1600, stop=1700, num=100)  # nm -> converted to m in func
     dl = 2  # nm -> converted to m in func
     # N =
-    n = 600 * 10 ** 3  # lines/m
-    w = 770  # in microns -> converted to m in func
+    # m = 1
+    # n = 600 * 10 ** 3  # lines/m
+    # w = 770  # in microns -> converted to m in func
 
-    grism = components.VPHGrism(m=1, l=l, dl=dl)
+    grism = components.VPHGrism(l=l, dl=dl)
     # grism = components.VPHGrism(m=1, n=n, w=w)
+    # grism = components.VPHGrism(m=m, N=N)
     resolvance = grism.get_resolvance()
     # LOG.info(f"Resolvance: {resolvance}°")
 
 
 def test_VPHGrism_get_resolution():
-
+    """tests get_resolvance"""
     # parameter definition
     l = np.linspace(start=1600, stop=1700, num=100)
     n = 600 * 10 ** 3  # lines/m
     w = 770  # in microns -> converted to m in func
     # R =
     # N =
+    # m = 1
 
     grism = components.VPHGrism(m=1, n=n, w=w, l=l)
-    # grism = components.VPHGrism(m=1, l=l, R=R)
+    # grism = components.VPHGrism(l=l, R=R)
     # grism = components.VPHGrism(m=1, N=N, l=l)
 
     resolution = grism.get_resolution()
@@ -70,15 +84,31 @@ def test_VPHGrism_get_resolution():
 
 
 def test_VPHGrism_get_diffraction_efficiency():
+    """tests get_diffraction efficiency"""
     # parameter definition
     a_in = 0
-    # a_out =     ##get from angle_out func
-    # d =
+    a = 45
+    d = 2
     l = np.linspace(start=1600, stop=1700, num=100)
-    # v =
-    # n_g =
+    v = 300
+    n_g = 0.1
+    n_3 = 1.0
+    n_2 = 1.0
+    n_1 = 1.0
+    eff_mat = 0.9
 
-    grism = components.VPHGrism(m=1, a_in=a_in, a_out=a_out, l=l, d=d, v=v, n_g=n_g)
+    grism = components.VPHGrism(
+        a_in=a_in,
+        a=a,
+        l=l,
+        d=d,
+        v=v,
+        n_g=n_g,
+        n_1=n_1,
+        n_2=n_2,
+        n_3=n_3,
+        eff_mat=eff_mat,
+    )
 
     diffraction_efficiency = grism.get_diffraction_efficiency()
     # LOG.info(f"Diffraction Efficiency: {diffraction_efficiency}°")

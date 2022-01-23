@@ -17,7 +17,7 @@ class VPHGrism:
     """Volume-Phase Holographic grating grism component.
 
     Args:
-        d (float, optional): DCG thickness. Defaults to None.
+        d (float, optional): DCG thickness in micrometers. Defaults to None.
         t (float, optional): transmision ratio. Defaults to None.
         a_in (float, optional): incident ray angle in degrees. Defaults to None.
         a_out (float, optional): outgoing ray angle in degrees. Defaults to None.
@@ -54,6 +54,7 @@ class VPHGrism:
         n_1=None,
         n_2=None,
         n_3=None,
+        n_g=None,
         v=None,
         dl=None,
         N=None,
@@ -74,6 +75,7 @@ class VPHGrism:
         self.n_1 = n_1
         self.n_2 = n_2
         self.n_3 = n_3
+        self.n_g = n_g
         self.v = v
         self.dl = dl
         self.N = N
@@ -143,19 +145,18 @@ class VPHGrism:
         assert self.v is not None, "v is not set."
         assert self.a is not None, "a is not set."
         assert self.a_in is not None, "a_in is not set."
-        #unit conversions
+        # unit conversions
         a_in = np.radians(a_in)  # deg to rad
         a = np.radians(self.a)
-        v = v * ( 1 / 10**6 ) #lines/mm to lines/nm
+        v = v * (1 / (10 ** 6))  # lines/mm to lines/nm
 
         angle_1 = a_in + a
         angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=n_1, n_2=n_2)
         angle_3 = a - angle_2
         angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=n_2, n_2=n_3)
         angle_5 = angle_4
-        l_g = 2 * ( np.sin(angle_5)/(m * v) )
-        return l_g #in nm
-
+        l_g = 2 * (np.sin(angle_5) / (m * v))
+        return l_g  # in nm
 
     def get_resolvance(self):
         """Calculates the grism resolvance.
@@ -172,6 +173,7 @@ class VPHGrism:
         l = l * 10 ** -9
         dl = dl * 10 ** -9
         w = w * 10 ** -9
+        n = n * (1 / (10 ** 9))
 
         if self.l is not None and self.dl is not None:
             R = self.l / self.dl
@@ -198,6 +200,7 @@ class VPHGrism:
         # unit conversion
         l = l * 10 ** -9
         w = w * 10 ** -6
+        n = n * (1 / (10 ** 9))
 
         if self.l is not None and self.R is not None:
             dl = self.l / self.R
@@ -234,6 +237,9 @@ class VPHGrism:
         assert self.l is not None, "l is not set."
         assert self.v is not None, "v is not set."
         assert self.n_g is not None, "n_g is not set"
+        assert self.n_1 is not None, "n_3 is not set"
+        assert self.n_2 is not None, "n_3 is not set"
+        assert self.n_3 is not None, "n_3 is not set"
         assert self.eff_mat is not None, "prism material efficiency is not set"
 
         # vectorization
@@ -242,9 +248,8 @@ class VPHGrism:
         a_in = np.radians(a_in)
         a = np.radians(a)
         l = l * 10 ** -9  # nm to m
-        v = v * ( 1 / 10**6 ) #lines/mm to lines/nm
-        # d probably needs one too
-
+        v = v * (1 / 10 ** 6)  # lines/mm to lines/nm
+        d = d * (1 * 10 ** 3)  # microns to nm
 
         ###get angle_5 and 6 and replace angle_out and angle_in
         angle_1 = a_in + a
@@ -252,20 +257,24 @@ class VPHGrism:
         angle_3 = a - angle_2
         angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=n_2, n_2=n_3)
         angle_5 = angle_4
-        angle_6 = np.arcsin(np.sin(angle_5) - m * np.matmul(v, np.transpose(l)))
-
         # check Q
-        L = 1 / v #nm/lines
-        Q = (2 * math.pi * l * d) / (n_g * L ** 2)
+        L = 1 / v  # nm/lines
+
+        Q = (l ** 2) / (n_g * n_3 * L ** 2)
         if Q < 10:
             raise ValueError(
                 "Q requirement not met, diffraction efficiency formula not valid"
             )
         # diffraction efficiency
-        eta_s = np.sin((math.pi * n_g * d) / (l * np.cos(angle_5))) ** 2
-        n_p = eta_s * np.cos(angle_5 + angle_6)
-
-        ##l or l_g?
+        n_p = ((1 / 2) * (np.sin((math.pi * n_g * d) / (l * np.cos(angle_5)))) ** 2) + (
+            (1 / 2)
+            * (
+                np.sin(
+                    ((math.pi * n_g * d) * np.cos(2 * angle_5)) / (l * np.cos(angle_5))
+                )
+            )
+            ** 2
+        )  # angle_5 being close to bragg angle = more efficiency
         n_p = n_p * eff_mat * eff_mat
         return n_p
 
