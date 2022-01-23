@@ -26,8 +26,8 @@ class ThickLens:
         s_o (float, optional): the distance from the object to the primary principal plane. Defaults to None.
         a1 (float, optional): the incident ray angle relative to the optical axis in deg. Defaults to None.
         a2 (float, optional): the emergent ray angle relative to the optical axis in deg. Defaults to None.
-        x1 (float, optional): the height of the incident ray along the primary vertex of the lens. Defaults to None.
-        x2 (float, optional): the height of the incident ray along the secondary vertex of the lens. Defaults to None.
+        x1 (float, optional): object height relative to the optical axis for the collimator model. Defaults to None.
+        x2 (float, optional): image height relative to the optical axis for the focuser model. Defaults to None.
 
     Distances and heights can be in any units (e.g., mm, cm, m, etc.) as long as the units are consistent. 
     """
@@ -122,11 +122,11 @@ class ThickLens:
 
         return s_o
     
-    def get_focuser_emergent_ray_height(self):
-        """Calculate the emergent ray height at the lens vertex (focuser).
+    def get_focuser_image_height(self):
+        """Calculate the image height relative to the optical axis (focuser).
 
         Returns:
-            float: emergent ray height.
+            float: image height.
         """
 
         assert self.d is not None, "d is not set."

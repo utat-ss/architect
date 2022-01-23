@@ -81,8 +81,8 @@ def test_ThickLens_get_collimator_object_distance():
 
     assert h == pytest.approx(4800/179)
 
-def test_ThickLens_get_focuser_emergent_ray_height():
-    """Test ThickLens.get_focuser_emergent_ray_height()."""
+def test_ThickLens_get_focuser_image_height():
+    """Test ThickLens.get_focuser_image_height()."""
 
     # parameters
     d = 1
@@ -96,8 +96,8 @@ def test_ThickLens_get_focuser_emergent_ray_height():
     thicklens = components.ThickLens(d=d, n=n, R1=R1, R2=R2, f_thick=f_thick, a1=a1)
 
     # evaluation
-    h = thicklens.get_focuser_emergent_ray_height()
-    LOG.info(f"Focuser emergent ray height: {h}")
+    h = thicklens.get_focuser_image_height()
+    LOG.info(f"Focuser image height: {h}")
 
     assert h == pytest.approx((np.pi/6)*(7213/288))
 
