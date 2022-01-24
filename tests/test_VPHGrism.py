@@ -32,5 +32,5 @@ def test_VPHGrism_get_angle_out():
     # fig = px.scatter(x=l, y=angle_out)
     # fig.show()
 
-    fig = plotlib.plot_surface(z=angle_out, x=l, y=v)
+    fig = plotlib.surface(x=l, y=v, z=angle_out)
     fig.show()
