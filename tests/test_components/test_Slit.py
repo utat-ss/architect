@@ -13,7 +13,7 @@ from payload_designer import components
 LOG = logging.getLogger(__name__)
 
 
-def test_Slit_get_horizontal_field_of_view():
+def test_get_horizontal_field_of_view():
     """Test ThinFocuser.get_horizontal_field_of_view()."""
 
     # parameters
@@ -27,9 +27,10 @@ def test_Slit_get_horizontal_field_of_view():
     fov = slit.get_horizontal_field_of_view()
     LOG.info(f"Horizontal field of view: {fov}")
 
-    assert fov == pytest.approx(360 * np.arctan(1/140) / np.pi)
+    assert fov == pytest.approx(360 * np.arctan(1 / 140) / np.pi)
 
-def test_Slit_get_vertical_field_of_view():
+
+def test_get_vertical_field_of_view():
     """Test ThinFocuser.get_vertical_field_of_view()."""
 
     # parameters
@@ -43,11 +44,12 @@ def test_Slit_get_vertical_field_of_view():
     fov = slit.get_vertical_field_of_view()
     LOG.info(f"Vertical field of view: {fov}")
 
-    assert fov == pytest.approx(360 * np.arctan(1/14000) / np.pi)
+    assert fov == pytest.approx(360 * np.arctan(1 / 14000) / np.pi)
 
-def test_Slit_get_image_width():
+
+def test_get_image_width():
     """Test ThinFocuser.get_image_width()."""
-    #w_i = np.power(np.multiply(np.power(self.m, 2), np.power(self.w_s, 2)) + np.power(self.w_o, 2), 0.2)
+    # w_i = np.power(np.multiply(np.power(self.m, 2), np.power(self.w_s, 2)) + np.power(self.w_o, 2), 0.2)
     # parameters
     m = 1
     w_s = 0.01
@@ -60,11 +62,12 @@ def test_Slit_get_image_width():
     w = slit.get_image_width()
     LOG.info(f"Image width: {w}")
 
-    assert w == pytest.approx(np.sqrt(13/5000))
+    assert w == pytest.approx(np.sqrt(13 / 5000))
 
-def test_Slit_get_slit_width():
+
+def test_get_slit_width():
     """Test ThinFocuser.get_slit_width()."""
-    #w_s = np.divide(self.w_d, self.m)
+    # w_s = np.divide(self.w_d, self.m)
     # parameters
     w_d = 5
     m = 1

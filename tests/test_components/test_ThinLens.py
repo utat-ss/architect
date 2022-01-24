@@ -110,7 +110,7 @@ def test_get_image_height_vectorized():
     h = focuser.get_image_height()
     LOG.info(f"Image height: {h}")
 
-    # assert h == pytest.approx(4*math.sqrt(3)/3)
+    assert h == pytest.approx(4 * math.sqrt(3) / 3)
 
 
 def test_get_source_height():
@@ -154,11 +154,9 @@ def test_get_source_height():
 def test_get_focal_length(d_i, d_o, h_i, a_in, h_o, a_out, ans):
     """Tests ThinLens.get_focal_length().
 
-    Cases:
-        0: d_i is set.
-        1: d_o is set.
-        2: h_i and a_in are set.
-        3: h_o and a_out are set.
+    Cases:     0: d_i is set.     1: d_o is set.     2: h_i and a_in are set.     3: h_o
+    and a_out are set.
+
     """
 
     # region component instantiation

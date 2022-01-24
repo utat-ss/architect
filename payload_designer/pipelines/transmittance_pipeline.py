@@ -1,4 +1,5 @@
-"""Estimates the payload optical transmittance ratio as a function of wavelength."""
+"""Estimates the payload optical transmittance ratio as a function of
+wavelength."""
 
 # project
 from payload_designer import components

@@ -1,4 +1,4 @@
-"""VPH Grism component tests."""
+"""Tests for VPH Grism component."""
 # stdlib
 import logging
 
@@ -13,7 +13,7 @@ from payload_designer.libs import plotlib
 LOG = logging.getLogger(__name__)
 
 
-def test_VPHGrism_get_angle_out():
+def test_get_angle_out():
     """Test VPHGrism.get_angle_out()."""
 
     # region parameter definiton
@@ -38,7 +38,7 @@ def test_VPHGrism_get_angle_out():
 
 
 def test_get_undeviated_wavelength():
-    """tests get_undeviated_wavelength"""
+    """Test VPHGrism.get_undeviated_wavelength()."""
     # parameter definition - fill in with real values later
     m = 1
     v = 1000
@@ -53,8 +53,8 @@ def test_get_undeviated_wavelength():
     assert undeviated_wavelength == pytest.approx(1761.118)
 
 
-def test_VPHGrism_get_resolvance():
-    """tests get_resolvance"""
+def test_get_resolvance():
+    """Test VPHGrism.get_resolvance()."""
     # parameter definition
     l = 1600  # np.linspace(start=1600, stop=1700, num=100)  # nm
     dl = 2  # nm
@@ -71,8 +71,8 @@ def test_VPHGrism_get_resolvance():
     assert resolvance == pytest.approx(800)
 
 
-def test_VPHGrism_get_resolution():
-    """tests get_resolution"""
+def test_get_resolution():
+    """Test VPHGrism.get_resolution()."""
     # parameter definition
     l = 1600  # np.linspace(start=1600, stop=1700, num=100)
     v = 1000  # lines/mm
@@ -90,8 +90,8 @@ def test_VPHGrism_get_resolution():
     assert resolution == pytest.approx(0.8)
 
 
-def test_VPHGrism_get_diffraction_efficiency():
-    """tests get_diffraction_efficiency"""
+def test_get_diffraction_efficiency():
+    """Test VPHGrism.get_diffraction_efficiency()."""
     # parameter definition
     a_in = 0
     a = 90

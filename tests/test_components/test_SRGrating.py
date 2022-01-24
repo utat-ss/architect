@@ -1,10 +1,9 @@
-"""Tests for surface relief component."""
+"""Tests for SRGrating component."""
 # stdlib
 import logging
 import math
 
 # external
-import numpy as np
 import pytest
 
 # project
@@ -13,7 +12,7 @@ from payload_designer import components
 LOG = logging.getLogger(__name__)
 
 
-def test_SRGrating_get_angle_out():
+def test_get_angle_out():
     """Test SRGrating.get_angle_out()."""
 
     # parameters
@@ -32,7 +31,7 @@ def test_SRGrating_get_angle_out():
     assert beta == pytest.approx(0.3113582086)
 
 
-def test_SRGrating_get_angular_dispersion():
+def test_get_angular_dispersion():
     """Test SRGrating.get_angular_dispersion()."""
 
     # parameters
@@ -53,7 +52,7 @@ def test_SRGrating_get_angular_dispersion():
     assert ang_disp == pytest.approx(315153.0773)
 
 
-def test_SRGrating_get_resolving_power():
+def test_get_resolving_power():
     """Test SRGrating.get_resolving_power()."""
 
     # parameters
@@ -75,7 +74,7 @@ def test_SRGrating_get_resolving_power():
     assert R == pytest.approx(0.03357794565)
 
 
-def test_SRGrating_get_anamorphic_amplification():
+def test_get_anamorphic_amplification():
     """Test SRGrating.get_anamorphic_amplification()."""
 
     # parameters
