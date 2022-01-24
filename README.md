@@ -102,12 +102,13 @@ This repo is configured to use [pre-commit](https://pre-commit.com/) hooks. The 
 
 1. [Isort](https://pycqa.github.io/isort/): Sorts imports, so you don't have to.
 1. [Black](https://black.readthedocs.io/en/stable/): The uncompromising code autoformatter.
+1. [Docformatter](https://github.com/myint/docformatter): A docstring autoformatter.
 1. [Pylint](https://github.com/pycqa/pylint): It's not just a linter that annoys you!
 
 Pre-commit will run the hooks on commit, but when a hook fails, they can be run manually to delint using:
 
 ```
-isort . & black . & pylint_runner
+pre-commit run --all-files
 ```
 
 ### Branches
