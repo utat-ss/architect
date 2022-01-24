@@ -1,4 +1,4 @@
-"""Estimates the image height on the focal plane given grism and collimator components
+"""Estimates the image height on the focal plane given grism and collimator component
 parameters."""
 
 # project
@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     # component instantiation
     grating = components.VPHGrism(
-        a_in=5, n_1=1.5, n_2=1.5, n_3=1.5, v=600, m=1, a=30, l=1600
+        a_in=1, n_1=1.5, n_2=1.5, n_3=1.5, v=600, m=1, a=30, l=1600
     )
     focuser = components.ThinFocuser(f=4)
 
