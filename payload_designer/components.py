@@ -12,6 +12,144 @@ from payload_designer.libs import physlib, utillib
 
 LOG = logging.getLogger(__name__)
 
+class ThickLens:
+    """Thick singlet lens component.
+
+    Args:
+        h1 (float, optional): distance from the primary vertex to the primary principal plane. Defaults to None.
+        h2 (float, optional): distance from the secondary vertex to the secondary principal plane. Defaults to None.
+        f_thick (float, optional): effective focal length. Defaults to None.
+        n (float, optional): index of refraction of the thick lens. Defaults to None.
+        d (float, optional): the thickness of the thick lens. Defaults to None.
+        R1 (float, optional): the radius of curvature of the first lens surface. Defaults to None.
+        R2 (float, optional): the radius of curvature of the second lens surface. Defaults to None.
+        s_i (float, optional): the distance from the secondary principal plane to the image. Defaults to None.
+        s_o (float, optional): the distance from the object to the primary principal plane. Defaults to None.
+        a1 (float, optional): the incident ray angle relative to the optical axis in deg. Defaults to None.
+        a2 (float, optional): the emergent ray angle relative to the optical axis in deg. Defaults to None.
+        x1 (float, optional): object height relative to the optical axis for the collimator model. Defaults to None.
+        x2 (float, optional): image height relative to the optical axis for the focuser model. Defaults to None.
+
+    Distances and heights can be in any units (e.g., mm, cm, m, etc.) as long as the units are consistent. 
+    """
+
+    def __init__(
+        self, 
+        h1=None, 
+        h2=None,
+        f_thick=None,
+        n=None,
+        d=None,
+        R1=None,
+        R2=None,
+        s_i=None, 
+        s_o=None,    
+        a1=None,
+        a2=None,
+        x1=None,
+        x2=None
+    ):
+        self.h1 = h1 
+        self.h2 = h2
+        self.f_thick = f_thick
+        self.n = n
+        self.d = d
+        self.R1 = R1
+        self.R2 = R2
+        self.s_i = s_i
+        self.s_o = s_o
+        self.a1 = a1
+        self.a2 = a2
+        self.x1 = x1
+        self.x2 = x2
+
+    def get_focal_length(self):
+        """Calculate the focal length of a thick lens in a vacuum.
+
+        Returns:
+            float: focal length.
+        """
+
+        assert self.n is not None, "n is not set."
+        assert self.R1 is not None, "R1 is not set."
+        assert self.R2 is not None, "R2 is not set."
+        assert self.d is not None, "d is not set."
+
+        f_thick = (self.n * self.R1 * self.R2) / ((self.R2 - self.R1) * (self.n - 1) * self.n + ((self.n - 1) ** 2) * self.d)
+
+        return f_thick
+    
+    def get_principal_planes(self):
+        """Calculate the position of the primary and secondary principal planes of the thick lens.
+
+        Returns:
+            float: distance from lens vertices to principal planes.
+        """
+
+        assert self.d is not None, "d is not set."
+        assert self.n is not None, "n is not set."
+        assert self.R1 is not None, "R1 is not set."
+        assert self.R2 is not None, "R2 is not set."
+        assert self.f_thick is not None, "f_thick is not set."
+
+        h1 = - (self.f_thick * (self.n - 1) * self.d) / (self.R2 * self.n)
+        h2 = - (self.f_thick * (self.n - 1) * self.d) / (self.R1 * self.n)
+
+        return h1, h2
+    
+    def get_focuser_image_distance(self):
+        """Calculate the image distance along the focal length from the principal plane.
+
+        Returns:
+            float: image distance.
+        """
+
+        assert self.f_thick is not None, "f_thick is not set."
+        
+        s_i = self.f_thick
+
+        return s_i
+
+    def get_collimator_object_distance(self):
+        """Calculate the object distance along the focal length from the principal plane.
+
+        Returns:
+            float: object distance.
+        """
+
+        assert self.f_thick is not None, "f_thick is not set."
+        
+        s_o = self.f_thick
+
+        return s_o
+    
+    def get_focuser_image_height(self):
+        """Calculate the image height relative to the optical axis (focuser).
+
+        Returns:
+            float: image height.
+        """
+
+        assert self.f_thick is not None, "f_thick is not set."
+        assert self.a1 is not None, "a1 is not set."
+        
+        x2 = np.radians(self.a1) * self.f_thick
+
+        return x2
+
+    def get_collimator_emergent_ray_angle(self):
+        """Calculate the emergent ray angle (collimator).
+
+        Returns:
+            float: emergent ray angle in deg.
+        """
+
+        assert self.x1 is not None, "x1 is not set."
+        assert self.f_thick is not None, "f_thick is not set."
+
+        a2 = -self.x1 / self.f_thick
+
+        return np.degrees(a2)        
 
 class Slit:
     """Entrance slit component.
