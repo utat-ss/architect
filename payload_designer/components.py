@@ -1,17 +1,19 @@
 """Component classes."""
 
 # stdlib
-from gettext import install
 import logging
-from this import d
+import math
+from gettext import install
 
 # external
 import numpy as np
+from this import d
 
 # project
 from payload_designer.libs import physlib, utillib
 
 LOG = logging.getLogger(__name__)
+
 
 class ThickLens:
     """Thick singlet lens component.
@@ -31,26 +33,26 @@ class ThickLens:
         x1 (float, optional): object height relative to the optical axis for the collimator model. Defaults to None.
         x2 (float, optional): image height relative to the optical axis for the focuser model. Defaults to None.
 
-    Distances and heights can be in any units (e.g., mm, cm, m, etc.) as long as the units are consistent. 
+    Distances and heights can be in any units (e.g., mm, cm, m, etc.) as long as the units are consistent.
     """
 
     def __init__(
-        self, 
-        h1=None, 
+        self,
+        h1=None,
         h2=None,
         f_thick=None,
         n=None,
         d=None,
         R1=None,
         R2=None,
-        s_i=None, 
-        s_o=None,    
+        s_i=None,
+        s_o=None,
         a1=None,
         a2=None,
         x1=None,
-        x2=None
+        x2=None,
     ):
-        self.h1 = h1 
+        self.h1 = h1
         self.h2 = h2
         self.f_thick = f_thick
         self.n = n
@@ -76,10 +78,12 @@ class ThickLens:
         assert self.R2 is not None, "R2 is not set."
         assert self.d is not None, "d is not set."
 
-        f_thick = (self.n * self.R1 * self.R2) / ((self.R2 - self.R1) * (self.n - 1) * self.n + ((self.n - 1) ** 2) * self.d)
+        f_thick = (self.n * self.R1 * self.R2) / (
+            (self.R2 - self.R1) * (self.n - 1) * self.n + ((self.n - 1) ** 2) * self.d
+        )
 
         return f_thick
-    
+
     def get_principal_planes(self):
         """Calculate the position of the primary and secondary principal planes of the thick lens.
 
@@ -93,11 +97,11 @@ class ThickLens:
         assert self.R2 is not None, "R2 is not set."
         assert self.f_thick is not None, "f_thick is not set."
 
-        h1 = - (self.f_thick * (self.n - 1) * self.d) / (self.R2 * self.n)
-        h2 = - (self.f_thick * (self.n - 1) * self.d) / (self.R1 * self.n)
+        h1 = -(self.f_thick * (self.n - 1) * self.d) / (self.R2 * self.n)
+        h2 = -(self.f_thick * (self.n - 1) * self.d) / (self.R1 * self.n)
 
         return h1, h2
-    
+
     def get_focuser_image_distance(self):
         """Calculate the image distance along the focal length from the principal plane.
 
@@ -106,7 +110,7 @@ class ThickLens:
         """
 
         assert self.f_thick is not None, "f_thick is not set."
-        
+
         s_i = self.f_thick
 
         return s_i
@@ -119,11 +123,11 @@ class ThickLens:
         """
 
         assert self.f_thick is not None, "f_thick is not set."
-        
+
         s_o = self.f_thick
 
         return s_o
-    
+
     def get_focuser_image_height(self):
         """Calculate the image height relative to the optical axis (focuser).
 
@@ -133,7 +137,7 @@ class ThickLens:
 
         assert self.f_thick is not None, "f_thick is not set."
         assert self.a1 is not None, "a1 is not set."
-        
+
         x2 = np.radians(self.a1) * self.f_thick
 
         return x2
@@ -150,7 +154,8 @@ class ThickLens:
 
         a2 = -self.x1 / self.f_thick
 
-        return np.degrees(a2)        
+        return np.degrees(a2)
+
 
 class Slit:
     """Entrance slit component.
@@ -167,7 +172,18 @@ class Slit:
         fov_v (float, optional): vertical field of view in degrees. Defaults to None.
     """
 
-    def __init__(self, w_i=None, m=None, f=None, w_s=None, l_s=None, w_o=None, w_d=None, fov_h=None, fov_v=None):
+    def __init__(
+        self,
+        w_i=None,
+        m=None,
+        f=None,
+        w_s=None,
+        l_s=None,
+        w_o=None,
+        w_d=None,
+        fov_h=None,
+        fov_v=None,
+    ):
         self.w_i = w_i
         self.m = m
         self.f = f
@@ -187,8 +203,8 @@ class Slit:
         assert self.l_s is not None, "l_s is not set."
         assert self.f is not None, "f is not set."
 
-        fov_h = 2*np.arctan(np.divide(self.l_s, 2*self.f))
-        
+        fov_h = 2 * np.arctan(np.divide(self.l_s, 2 * self.f))
+
         return np.divide(np.multiply(fov_h, 180), np.pi)
 
     def get_vertical_field_of_view(self):
@@ -200,8 +216,8 @@ class Slit:
         assert self.w_s is not None, "w_s is not set."
         assert self.f is not None, "f is not set."
 
-        fov_v = 2*np.arctan(np.divide(self.w_s, 2*self.f))
-        
+        fov_v = 2 * np.arctan(np.divide(self.w_s, 2 * self.f))
+
         return np.divide(np.multiply(fov_v, 180), np.pi)
 
     def get_image_width(self):
@@ -214,10 +230,13 @@ class Slit:
         assert self.w_s is not None, "w_s is not set."
         assert self.w_o is not None, "w_o is not set."
 
-        w_i = np.sqrt(np.multiply(np.power(self.m, 2), np.power(self.w_s, 2)) + np.power(self.w_o, 2))
+        w_i = np.sqrt(
+            np.multiply(np.power(self.m, 2), np.power(self.w_s, 2))
+            + np.power(self.w_o, 2)
+        )
 
         return w_i
-    
+
     def get_slit_width(self):
         """Caculates the slit width.
 
@@ -230,6 +249,7 @@ class Slit:
         w_s = np.divide(self.w_d, self.m)
 
         return w_s
+
 
 class Foreoptics:
     """Foreoptics component.
@@ -257,7 +277,7 @@ class Foreoptics:
         na=None,
         b=None,
         g=None,
-        s=None
+        s=None,
     ):
         self.ds_i = ds_i
         self.ds_o = ds_o
@@ -280,7 +300,7 @@ class Foreoptics:
         if self.n is not None:
             dm_a = np.divide(self.ds_i, self.n)
         elif self.na is not None:
-            dm_a = 2*np.multiply(self.ds_i, self.na)
+            dm_a = 2 * np.multiply(self.ds_i, self.na)
         else:
             raise ValueError("n or na must be set.")
 
@@ -295,10 +315,10 @@ class Foreoptics:
         assert self.ds_i is not None, "ds_i is not set."
         assert self.ds_o is not None, "ds_o is not set."
 
-        m = np.divide(self.ds_i,self.ds_o)
+        m = np.divide(self.ds_i, self.ds_o)
 
         return m
-    
+
     def get_f_number(self):
         """Calculate the f number (f/#).
 
@@ -306,14 +326,14 @@ class Foreoptics:
             float: f/# (unitless).
         """
         if self.na is not None:
-            n = np.divide(1, 2*self.na)
+            n = np.divide(1, 2 * self.na)
         elif self.ds_i is not None and self.dm_a is not None:
             n = np.divide(self.ds_i, self.dm_a)
         else:
             raise ValueError("ds_i and dm_a or na must be set.")
 
         return n
-    
+
     def get_effective_focal_length(self):
         """Calculate the effective focal length.
 
@@ -326,7 +346,7 @@ class Foreoptics:
         efl = np.divide(self.ds_o + self.ds_i, np.multiply(self.ds_o, self.ds_i))
 
         return efl
-    
+
     def get_numerical_aperture(self):
         """Calculate the numerical aperture.
 
@@ -336,17 +356,17 @@ class Foreoptics:
 
         # region unit conversions
         a_in_max = np.radians(self.a_in_max)  # deg to rad
-        # endregion        
+        # endregion
 
         if a_in_max is not None:
             na = np.sin(a_in_max)
         elif self.n is not None:
-            na = np.divide(1, 2*self.n)
+            na = np.divide(1, 2 * self.n)
         else:
-            raise ValueError("a_in_max or n must be set.")       
+            raise ValueError("a_in_max or n must be set.")
 
         return na
-    
+
     def get_geometric_etendue(self):
         """Calculate the geometric etendue.
 
@@ -376,17 +396,17 @@ class Foreoptics:
         f = np.multiply(self.b, self.g)
 
         return f
-      
+
 
 class VPHGrism:
     """Volume-Phase Holographic grating grism component.
 
     Args:
-        d (float, optional): DCG thickness. Defaults to None.
+        d (float, optional): DCG thickness in micrometers. Defaults to None.
         t (float, optional): transmision ratio. Defaults to None.
         a_in (float, optional): incident ray angle in degrees. Defaults to None.
         a_out (float, optional): outgoing ray angle in degrees. Defaults to None.
-        R (float, optional): resolvance. Defaults to None.
+        R (float, optional): resolvance from wavelength and spectral resolution. Defaults to None.
         l (array_like[float], optional): wavelength in nm. Defaults to None.
         l_g (float, optional): undeviated wavelength in nm. Defaults to None.
         a (float, optional): apex angle. Defaults to None.
@@ -395,9 +415,13 @@ class VPHGrism:
         n_2 (float, optional): prism index of refraction. Defaults to None.
         n_3 (float, optional): grating substrate index of refraction.
             Defaults to None.
-        v (float, optional): fringe frequency. Defaults to None.
-        dl (float, optional): spectral resolution. Defaults to None.
+        v (float, optional): fringe frequency in lines/mm. Defaults to None.
+        dl (float, optional): spectral resolution in nm. Defaults to None.
         N (float, optional): Number of illumated fringes. Defaults to None.
+        w (float, optional): slit width in mm. Defaults to None.
+        n_g (float, optional): index modulation contrast. Defaults to None.
+        n_p (float, optional): diffraction efficiency. Defaults to None.
+        eff_mat (float, optional): efficiency of prism material. Defaults to None.
     """
 
     def __init__(
@@ -414,9 +438,13 @@ class VPHGrism:
         n_1=None,
         n_2=None,
         n_3=None,
+        n_g=None,
         v=None,
         dl=None,
         N=None,
+        w=None,
+        n_p=None,
+        eff_mat=None,
     ):
         self.d = d
         self.t = t
@@ -430,9 +458,13 @@ class VPHGrism:
         self.n_1 = n_1
         self.n_2 = n_2
         self.n_3 = n_3
+        self.n_g = n_g
         self.v = v
         self.dl = dl
         self.N = N
+        self.w = w
+        self.n_p = n_p
+        self.eff_mat = eff_mat
 
     def get_angle_out(self):
         """Calculates the outgoing angle from the grism.
@@ -482,8 +514,37 @@ class VPHGrism:
 
         return angle_out
 
+    def get_undeviated_wavelength(self):
+        """Calculates the grism undeviated wavelength.
+
+        Raises:
+            ValueError: if required parameters are not set.
+
+        Returns:
+            float: undeviated wavelength.
+        """
+        assert self.m is not None, "m is not set."
+        assert self.v is not None, "v is not set."
+        assert self.a is not None, "a is not set."
+        assert self.a_in is not None, "a_in is not set."
+        assert self.n_1 is not None, "n_1 is not set"
+        assert self.n_2 is not None, "n_2 is not set"
+        assert self.n_3 is not None, "n_3 is not set"
+        # unit conversions
+        a_in = np.radians(self.a_in)  # deg to rad
+        a = np.radians(self.a)
+        v = self.v * 10 ** -6  # lines/mm to lines/nm
+
+        angle_1 = a_in + a
+        angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=self.n_1, n_2=self.n_2)
+        angle_3 = a - angle_2
+        angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=self.n_2, n_2=self.n_3)
+        angle_5 = angle_4
+        l_g = 2 * (np.sin(angle_5) / (self.m * v))
+        return l_g  # in nm
+
     def get_resolvance(self):
-        """Caculates the grism resolvance.
+        """Calculates the grism resolvance.
 
         Raises:
             ValueError: if required parameters are not set.
@@ -491,17 +552,24 @@ class VPHGrism:
         Returns:
             float: resolvance.
         """
+        # vectorization
+
+        # unit conversions
+
         if self.l is not None and self.dl is not None:
-            R = self.l / self.dl
+            R = (self.l) / (self.dl)  # both in nm
         elif self.m is not None and self.N is not None:
             R = self.m * self.N
+        elif self.m is not None and self.v is not None and self.w is not None:
+            R = (
+                self.m * (self.v * (1 / (10 ** -3))) * (self.w * 10 ** -3)
+            )  # v -> lines/mm to lines/m. w -> mm to m
         else:
-            raise ValueError("l and dl or m and N must be set.")
-
+            raise ValueError("l and dl or m and N or m and n and w must be set.")
         return R
 
     def get_resolution(self):
-        """Caclulates the grism optically-limited spectral resolution.
+        """Calculates the grism optically-limited spectral resolution.
 
         Raises:
             ValueError: if required parameters are not set.
@@ -509,14 +577,86 @@ class VPHGrism:
         Returns:
             float: resolution in nm.
         """
-        if self.l is not None and self.R is not None:
-            dl = self.l / self.R
-        elif self.l is not None and self.m is not None and self.N is not None:
-            dl = self.l / (self.m * self.N)
-        else:
-            raise ValueError("l and R or l and m and N must be set.")
 
-        return dl
+        # vectorization
+
+        # unit conversion
+
+        if self.l is not None and self.R is not None:
+            dl = (self.l) / self.R  # no unit conversion so dl is in nm
+        elif self.l is not None and self.m is not None and self.N is not None:
+            dl = (self.l) / (self.m * self.N)  # no unit conversion so dl is in nm
+        elif (
+            self.l is not None
+            and self.m is not None
+            and self.v is not None
+            and self.w is not None
+        ):
+            dl = (self.l) / (
+                self.m * (self.v * 10 ** -6) * self.w * 10 ** 6
+            )  #### mm to nm
+        else:
+            raise ValueError(
+                "l and R or l and m and N or l and m and n and w must be set."
+            )
+
+        return dl  # in nm
+
+    def get_diffraction_efficiency(self):
+        """Calculates the grism diffraction_efficiency.
+
+        Raises:
+            ValueError: if required parameters are not set.
+
+        Returns:
+            float: diffraction efficiency.
+        """
+
+        assert self.a_in is not None, "a_in is not set."
+        assert self.a is not None, "a is not set."
+        assert self.d is not None, "d is not set."
+        assert self.l is not None, "l is not set."
+        assert self.v is not None, "v is not set."
+        assert self.n_g is not None, "n_g is not set"
+        assert self.n_1 is not None, "n_1 is not set"
+        assert self.n_2 is not None, "n_2 is not set"
+        assert self.n_3 is not None, "n_3 is not set"
+        assert self.eff_mat is not None, "prism material efficiency is not set"
+
+        # vectorization
+
+        # unit conversion
+        a_in = np.radians(self.a_in)
+        a = np.radians(self.a)
+        l = self.l  # nm
+        v = self.v * 10 ** -6  # lines/mm to lines/nm
+        d = self.d * 10 ** 3  # microns to nm
+
+        angle_1 = a_in + a
+        angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=self.n_1, n_2=self.n_2)
+        angle_3 = a - angle_2
+        angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=self.n_2, n_2=self.n_3)
+        angle_5 = angle_4
+        L = 1 / v  # nm/lines
+
+        Q = (l ** 2) / (self.n_g * self.n_3 * L ** 2)
+        if np.any(Q < 10):
+            raise ValueError(
+                "Q requirement not met, diffraction efficiency formula not valid"
+            )
+        # diffraction efficiency
+        n_p = (np.sin((math.pi * self.n_g * d) / (l * np.cos(angle_5))) ** 2) + (
+            (1 / 2)
+            * (
+                np.sin(
+                    ((math.pi * self.n_g * d) * np.cos(2 * angle_5))
+                    / (l * np.cos(angle_5))
+                )
+            )
+            ** 2
+        )  # angle_5 being close to bragg angle = more efficiency
+        n_p = n_p * self.eff_mat * self.eff_mat
+        return n_p
 
 
 class ThinLens:
@@ -666,7 +806,7 @@ class ThinLens:
 
         else:
             raise ValueError("d_i or d_o or h_i and a_in or h_o and a_out must be set.")
-            
+
         return f
 
 
@@ -732,8 +872,9 @@ class AchromDoublet:
             f_eq = -f_2 * self.V_2 / (self.V_1 - self.V_2)
         else:
             raise ValueError("f_1 or f_2 must be set.")
-         
+
         return f_eq
+
 
 class SRGrating:
     """Surface-Relief Diffraction Grating component.
@@ -785,8 +926,8 @@ class SRGrating:
         # endregion
 
         # region unit conversions
-        G = G * 10 ** 3 # 1/mm to 1/m
-        lmda = lmda * 10 ** (-9) # nm to m
+        G = G * 10 ** 3  # 1/mm to 1/m
+        lmda = lmda * 10 ** (-9)  # nm to m
         alpha = np.radians(alpha)  # deg to rad
         # endregion
 
@@ -812,10 +953,10 @@ class SRGrating:
 
         # region unit conversions
         alpha = np.radians(alpha)  # deg to rad
-        lmda = lmda * 10 ** (-9) # nm to m
+        lmda = lmda * 10 ** (-9)  # nm to m
         # endregion
 
-        D = (np.sin(alpha) + np.sin(beta))/(lmda * np.cos(beta))
+        D = (np.sin(alpha) + np.sin(beta)) / (lmda * np.cos(beta))
 
         return D
 
@@ -840,8 +981,8 @@ class SRGrating:
         # region unit conversions
         alpha = np.radians(alpha)  # deg to rad
         beta = np.radians(beta)  # deg to rad
-        lmda = lmda * 10 ** (-9) # nm to m
-        W = W * 10 ** (-9) # nm to m
+        lmda = lmda * 10 ** (-9)  # nm to m
+        W = W * 10 ** (-9)  # nm to m
         # endregion
 
         R = W * (np.sin(alpha) + np.sin(beta)) / lmda
@@ -866,9 +1007,10 @@ class SRGrating:
         alpha = np.radians(alpha)  # deg to rad
         # endregion
 
-        b_to_a = np.cos(beta)/np.cos(alpha)
+        b_to_a = np.cos(beta) / np.cos(alpha)
 
         return b_to_a
+
 
 class VPHGrating:
     """Volume-Phase Holographic grating component.
@@ -898,7 +1040,7 @@ class VPHGrating:
         m=None,
         delta_n2=None,
         d=None,
-        phi=None
+        phi=None,
     ):
 
         self.a_0 = a_0
@@ -919,8 +1061,8 @@ class VPHGrating:
         Returns:
             float: diffracted angle in radians.
         """
-        assert self.a_0  is not None, "a_0 is not set."
-        assert self.n_0  is not None, "a_0 is not set."
+        assert self.a_0 is not None, "a_0 is not set."
+        assert self.n_0 is not None, "a_0 is not set."
         assert self.Lmda is not None, "Lmda is not set."
         assert self.lmda is not None, "lmda is not set."
         assert self.m is not None, "m is not set."
@@ -937,18 +1079,18 @@ class VPHGrating:
 
         # region unit conversions
         a_0 = np.radians(a_0)  # deg to rad
-        Lmda = Lmda * 10 ** (-3) # mm to m
-        lmda = lmda * 10 ** (-9) # nm to m
+        Lmda = Lmda * 10 ** (-3)  # mm to m
+        lmda = lmda * 10 ** (-9)  # nm to m
         # endregion
 
         Lmda_g = Lmda / np.cos(phi)
-        b_0 = np.arcsin( (m*lmda)/(n_0*Lmda_g) - np.sin(a_0) )
+        b_0 = np.arcsin((m * lmda) / (n_0 * Lmda_g) - np.sin(a_0))
 
         return b_0
 
     def get_Kogelnik_efficiency(self):
         """Calculates the Kogelnik efficiency for unpolarized light.
-        
+
         Returns:
             float: Kogelnik efficiency.
         """
@@ -969,19 +1111,24 @@ class VPHGrating:
         # endregion
 
         # region unit conversions
-        d = d * 10 ** (-3) # mm to m
-        lmda = lmda * 10 ** (-9) # nm to m
-        Lmda = Lmda * 10 ** (-3) # mm to m
+        d = d * 10 ** (-3)  # mm to m
+        lmda = lmda * 10 ** (-9)  # nm to m
+        Lmda = Lmda * 10 ** (-3)  # mm to m
         # endregion
-        
-        a_2b = np.arcsin((m * lmda)/(2 * n_2 * Lmda))
-        mu_s = np.sin((np.pi * delta_n2 * d)/(lmda * np.cos(a_2b)))**2 + 0.5 * np.sin((np.pi * delta_n2 * d * np.cos(2*a_2b))/(lmda * np.cos(a_2b)))**2
+
+        a_2b = np.arcsin((m * lmda) / (2 * n_2 * Lmda))
+        mu_s = (
+            np.sin((np.pi * delta_n2 * d) / (lmda * np.cos(a_2b))) ** 2
+            + 0.5
+            * np.sin((np.pi * delta_n2 * d * np.cos(2 * a_2b)) / (lmda * np.cos(a_2b)))
+            ** 2
+        )
 
         return mu_s
 
     def get_efficiency_bandwidth(self):
         """Calculates the Kogelnik efficiency for unpolarized light.
-        
+
         Returns:
             float: Kogelnik efficiency.
         """
@@ -1000,11 +1147,11 @@ class VPHGrating:
         # endregion
 
         # region unit conversions
-        d = d * 10 ** (-3) # mm to m
-        lmda = lmda * 10 ** (-9) # nm to m
-        Lmda = Lmda * 10 ** (-3) # mm to m
+        d = d * 10 ** (-3)  # mm to m
+        lmda = lmda * 10 ** (-9)  # nm to m
+        Lmda = Lmda * 10 ** (-3)  # mm to m
         # endregion
-        
-        a_2b = np.arcsin((m * lmda)/(2 * n_2 * Lmda))
-        lmda_eff = (Lmda * lmda)/(d * np.tan(a_2b))
+
+        a_2b = np.arcsin((m * lmda) / (2 * n_2 * Lmda))
+        lmda_eff = (Lmda * lmda) / (d * np.tan(a_2b))
         return lmda_eff
