@@ -1,4 +1,4 @@
-"""Estimates the image height on the focal plane given grism and collimator components
+"""Estimates the image height on the focal plane given grism and collimator component
 parameters."""
 
 # project
