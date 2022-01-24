@@ -869,3 +869,142 @@ class SRGrating:
         b_to_a = np.cos(beta)/np.cos(alpha)
 
         return b_to_a
+
+class VPHGrating:
+    """Volume-Phase Holographic grating component.
+
+    Args:
+        a_0 (float, optional): incident ray angle in degrees. Defaults to None.
+        n_0 (float, optional): external index of refraction. Defaults to None.
+        n_1 (float, optional): glass substrate index of refraction. Defaults to None.
+        n_2 (float, optional): DCG layer index of refraction.
+        Lmda (float, optional): separation between the fringes of the DCG layer. Defaults to None.
+        phi (float, optional): slant angle between the grating normal and the plane of the fringes
+        lmda (float, optional): wavelength of incident light. Defaults to None.
+        m (integer, optional): diffraction order. Defaults to None.
+        delta_n2 (float, optional): semiamplitude of the refractive-index modulation. Defaults to None.
+        d (float, optional): grating thickness. Defaults to None.
+
+    """
+
+    def __init__(
+        self,
+        a_0=None,
+        n_0=None,
+        n_1=None,
+        n_2=None,
+        Lmda=None,
+        lmda=None,
+        m=None,
+        delta_n2=None,
+        d=None,
+        phi=None
+    ):
+
+        self.a_0 = a_0
+        self.n_0 = n_0
+        self.n_1 = n_1
+        self.n_2 = n_2
+        self.Lmda = Lmda
+        self.lmda = lmda
+        self.m = m
+        self.delta_n2 = delta_n2
+        self.d = d
+        self.phi = phi
+
+    def get_angle_out(self):
+
+        """Calculates the angle of the diffracted light exiting the diffraction grating.
+
+        Returns:
+            float: diffracted angle in radians.
+        """
+        assert self.a_0  is not None, "a_0 is not set."
+        assert self.n_0  is not None, "a_0 is not set."
+        assert self.Lmda is not None, "Lmda is not set."
+        assert self.lmda is not None, "lmda is not set."
+        assert self.m is not None, "m is not set."
+        assert self.phi is not None, "phi is not set."
+
+        # region vectorization
+        a_0 = np.array(self.a_0).reshape(-1, 1)
+        n_0 = np.array(self.n_0).reshape(-1, 1)
+        Lmda = np.array(self.Lmda).reshape(-1, 1)
+        lmda = np.array(self.lmda).reshape(-1, 1)
+        m = np.array(self.m).reshape(-1, 1)
+        phi = np.array(self.phi).reshape(-1, 1)
+        # endregion
+
+        # region unit conversions
+        a_0 = np.radians(a_0)  # deg to rad
+        Lmda = Lmda * 10 ** (-3) # mm to m
+        lmda = lmda * 10 ** (-9) # nm to m
+        # endregion
+
+        Lmda_g = Lmda / np.cos(phi)
+        b_0 = np.arcsin( (m*lmda)/(n_0*Lmda_g) - np.sin(a_0) )
+
+        return b_0
+
+    def get_Kogelnik_efficiency(self):
+        """Calculates the Kogelnik efficiency for unpolarized light.
+        
+        Returns:
+            float: Kogelnik efficiency.
+        """
+        assert self.delta_n2 is not None, "delta_n2 is not set."
+        assert self.n_2 is not None, "a_2 is not set."
+        assert self.d is not None, "d is not set."
+        assert self.lmda is not None, "lmda is not set."
+        assert self.Lmda is not None, "lmda is not set."
+        assert self.m is not None, "m is not set."
+
+        # region vectorization
+        delta_n2 = np.array(self.m).reshape(-1, 1)
+        n_2 = np.array(self.n_2).reshape(-1, 1)
+        d = np.array(self.d).reshape(-1, 1)
+        lmda = np.array(self.lmda).reshape(-1, 1)
+        Lmda = np.array(self.lmda).reshape(-1, 1)
+        m = np.array(self.m).reshape(-1, 1)
+        # endregion
+
+        # region unit conversions
+        d = d * 10 ** (-3) # mm to m
+        lmda = lmda * 10 ** (-9) # nm to m
+        Lmda = Lmda * 10 ** (-3) # mm to m
+        # endregion
+        
+        a_2b = np.arcsin((m * lmda)/(2 * n_2 * Lmda))
+        mu_s = np.sin((np.pi * delta_n2 * d)/(lmda * np.cos(a_2b)))**2 + 0.5 * np.sin((np.pi * delta_n2 * d * np.cos(2*a_2b))/(lmda * np.cos(a_2b)))**2
+
+        return mu_s
+
+    def get_efficiency_bandwidth(self):
+        """Calculates the Kogelnik efficiency for unpolarized light.
+        
+        Returns:
+            float: Kogelnik efficiency.
+        """
+        assert self.n_2 is not None, "a_2 is not set."
+        assert self.d is not None, "d is not set."
+        assert self.lmda is not None, "lmda is not set."
+        assert self.Lmda is not None, "lmda is not set."
+        assert self.m is not None, "m is not set."
+
+        # region vectorization
+        n_2 = np.array(self.n_2).reshape(-1, 1)
+        d = np.array(self.d).reshape(-1, 1)
+        lmda = np.array(self.lmda).reshape(-1, 1)
+        Lmda = np.array(self.lmda).reshape(-1, 1)
+        m = np.array(self.m).reshape(-1, 1)
+        # endregion
+
+        # region unit conversions
+        d = d * 10 ** (-3) # mm to m
+        lmda = lmda * 10 ** (-9) # nm to m
+        Lmda = Lmda * 10 ** (-3) # mm to m
+        # endregion
+        
+        a_2b = np.arcsin((m * lmda)/(2 * n_2 * Lmda))
+        lmda_eff = (Lmda * lmda)/(d * np.tan(a_2b))
+        return lmda_eff
