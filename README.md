@@ -102,12 +102,13 @@ This repo is configured to use [pre-commit](https://pre-commit.com/) hooks. The 
 
 1. [Isort](https://pycqa.github.io/isort/): Sorts imports, so you don't have to.
 1. [Black](https://black.readthedocs.io/en/stable/): The uncompromising code autoformatter.
+1. [Docformatter](https://github.com/myint/docformatter): A docstring autoformatter.
 1. [Pylint](https://github.com/pycqa/pylint): It's not just a linter that annoys you!
 
 Pre-commit will run the hooks on commit, but when a hook fails, they can be run manually to delint using:
 
 ```
-isort . & black . & pylint_runner
+pre-commit run --all-files
 ```
 
 ### Branches
@@ -127,7 +128,7 @@ You can create a new task (issue) as follows:
 ## Taking on Tickets
 1. Select your issue (either on Projects board or through the "Issues" tab)
 1. Change the status of the issue to "In Progress" (either slide the card to the "In Progress" column in the Projects board, or change the status on the issue's page)
-1. Create a new branch of the form `features/<feature-name>`, do some ✨ m a g i c ✨, and create a Pull Request (**make sure you assign our Project board to the PR**)
+1. Create a new branch of the form `feature/<feature-name>`, do some ✨ m a g i c ✨, and create a Pull Request (**make sure you assign our Project board to the PR**)
 1. Request a teammate for code review, and link your PR to its respective issue
 1. If all goes well, merge it in!
 

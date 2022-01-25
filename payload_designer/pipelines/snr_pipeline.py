@@ -64,3 +64,5 @@ if __name__ == "__main__":
     # endregion
 
     fig = plotlib.line(x=L, y=snr)
+
+ 
