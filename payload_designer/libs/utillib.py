@@ -5,11 +5,12 @@ import numpy as np
 
 
 class LUT:
-    """A lookup table implementation. Initialized from a csv file containing x data
-        in the first column, f(x) data in the second column.
+    """A lookup table implementation. Initialized from a csv file containing x
+    data in the first column, f(x) data in the second column.
 
     Args:
         data_path (path-like): The path to the CSV data file containing LUT data.
+
     """
 
     def __init__(self, data_path):
@@ -25,5 +26,6 @@ class LUT:
 
         Returns:
             array-like: The interpolated y values.
+
         """
         return np.interp(x=x, xp=self.x, fp=self.y)

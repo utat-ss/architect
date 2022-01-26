@@ -1,7 +1,6 @@
 """Tests for SRGrating component."""
 # stdlib
 import logging
-import math
 
 # external
 import pytest

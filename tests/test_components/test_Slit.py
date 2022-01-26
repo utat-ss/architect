@@ -1,7 +1,6 @@
 """Tests for Slit component."""
 # stdlib
 import logging
-import math
 
 # external
 import numpy as np

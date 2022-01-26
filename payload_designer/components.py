@@ -18,38 +18,41 @@ class Foreoptic:
     """Foreoptics component.
 
     Args:
+        a_in_max (float, optional): maximum angle of incidence in degrees. Defaults to None.
+        b (float, optional): source radiance. Defaults to None.
+        dm_a (float, optional): aperture diameter. Defaults to None.
         ds_i (float, optional): image distance. Defaults to None.
         ds_o (float, optional): object distance. Defaults to None.
-        n (float, optional): f-number. Defaults to None.
-        dm_a (float, optional): aperture diameter. Defaults to None.
-        a_in_max (float, optional): maximum angle of incidence in degrees. Defaults to None.
-        na (float, optional): numerical aperture. Defaults to None.
-        b (float, optional): source radiance. Defaults to None.
+        eta (path-like, optional): path to tranmsittance LUT. Defaults to None.
         g (float, optional): geometric etendue. Defaults to None.
+        n (float, optional): f-number. Defaults to None.
+        na (float, optional): numerical aperture. Defaults to None.
         s (float, optional): area of emitting source. Defaults to None.
 
     """
 
     def __init__(
         self,
+        a_in_max=None,
+        b=None,
+        dm_a=None,
         ds_i=None,
         ds_o=None,
-        n=None,
-        dm_a=None,
-        a_in_max=None,
-        na=None,
-        b=None,
+        eta=None,
         g=None,
+        n=None,
+        na=None,
         s=None,
     ):
+        self.a_in_max = a_in_max
+        self.b = b
+        self.dm_a = dm_a
         self.ds_i = ds_i
         self.ds_o = ds_o
-        self.n = n
-        self.dm_a = dm_a
-        self.a_in_max = a_in_max
-        self.na = na
-        self.b = b
+        self.eta = utillib.LUT(eta)
         self.g = g
+        self.n = n
+        self.na = na
         self.s = s
 
     def get_aperture_diameter(self):
@@ -584,27 +587,30 @@ class AchromLens:
     """Achromatic doublet component.
 
     Args:
+        V_1 (float, optional): Abbe number for first element. Defaults to None.
+        V_2 (float, optional): Abbe number for second element. Defaults to None.
+        eta (path-like, optional) path to transmittace LUT. Defaults to None.
         f_1 (float, optional): Focal length of first element (mm). Defaults to None.
         f_2 (float, optional): Focal length of second element (mm). Defaults to None.
         f_eq (float, optional): Effective focal length of system (mm). Defaults to None.
-        V_1 (float, optional): Abbe number for first element. Defaults to None.
-        V_2 (float, optional): Abbe number for second element. Defaults to None.
 
     """
 
     def __init__(
         self,
+        V_1=None,
+        V_2=None,
+        eta=None,
         f_1=None,
         f_2=None,
         f_eq=None,
-        V_1=None,
-        V_2=None,
     ):
+        self.V_1 = V_1
+        self.V_2 = V_2
+        self.eta = utillib.LUT(eta)
         self.f_1 = f_1
         self.f_2 = f_2
         self.f_eq = f_eq
-        self.V_1 = V_1
-        self.V_2 = V_2
 
     def focal_length_1(self):
         assert self.V_1 is not None, "V_1 is not set."
@@ -942,70 +948,72 @@ class VPHGrism:
     """Volume-Phase Holographic grating grism component.
 
     Args:
-        d (float, optional): DCG thickness in micrometers. Defaults to None.
-        t (float, optional): transmision ratio. Defaults to None.
+        N (float, optional): Number of illumated fringes. Defaults to None.
+        R (float, optional): resolvance from wavelength and spectral resolution. Defaults to None.
+        a (float, optional): apex angle. Defaults to None.
         a_in (float, optional): incident ray angle in degrees. Defaults to None.
         a_out (float, optional): outgoing ray angle in degrees. Defaults to None.
-        R (float, optional): resolvance from wavelength and spectral resolution. Defaults to None.
+        d (float, optional): DCG thickness in micrometers. Defaults to None.
+        dl (float, optional): spectral resolution in nm. Defaults to None.
+        eff_mat (float, optional): efficiency of prism material. Defaults to None.
+        eta (path-like, optional): path to transmittance LUT. Defaults to None.
         l (array_like[float], optional): wavelength in nm. Defaults to None.
         l_g (float, optional): undeviated wavelength in nm. Defaults to None.
-        a (float, optional): apex angle. Defaults to None.
         m (int, optional): diffraction order. Defaults to None.
         n_1 (float, optional): external index of refraction. Defaults to None.
         n_2 (float, optional): prism index of refraction. Defaults to None.
-        n_3 (float, optional): grating substrate index of refraction.
-            Defaults to None.
-        v (float, optional): fringe frequency in lines/mm. Defaults to None.
-        dl (float, optional): spectral resolution in nm. Defaults to None.
-        N (float, optional): Number of illumated fringes. Defaults to None.
-        w (float, optional): slit width in mm. Defaults to None.
+        n_3 (float, optional): grating substrate index of refraction. Defaults to None.
         n_g (float, optional): index modulation contrast. Defaults to None.
         n_p (float, optional): diffraction efficiency. Defaults to None.
-        eff_mat (float, optional): efficiency of prism material. Defaults to None.
+        t (float, optional): transmision ratio. Defaults to None.
+        v (float, optional): fringe frequency in lines/mm. Defaults to None.
+        w (float, optional): slit width in mm. Defaults to None.
 
     """
 
     def __init__(
         self,
-        d=None,
-        t=None,
+        N=None,
+        R=None,
+        a=None,
         a_in=None,
         a_out=None,
-        R=None,
+        d=None,
+        dl=None,
+        eff_mat=None,
+        eta=None,
         l=None,
         l_g=None,
-        a=None,
         m=None,
         n_1=None,
         n_2=None,
         n_3=None,
         n_g=None,
-        v=None,
-        dl=None,
-        N=None,
-        w=None,
         n_p=None,
-        eff_mat=None,
+        t=None,
+        v=None,
+        w=None,
     ):
-        self.d = d
-        self.t = t
+        self.N = N
+        self.R = R
+        self.a = a
         self.a_in = a_in
         self.a_out = a_out
-        self.R = R
+        self.d = d
+        self.dl = dl
+        self.eff_mat = eff_mat
+        self.eta = utillib.LUT(eta)
         self.l = l
         self.l_g = l_g
-        self.a = a
         self.m = m
         self.n_1 = n_1
         self.n_2 = n_2
         self.n_3 = n_3
         self.n_g = n_g
-        self.v = v
-        self.dl = dl
-        self.N = N
-        self.w = w
         self.n_p = n_p
-        self.eff_mat = eff_mat
+        self.t = t
+        self.v = v
+        self.w = w
 
     def get_angle_out(self):
         """Calculates the outgoing angle from the grism.
@@ -1209,84 +1217,111 @@ class Sensor:
     """Sensor component model.
 
     Args:
-        px_x (array_like[int], optional): Pixel count in cross-track direction.
-            Defaults to None.
-        px_y (array_like[int], optional): Pixel count in along-track direction.
-            Defaults to None.
-        p (array_like[float], optional): Pixel pitch in micrometers.
-            Defaults to None.
-        t_int (array_like[float], optional): Integration time in seconds.
-            Defaults to None.
-        d_well (array_like[int], optional): Well depth in electrons/pixel.
-            Defaults to None.
-        r_dyn (array_like[int], optional): Dynamic range in bits. Defaults to None.
-        i_dark (array_like[int], optional): Dark current in electrons/pixel/second.
-            Defaults to None.
-        n_read (array_like[int], optional): Readout noise in electrons/pixel.
-            Defaults to None.
-        qe (path-like, optional): path to quantum efficiency LUT. Defaults to None.
+        M (float, optional): Mass [g]. Defaults to None.
+        V (tuple[float, float, float], optional): Volume envelope in x,y,z [mm]. Defaults to None.
+        dt (float, optional): Integration time [ms]. Defaults to None.
+        eta_sensor (path-like, optional): path to quantum efficiency LUT. Defaults to None.
+        i_dark (int, optional): Dark current [ke-/px/s]. Defaults to None.
+        n_bin (int, optional): Number of binning operations performed on image aquisition. Defaults to None.
+        n_bit (int, optional): Sensor bit depth. Defaults to None.
+        n_well (int, optional): Well depth [e-/px]. Defaults to None.
+        p (float, optional): Pixel pitch [µm]. Defaults to None.
+        px_x (int, optional): Pixel count in cross-track direction [px]. Defaults to None.
+        px_y (int, optional): Pixel count in along-track direction [px]. Defaults to None.
+        sigma_read (int, optional): Readout noise [e-/px]. Defaults to None.
 
     """
 
     def __init__(
         self,
+        M=None,
+        V=None,
         dt=None,
+        eta_sensor=None,
         i_dark=None,
+        n_bin=None,
         n_bit=None,
-        n_read=None,
         n_well=None,
         p=None,
         px_x=None,
         px_y=None,
-        qe=None,
+        sigma_read=None,
     ):
+        self.M = M
+        self.V = V
         self.dt = dt
+        self.eta_sensor = utillib.LUT(eta_sensor)
         self.i_dark = i_dark
+        self.n_bin = n_bin
         self.n_bit = n_bit
-        self.n_read = n_read
         self.n_well = n_well
         self.p = p
         self.px_x = px_x
         self.px_y = px_y
-        self.qe = utillib.LUT(qe)
+        self.sigma_read = sigma_read
 
-    def get_sensor_detector_area(self):
-        A_d = self.p * self.p
-        return A_d
-
-    def get_sensor_area(self):
-        A_s = self.get_sensor_detector_area() * self.px_x * self.px_y
-        return A_s
-
-    def get_snr(self, R, T, f_n):
+    def get_snr(self, L_target, eta_optics, f_n, lmbda):
         """Calculates the signal to noise ratio from the sensor and system
         parameters.
 
         Args:
-            L (path-like): path to atmospheric radiance LUT.
-            T (array-like[float]): transmittance of the optical system by wavelength.
+            L_target (path-like): path to atmospheric radiance LUT.
+            eta_optics (array-like[float]): transmittance of the optical system by wavelength.
             f_n (float): f-number of optical system.
+            lmbda (array-like[float]): wavelengths at which to evaluate SNR [nm].
 
         Returns:
-            [type]: [description]
+            array-like[float]: SNR by wavelength.
 
         """
+        assert self.n_bin is not None, "n_bin is not set."
+        assert self.dt is not None, "dt is not set."
+        assert self.eta_sensor is not None, "eta_sensor is not set."
+        assert self.i_dark is not None, "i_dark is not set."
+        assert self.n_bit is not None, "n_bit is not set."
+        assert self.n_well is not None, "n_well is not set."
+        assert self.p is not None, "p is not set."
+        assert self.sigma_read is not None, "sigma_read is not set."
 
-        R = utillib.LUT(R)
-        A_d = self.get_sensor_detector_area()
-        T
-
-        sc.h
-        sc.c
+        # region unit conversions
+        L_target = utillib.LUT(L_target)
+        dt = self.dt * 10 ** -3  # ms to s
+        i_dark = self.i_dark * 10 ** 3  # ke-/px/s to e-/px/s
+        p = self.p * 10 ** -6  # µm to m
+        n_well = self.n_well * 10 ** 3  # ke- to e-
+        # endregion
 
         # region signal
-        signal = 1
+        A_d = p ** 2
+
+        s_target = (
+            (sc.pi / 4)
+            * (lmbda / sc.h * sc.c)
+            * (A_d / f_n ** 2)
+            * self.eta_sensor(lmbda)
+            * eta_optics
+            * L_target(lmbda)
+            * dt
+        )
+        LOG.debug(f"Signal: {s_target}")
         # endregion
 
         # region noise
-        noise = np.sqrt()
+        sigma_dark = i_dark * dt
+        LOG.debug(f"Dark noise: {sigma_dark} [e-/px]")
+
+        sigma_quantization = (1 / math.sqrt(12)) * self.n_well / self.n_bit
+        LOG.debug(f"Quantization noise: {sigma_quantization} [e-/px]")
+
+        noise = np.sqrt(
+            s_target
+            + self.n_bin * sigma_dark ** 2
+            + sigma_quantization ** 2
+            + self.n_bin * self.sigma_read ** 2
+        )
+        LOG.debug(f"Noise: {noise}")
         # endregion
 
-        snr = signal / noise
+        snr = s_target / noise
 
-        return snr
+        return snr, s_target, noise
