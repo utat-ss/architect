@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 # project
-from payload_designer import components
+from payload_designer.componentss import slits
 
 LOG = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ def test_get_horizontal_field_of_view():
     f = 70
 
     # component instantiation
-    slit = components.Slit(l_s=l_s, f=f)
+    slit = slits.Slit(l_s=l_s, f=f)
 
     # evaluation
     fov = slit.get_horizontal_field_of_view()
@@ -37,7 +37,7 @@ def test_get_vertical_field_of_view():
     f = 70
 
     # component instantiation
-    slit = components.Slit(w_s=w_s, f=f)
+    slit = slits.Slit(w_s=w_s, f=f)
 
     # evaluation
     fov = slit.get_vertical_field_of_view()
@@ -55,7 +55,7 @@ def test_get_image_width():
     w_o = 0.05
 
     # component instantiation
-    slit = components.Slit(m=m, w_s=w_s, w_o=w_o)
+    slit = slits.Slit(m=m, w_s=w_s, w_o=w_o)
 
     # evaluation
     w = slit.get_image_width()
@@ -72,7 +72,7 @@ def test_get_slit_width():
     m = 1
 
     # component instantiation
-    slit = components.Slit(w_d=w_d, m=m)
+    slit = slits.Slit(w_d=w_d, m=m)
 
     # evaluation
     w = slit.get_slit_width()

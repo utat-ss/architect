@@ -6,7 +6,7 @@ import logging
 import pytest
 
 # project
-from payload_designer import components
+from payload_designer.componentss import diffractors
 
 LOG = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ def test_get_angle_out():
     m = 1
 
     # component instantiation
-    SR = components.SRGrating(alpha=alpha, G=G, lmda=lmda, m=m)
+    SR = diffractors.SRGrating(alpha=alpha, G=G, lmda=lmda, m=m)
 
     # evaluation
     beta = SR.get_angle_out()
@@ -40,9 +40,9 @@ def test_get_angular_dispersion():
     m = 1
 
     # component instantiation
-    SR = components.SRGrating(alpha=alpha, G=G, lmda=lmda, m=m)
+    SR = diffractors.SRGrating(alpha=alpha, G=G, lmda=lmda, m=m)
     beta = SR.get_angle_out()
-    SR = components.SRGrating(alpha=alpha, beta=beta, lmda=lmda)
+    SR = diffractors.SRGrating(alpha=alpha, beta=beta, lmda=lmda)
 
     # evaluation
     ang_disp = SR.get_angular_dispersion()
@@ -62,9 +62,9 @@ def test_get_resolving_power():
     W = 300
 
     # component instantiation
-    SR = components.SRGrating(alpha=alpha, G=G, lmda=lmda, m=m)
+    SR = diffractors.SRGrating(alpha=alpha, G=G, lmda=lmda, m=m)
     beta = SR.get_angle_out()
-    SR = components.SRGrating(alpha=alpha, beta=beta, lmda=lmda, W=W)
+    SR = diffractors.SRGrating(alpha=alpha, beta=beta, lmda=lmda, W=W)
 
     # evaluation
     R = SR.get_resolving_power()
@@ -83,9 +83,9 @@ def test_get_anamorphic_amplification():
     m = 1
 
     # component instantiation
-    SR = components.SRGrating(alpha=alpha, G=G, lmda=lmda, m=m)
+    SR = diffractors.SRGrating(alpha=alpha, G=G, lmda=lmda, m=m)
     beta = SR.get_angle_out()
-    SR = components.SRGrating(alpha=alpha, beta=beta)
+    SR = diffractors.SRGrating(alpha=alpha, beta=beta)
 
     # evaluation
     ratio = SR.get_anamorphic_amplification()

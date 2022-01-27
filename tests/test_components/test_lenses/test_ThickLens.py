@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 # project
-from payload_designer import components
+from payload_designer.componentss import lenses
 
 LOG = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ def test_get_focal_length():
     d = 1
 
     # component instantiation
-    thicklens = components.ThickLens(n=n, R1=R1, R2=R2, d=d)
+    thicklens = lenses.ThickLens(n=n, R1=R1, R2=R2, d=d)
 
     # evaluation
     h = thicklens.get_focal_length()
@@ -42,7 +42,7 @@ def test_get_principal_planes():
     f_thick = 4800 / 179
 
     # component instantiation
-    thicklens = components.ThickLens(n=n, R1=R1, R2=R2, d=d, f_thick=f_thick)
+    thicklens = lenses.ThickLens(n=n, R1=R1, R2=R2, d=d, f_thick=f_thick)
 
     # evaluation
     h = thicklens.get_principal_planes()
@@ -60,7 +60,7 @@ def test_get_focuser_image_distance():
     f_thick = 4800 / 179
 
     # component instantiation
-    thicklens = components.ThickLens(f_thick=f_thick)
+    thicklens = lenses.ThickLens(f_thick=f_thick)
 
     # evaluation
     h = thicklens.get_focuser_image_distance()
@@ -76,7 +76,7 @@ def test_get_collimator_object_distance():
     f_thick = 4800 / 179
 
     # component instantiation
-    thicklens = components.ThickLens(f_thick=f_thick)
+    thicklens = lenses.ThickLens(f_thick=f_thick)
 
     # evaluation
     h = thicklens.get_collimator_object_distance()
@@ -93,7 +93,7 @@ def test_get_focuser_image_height():
     a1 = 30
 
     # component instantiation
-    thicklens = components.ThickLens(f_thick=f_thick, a1=a1)
+    thicklens = lenses.ThickLens(f_thick=f_thick, a1=a1)
 
     # evaluation
     h = thicklens.get_focuser_image_height()
@@ -110,7 +110,7 @@ def test_get_collimator_emergent_ray_angle():
     f_thick = 4800 / 179
 
     # component instantiation
-    thicklens = components.ThickLens(x1=x1, f_thick=f_thick)
+    thicklens = lenses.ThickLens(x1=x1, f_thick=f_thick)
 
     # evaluation
     h = thicklens.get_collimator_emergent_ray_angle()

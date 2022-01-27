@@ -7,8 +7,7 @@ import numpy as np
 import pytest
 
 # project
-from payload_designer import components
-from payload_designer.libs import plotlib
+from payload_designer.componentss import diffractors
 
 LOG = logging.getLogger(__name__)
 
@@ -21,7 +20,9 @@ def test_get_angle_out():
     v = np.linspace(start=300, stop=6000, num=100)
     # region
 
-    grism = components.VPHGrism(a_in=0, n_1=1.0, n_2=1.52, n_3=1.3, m=1, a=45, v=v, l=l)
+    grism = diffractors.VPHGrism(
+        a_in=0, n_1=1.0, n_2=1.52, n_3=1.3, m=1, a=45, v=v, l=l
+    )
 
     angle_out = grism.get_angle_out()
 
@@ -32,9 +33,6 @@ def test_get_angle_out():
 
     # fig = px.scatter(x=l, y=angle_out)
     # fig.show()
-
-    fig = plotlib.surface(x=l, y=v, z=angle_out)
-    fig.show()
 
 
 def test_get_undeviated_wavelength():
@@ -47,7 +45,7 @@ def test_get_undeviated_wavelength():
     n_1 = 1.0
     n_2 = 1.52
     n_3 = 1.3
-    grism = components.VPHGrism(m=m, v=v, a=a, a_in=a_in, n_1=n_1, n_2=n_2, n_3=n_3)
+    grism = diffractors.VPHGrism(m=m, v=v, a=a, a_in=a_in, n_1=n_1, n_2=n_2, n_3=n_3)
     undeviated_wavelength = grism.get_undeviated_wavelength()
     LOG.info(f"Undeviated Wavelength: {undeviated_wavelength}°")
     assert undeviated_wavelength == pytest.approx(1761.118)
@@ -63,9 +61,9 @@ def test_get_resolvance():
     # v = 600  # lines/mm
     # w = 2  # in mm ->
 
-    grism = components.VPHGrism(l=l, dl=dl)
-    # grism = components.VPHGrism(m=1, v=v, w=w)
-    # grism = components.VPHGrism(m=m, N=N)
+    grism = diffractors.VPHGrism(l=l, dl=dl)
+    # grism = diffractors.VPHGrism(m=1, v=v, w=w)
+    # grism = diffractors.VPHGrism(m=m, N=N)
     resolvance = grism.get_resolvance()
     LOG.info(f"Resolvance: {resolvance}°")
     assert resolvance == pytest.approx(800)
@@ -81,9 +79,9 @@ def test_get_resolution():
     # N =
     # m = 1
 
-    grism = components.VPHGrism(m=1, v=v, w=w, l=l)
-    # grism = components.VPHGrism(l=l, R=R)
-    # grism = components.VPHGrism(m=1, N=N, l=l)
+    grism = diffractors.VPHGrism(m=1, v=v, w=w, l=l)
+    # grism = diffractors.VPHGrism(l=l, R=R)
+    # grism = diffractors.VPHGrism(m=1, N=N, l=l)
 
     resolution = grism.get_resolution()
     LOG.info(f"Resolution: {resolution}°")
@@ -104,7 +102,7 @@ def test_get_diffraction_efficiency():
     n_1 = 1.0
     eff_mat = 0.9
 
-    grism = components.VPHGrism(
+    grism = diffractors.VPHGrism(
         a_in=a_in,
         a=a,
         l=l,

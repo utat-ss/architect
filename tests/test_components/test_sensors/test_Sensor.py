@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 # project
-from payload_designer import components
+from payload_designer.componentss import sensors
 
 LOG = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ def test_get_snr():
     # endregion
 
     # region component instantiation
-    sensor = components.Sensor(i_dark=i_dark)
+    sensor = sensors.Sensor(i_dark=i_dark)
     # endregion
 
     # region evaluation

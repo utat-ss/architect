@@ -6,7 +6,7 @@ import logging
 import pytest
 
 # project
-from payload_designer import components
+from payload_designer.componentss import diffractors
 
 LOG = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ def test_get_angle_out():
     phi = 2
 
     # component instantiation
-    VPHGrating = components.VPHGrating(
+    VPHGrating = diffractors.VPHGrating(
         a_0=a_0, n_0=n_0, Lmda=Lmda, lmda=lmda, m=m, phi=phi
     )
 
@@ -46,7 +46,7 @@ def test_get_Kogelnik_efficiency():
     m = 1
 
     # component instantiation
-    VPHGrating = components.VPHGrating(
+    VPHGrating = diffractors.VPHGrating(
         delta_n2=delta_n2, n_2=n_2, d=d, lmda=lmda, Lmda=Lmda, m=m
     )
 
@@ -68,7 +68,7 @@ def test_get_efficiency_bandwidth():
     m = 1
 
     # component instantiation
-    VPHGrating = components.VPHGrating(n_2=n_2, d=d, lmda=lmda, Lmda=Lmda, m=m)
+    VPHGrating = diffractors.VPHGrating(n_2=n_2, d=d, lmda=lmda, Lmda=Lmda, m=m)
 
     # evaluation
     lmda_eff = VPHGrating.get_efficiency_bandwidth()

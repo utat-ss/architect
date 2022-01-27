@@ -9,14 +9,15 @@ class LUT:
     data in the first column, f(x) data in the second column.
 
     Args:
-        data_path (path-like): The path to the CSV data file containing LUT data.
+        path (path-like): The path to the CSV data file containing LUT data.
+        scale (float): The scale factor to apply to the LUT data.
 
     """
 
-    def __init__(self, data_path):
-        data = np.genfromtxt(fname=data_path, delimiter=",")
-        self.x = data[:, 0]
-        self.y = data[:, 1]
+    def __init__(self, path, scale=1):
+        data = np.genfromtxt(fname=path, delimiter=",")
+        self.x = data[:, 0] * scale
+        self.y = data[:, 1] * scale
 
     def __call__(self, x):
         """Interpolate the LUT at a given x value(s).
