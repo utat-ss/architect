@@ -14,16 +14,27 @@ class LUT:
 
     """
 
-    def __init__(self, path, scale=1):
+    def __init__(self, path, scale=(1, 1)):
         data = np.genfromtxt(fname=path, delimiter=",")
-        self.x = data[:, 0] * scale
-        self.y = data[:, 1] * scale
+        self.x = data[:, 0]
+        self.y = data[:, 1]
+        self.scale(scale[0], scale[1])
+
+    def scale(self, scl_x, scl_y):
+        """Scale the LUT data by a given factor.
+
+        Args:
+            scl (tuple[float, float]): The scale factor to apply to the LUT x and y data.
+
+        """
+        self.x *= scl_x
+        self.y *= scl_y
 
     def __call__(self, x):
         """Interpolate the LUT at a given x value(s).
 
         Args:
-            x (array-like): The x value to interpolate at.
+            x (array-like): The x value(s) to interpolate at.
 
         Returns:
             array-like: The interpolated y values.

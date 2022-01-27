@@ -67,8 +67,8 @@ class Sensor:
         parameters.
 
         Args:
-            L_target (LUT): atmospheric radiance LUT object.
-            eta_optics (array-like[float]): transmittance of the optical system by wavelength.
+            L_target (LUT): atmospheric radiance LUT object [nm, W/sr/m2/nm].
+            eta_optics (array-like[float]): transmittance of the optical system by wavelength [nm].
             f_n (float): f-number of optical system.
             lmbda (array-like[float]): wavelengths at which to evaluate SNR [nm].
 
@@ -86,10 +86,13 @@ class Sensor:
         assert self.sigma_read is not None, "sigma_read is not set."
 
         # region unit conversions
-        dt = self.dt * 10 ** -3  # ms to s
-        i_dark = self.i_dark * 10 ** 3  # ke-/px/s to e-/px/s
-        p = self.p * 10 ** -6  # µm to m
-        n_well = self.n_well * 10 ** 3  # ke- to e-
+        L_target.scale(1e-9, 1e9)  # (nm, W/sr/m2/nm) to (m, W/sr/m2/m)
+        dt = self.dt * 1e-3  # ms to s
+        i_dark = self.i_dark * 1e3  # ke-/px/s to e-/px/s
+        lmbda = lmbda * 1e-9  # nm to m
+        n_well = self.n_well * 1e3  # ke- to e-
+        p = self.p * 1e-6  # µm to m
+        self.eta_sensor.scale(1e-9, 1)  # nm to m
         # endregion
 
         # region signal
@@ -104,7 +107,7 @@ class Sensor:
             * L_target(lmbda)
             * dt
         )
-        LOG.debug(f"Signal: {s_target}")
+        print(f"Signal: {s_target}")
         # endregion
 
         # region noise
@@ -137,7 +140,7 @@ class TauSWIR(Sensor):
             eta_sensor=utillib.LUT(Path("data/sensor_tauswir_quantum_efficiency.csv")),
             p=15,
             i_dark=28,
-            dt=0.1667,
+            dt=166.7,
             n_bin=1,
             n_bit=14,
             n_well=19,

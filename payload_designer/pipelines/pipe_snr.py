@@ -25,7 +25,7 @@ LOG = logging.getLogger(__name__)
 # endregion
 
 # region parameter config
-lmbda = np.linspace(start=900, stop=1700, num=1000)  # wavelengths [nm]
+lmbda = np.linspace(start=900, stop=1700, num=10)  # wavelengths [nm]
 f_n = 1.5
 
 # LUTS
@@ -36,7 +36,9 @@ diffractor_eta = utillib.LUT(Path("data/vphgrism_transmittance.csv"))
 focuser_eta = utillib.LUT(Path("data/focuser_transmittance.csv"))
 sensor_eta = utillib.LUT(Path("data/sensor_quantum_efficiency.csv"))
 
-L_target = utillib.LUT(path=Path("data/atmos_radiance_max.csv"), scale=1e9)  # m to nm
+L_target = utillib.LUT(
+    path=Path("data/atmos_radiance_max.csv"), scale=(1e9, 1e-9)
+)  # (m, W/sr/m2/m) to (nm, W/sr/m2/nm)
 # endregion
 
 if __name__ == "__main__":
@@ -50,6 +52,8 @@ if __name__ == "__main__":
     # endregion
 
     # region pipeline
+    LOG.debug(f"L_target:\n{L_target(lmbda)}")
+
     eta_optics = (
         foreoptic.eta(lmbda)
         * collimator.eta(lmbda)
