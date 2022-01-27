@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 # project
-from payload_designer import components
+from payload_designer.componentss import foreoptics
 
 LOG = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ def test_get_aperture_diameter():
     n = 5
 
     # component instantiation
-    foreoptic = components.Foreoptic(ds_i=ds_i, n=n)
+    foreoptic = foreoptics.Foreoptic(ds_i=ds_i, n=n)
 
     # evaluation
     d = foreoptic.get_aperture_diameter()
@@ -37,7 +37,7 @@ def test_get_magnification():
     ds_o = 20
 
     # component instantiation
-    foreoptic = components.Foreoptic(ds_i=ds_i, ds_o=ds_o)
+    foreoptic = foreoptics.Foreoptic(ds_i=ds_i, ds_o=ds_o)
 
     # evaluation
     m = foreoptic.get_magnification()
@@ -54,7 +54,7 @@ def test_get_f_number():
     dm_a = 2
 
     # component instantiation
-    foreoptic = components.Foreoptic(ds_i=ds_i, dm_a=dm_a)
+    foreoptic = foreoptics.Foreoptic(ds_i=ds_i, dm_a=dm_a)
 
     # evaluation
     n = foreoptic.get_f_number()
@@ -71,7 +71,7 @@ def test_get_effective_focal_length():
     ds_i = 10
 
     # component instantiation
-    foreoptic = components.Foreoptic(ds_o=ds_o, ds_i=ds_i)
+    foreoptic = foreoptics.Foreoptic(ds_o=ds_o, ds_i=ds_i)
 
     # evaluation
     efl = foreoptic.get_effective_focal_length()
@@ -87,7 +87,7 @@ def test_get_numerical_aperture():
     a_in_max = 30
 
     # component instantiation
-    foreoptic = components.Foreoptic(a_in_max=a_in_max)
+    foreoptic = foreoptics.Foreoptic(a_in_max=a_in_max)
 
     # evaluation
     na = foreoptic.get_numerical_aperture()
@@ -104,7 +104,7 @@ def test_get_geometric_etendue():
     a_in_max = 30
 
     # component instantiation
-    foreoptic = components.Foreoptic(s=s, a_in_max=a_in_max)
+    foreoptic = foreoptics.Foreoptic(s=s, a_in_max=a_in_max)
 
     # evaluation
     g = foreoptic.get_geometric_etendue()
@@ -121,7 +121,7 @@ def test_get_radiant_flux():
     g = 75
 
     # component instantiation
-    foreoptic = components.Foreoptic(b=b, g=g)
+    foreoptic = foreoptics.Foreoptic(b=b, g=g)
 
     # evaluation
     f = foreoptic.get_radiant_flux()

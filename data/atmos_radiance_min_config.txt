@@ -1,0 +1,45 @@
+---------------- GENERAL PARAMETERS ----------------
+Print Config: True 
+Background: False 
+Decibels: False 
+
+---------------- SIGNAL PARAMETERS ----------------
+Fore Optics Transmittance: 0.8 
+Collimator Transmittance: 0.8 
+Filter Transmittance: 0.9 
+Diverging Lens Transmittance: 0.8 
+X Pixels: 640 
+Y Pixels: 512 
+Pixel Pitch: 15 um
+Integration Time: 0.1667 s
+Focal Length: 200 
+Aperture Diameter: 33 mm
+Fraction of Aperture Blocked: 0.922 
+Planck Constant: 6.63e-34 Js
+Speed of Light: 300000000.0 m/s
+Sensor: flirtau 
+Diffraction Grating: wasatch900 
+
+---------------- NOISE PARAMETERS ----------------
+Well Depth: 19000 e-/pixel
+Dynamic Range: 14 bit
+Dark Current: 10 e-/pixel/second
+Readout Noise: 500 e-/pixel
+
+---------------- FILE PATHS ----------------
+ChromeDriver path: C:/Users/adynxps/Downloads/chromedriver_win32_95/chromedriver.exe 
+Orbital Parameters CSV Path: ./Modtran_Graphs/modtran_orbit_params.csv 
+Output Plots Path: snr_results 
+
+---------------- MODTRAN PARAMETERS ----------------
+Spectral Resolution: 1.0 nm
+Spectral Range Lower Bound: 900 nm
+Spectral Range Upper Bound: 1700 nm
+Season: summer 
+Carbon Dioxide: 419.05 ppmv
+Carbon Monoxide: 0.1575 ppmv
+Methane: 1.879 ppmv
+Aerosol Model: urban 
+Visibility: 23.0 km
+Spectral Units: microns 
+Save Plots: False 

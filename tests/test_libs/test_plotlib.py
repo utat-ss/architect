@@ -12,6 +12,7 @@ from payload_designer.libs import plotlib
 LOG = logging.getLogger(__name__)
 
 
+@pytest.mark.plot
 def test_line():
     """Test the line plot function."""
 
@@ -21,6 +22,7 @@ def test_line():
     plotlib.line(x=x, y=y)
 
 
+@pytest.mark.plot
 def test_scatter():
     """Test the scatter plot function."""
 
@@ -32,6 +34,7 @@ def test_scatter():
     plotlib.scatter(x=x, y=y, z=z, w=w)
 
 
+@pytest.mark.plot
 def test_surface():
     """Test the surface plot function."""
 
@@ -42,6 +45,7 @@ def test_surface():
     plotlib.surface(x=x, y=y, z=z)
 
 
+@pytest.mark.plot
 @pytest.mark.skip(reason="Issue with Kaleido and Poetry.")
 def test_save():
     """Test the figure save function."""

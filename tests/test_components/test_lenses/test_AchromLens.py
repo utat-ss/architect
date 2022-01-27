@@ -6,7 +6,7 @@ import logging
 import pytest
 
 # project
-from payload_designer import components
+from payload_designer.componentss import lenses
 
 LOG = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ def test_focal_length_1():
     V_1 = 0.016
     V_2 = 0.028
 
-    doublet = components.AchromLens(f_eq=f_eq, V_1=V_1, V_2=V_2)
+    doublet = lenses.AchromLens(f_eq=f_eq, V_1=V_1, V_2=V_2)
 
     fl1 = doublet.focal_length_1()
     LOG.info(f"Focal length 1: {fl1}")
@@ -33,7 +33,7 @@ def test_focal_length_2():
     V_1 = 0.016
     V_2 = 0.028
 
-    doublet = components.AchromLens(f_eq=f_eq, V_1=V_1, V_2=V_2)
+    doublet = lenses.AchromLens(f_eq=f_eq, V_1=V_1, V_2=V_2)
 
     fl2 = doublet.focal_length_2()
     LOG.info(f"Focal length 2: {fl2}")
@@ -48,7 +48,7 @@ def test_effective_focal_length():
     V_1 = 0.016
     V_2 = 0.028
 
-    doublet = components.AchromLens(f_1=f_1, V_1=V_1, V_2=V_2)
+    doublet = lenses.AchromLens(f_1=f_1, V_1=V_1, V_2=V_2)
 
     fleq = doublet.effective_focal_length()
     LOG.info(f"Effective focal length: {fleq}")

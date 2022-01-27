@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 # project
-from payload_designer import components
+from payload_designer.componentss import lenses
 
 LOG = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ def test_get_image_distance():
     # endregion
 
     # region component instantiation
-    focuser = components.ThinLens(f=f)
+    focuser = lenses.ThinLens(f=f)
     # endregion
 
     # region evaluation
@@ -50,7 +50,7 @@ def test_get_source_distance():
     # endregion
 
     # region component instantiation
-    collimator = components.ThinLens(f=f)
+    collimator = lenses.ThinLens(f=f)
     # endregion
 
     # region evaluation
@@ -78,7 +78,7 @@ def test_get_image_height():
     # endregion
 
     # region component instantiation
-    focuser = components.ThinLens(f=f, a_in=a_in)
+    focuser = lenses.ThinLens(f=f, a_in=a_in)
     # endregion
 
     # region evaluation
@@ -104,7 +104,7 @@ def test_get_image_height_vectorized():
     a_in = np.array([15, 30, 45])
 
     # component instantiation
-    focuser = components.ThinLens(f=f, a_in=a_in)
+    focuser = lenses.ThinLens(f=f, a_in=a_in)
 
     # evaluation
     h = focuser.get_image_height()
@@ -124,7 +124,7 @@ def test_get_source_height():
     # endregion
 
     # region component instantiation
-    collimator = components.ThinLens(f=f, a_in=a_in)
+    collimator = lenses.ThinLens(f=f, a_in=a_in)
     # endregion
 
     # region evaluation
@@ -160,7 +160,7 @@ def test_get_focal_length(d_i, d_o, h_i, a_in, h_o, a_out, ans):
     """
 
     # region component instantiation
-    collimator = components.ThinLens(
+    collimator = lenses.ThinLens(
         d_i=d_i, d_o=d_o, h_i=h_i, a_in=a_in, h_o=h_o, a_out=a_out
     )
     # endregion
