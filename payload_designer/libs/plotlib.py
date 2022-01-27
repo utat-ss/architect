@@ -16,12 +16,9 @@ output_path = Path("output/images")
 def line(x, y):
     """Plots line plot. Supports up to 2D data.
 
-    Args:
-        x (array_like): 1st dimension of data.
-        y (array_like): 2nd dimension of data.
+    Args:     x (array_like): 1st dimension of data.     y (array_like): 2nd dimension
+    of data.  Returns:     plotly.figure: figure object.
 
-    Returns:
-        plotly.figure: figure object.
     """
 
     fig = px.line(x=x, y=y, markers=True)
@@ -34,13 +31,10 @@ def line(x, y):
 def surface(x, y, z):
     """Plots surface data. Supports up to 3D data.
 
-    Args:
-        x (array_like[float]): x-coordinate data.
-        y (array_like[float]): y-coordinate data.
-        z (array_like[float]): height data.
+    Args:     x (array_like[float]): x-coordinate data.     y (array_like[float]):
+    y-coordinate data.     z (array_like[float]): height data.  Returns:
+    plotly.figure: figure object.
 
-    Returns:
-        plotly.figure: figure object.
     """
     fig = go.Figure(data=[go.Surface(z=z, x=x, y=y)])
 
@@ -58,14 +52,11 @@ def surface(x, y, z):
 def scatter(x, y, z=None, w=None):
     """Plots scatter plot. Supports up to 4D data.
 
-    Args:
-        x (array_like): 1st dimension of data.
-        y (array_like): 2nd dimension of data.
-        color (array_like, optional): 3rd dimension of data. Defaults to None.
-        size (array_like, optional): 4th dimension of data. Defaults to None.
+    Args:     x (array_like): 1st dimension of data.     y (array_like): 2nd dimension
+    of data.     color (array_like, optional): 3rd dimension of data. Defaults to None.
+    size (array_like, optional): 4th dimension of data. Defaults to None.  Returns:
+    plotly.figure: figure object.
 
-    Returns:
-        plotly.figure: figure object.
     """
     fig = px.scatter(x=x, y=y, color=z, size=w)
 
@@ -77,9 +68,8 @@ def scatter(x, y, z=None, w=None):
 def save(fig, filename):  # Unable to find installation candidates for kaleido
     """Saves figure to output path.
 
-    Args:
-        fig (plotly.figure): figure object.
-        filename (str): filename.
+    Args:     fig (plotly.figure): figure object.     filename (str): filename.
+
     """
     timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S.%f")
     file_path = output_path / f"{filename}_{timestamp}.png"
