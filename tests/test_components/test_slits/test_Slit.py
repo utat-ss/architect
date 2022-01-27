@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 # project
-from payload_designer.componentss import slits
+from payload_designer.components import slits
 
 LOG = logging.getLogger(__name__)
 

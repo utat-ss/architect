@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 
 # project
-from payload_designer.componentss import slits
+from payload_designer.components import slits
 from payload_designer.libs import plotlib
 
 # region path config

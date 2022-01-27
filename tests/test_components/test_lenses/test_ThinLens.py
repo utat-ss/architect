@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 # project
-from payload_designer.componentss import lenses
+from payload_designer.components import lenses
 
 LOG = logging.getLogger(__name__)
 

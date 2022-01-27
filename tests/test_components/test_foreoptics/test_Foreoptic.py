@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 # project
-from payload_designer.componentss import foreoptics
+from payload_designer.components import foreoptics
 
 LOG = logging.getLogger(__name__)
 

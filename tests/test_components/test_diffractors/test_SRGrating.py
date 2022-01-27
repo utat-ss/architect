@@ -6,7 +6,7 @@ import logging
 import pytest
 
 # project
-from payload_designer.componentss import diffractors
+from payload_designer.components import diffractors
 
 LOG = logging.getLogger(__name__)
 
