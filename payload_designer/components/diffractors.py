@@ -488,13 +488,13 @@ class VPHGrism:
             ValueError: if required parameters are not set.
 
         Returns:
-            float: resolution in nm.
+            float: resolution [nm].
 
         """
 
-        # vectorization
+        # region unit conversion
 
-        # unit conversion
+        # endregion
 
         if self.l is not None and self.R is not None:
             dl = (self.l) / self.R  # no unit conversion so dl is in nm
@@ -506,9 +506,32 @@ class VPHGrism:
             and self.v is not None
             and self.w is not None
         ):
-            dl = (self.l) / (
-                self.m * (self.v * 10 ** -6) * self.w * 10 ** 6
-            )  #### mm to nm
+
+            # region unit conversion
+            lmbda = self.l * 1e-9  # [nm] to [m]
+            v = self.v * 1e3  # [L/mm] to [L/m]
+            w = self.w * 1e-3  # [mm] to [m]
+            # endregion
+
+            # region vectorization
+            lmbda = np.array(lmbda).reshape(-1, 1, 1)
+            v = np.array(v).reshape(1, -1, 1)
+            w = np.array(w).reshape(1, 1, -1)
+
+            shape = (lmbda.size, v.size, w.size)
+
+            lmbda = np.broadcast_to(array=lmbda, shape=shape)
+            v = np.broadcast_to(array=v, shape=shape)
+            w = np.broadcast_to(array=w, shape=shape)
+            # endregion
+
+            dl = lmbda / (self.m * v * w)
+            dl = np.squeeze(dl)
+            print(f"dl: {dl.shape}")
+
+            # region units reconversion
+            dl = dl * 1e9  # [m] to [nm]
+            # endregion
         else:
             raise ValueError(
                 "l and R or l and m and N or l and m and n and w must be set."

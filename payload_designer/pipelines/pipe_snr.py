@@ -25,7 +25,7 @@ LOG = logging.getLogger(__name__)
 # endregion
 
 # region parameter config
-lmbda = np.linspace(start=900, stop=1700, num=10)  # wavelengths [nm]
+lmbda = np.linspace(start=900, stop=1700, num=100)  # [nm]
 f_n = 1.5
 
 # LUTS

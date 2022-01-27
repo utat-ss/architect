@@ -1,4 +1,4 @@
-"""Calculate field of view from slit size."""
+"""Calculate resolution for VPH grism from wavelength, fringe frequency, beam width."""
 
 # stdlib
 import logging
@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 
 # project
-from payload_designer.components import slits
+from payload_designer.components import diffractors
 from payload_designer.libs import plotlib
 
 # region path config
@@ -25,19 +25,20 @@ LOG = logging.getLogger(__name__)
 # endregion
 
 # region parameter config
-widths = np.linspace(start=900, stop=1700, num=1000)
+lmbda = 1600 # [nm]
+v = np.linspace(start=300, stop=1200, num=100) # [L/mm]
+w = 10 # [mm]
 # endregion
 
 if __name__ == "__main__":
     # region component instantiation
-    slit = slits.Slit()
+    diffractor = diffractors.VPHGrism(m=1, l=lmbda, v=v, w=w)
     # endregion
 
     # region pipeline
-    FOV_x = slit.get_horizontal_field_of_view()
-    FOV_y = slit.get_vertical_field_of_view()
+    res = diffractor.get_resolution()
     # endregion
 
     # region plots
-
+    plotlib.line(x=v, y=res)
     # endregion

@@ -65,6 +65,26 @@ def scatter(x, y, z=None, w=None):
     return fig
 
 
+def scatter3(x, y, z, w=None, v=None):
+    """Plots 3D scatter plot. Supports up to 5D data.
+
+    Args:
+        x (array_like): 1st dimension of data.
+        y (array_like): 2nd dimension of data.
+        z (array-like): 3rd dimension of data.
+        w (array_like, optional): 4th dimension of data. Defaults to None.
+
+    Returns:
+        plotly.figure: figure object.
+
+    """
+    fig = px.scatter_3d(x=x, y=y, z=z, color=w, size=v, size_max=18, opacity=0.9)
+
+    fig.show()
+
+    return fig
+
+
 def save(fig, filename):  # Unable to find installation candidates for kaleido
     """Saves figure to output path.
 
