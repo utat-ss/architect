@@ -25,8 +25,8 @@ LOG = logging.getLogger(__name__)
 # endregion
 
 # region parameter config
-a_in = np.linspace(start=0, stop=10, num=100) # [°]
-f = np.linspace(start=1, stop=30, num=100) # [mm]
+a_in = np.linspace(start=0, stop=10, num=100)  # [°]
+f = np.linspace(start=1, stop=30, num=100)  # [mm]
 
 # endregion
 

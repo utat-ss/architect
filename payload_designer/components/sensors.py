@@ -100,7 +100,7 @@ class Sensor:
 
         s_target = (
             (sc.pi / 4)
-            * (lmbda / sc.h * sc.c)
+            * (lmbda / (sc.h * sc.c))
             * (A_d / f_n ** 2)
             * self.eta_sensor(lmbda)
             * eta_optics

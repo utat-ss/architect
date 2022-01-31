@@ -9,7 +9,13 @@ from pathlib import Path
 import numpy as np
 
 # project
-from payload_designer.components import diffractors, foreoptics, lenses, sensors
+from payload_designer.components import (
+    diffractors,
+    filters,
+    foreoptics,
+    lenses,
+    sensors,
+)
 from payload_designer.libs import plotlib, utillib
 
 # region path config
@@ -45,7 +51,7 @@ if __name__ == "__main__":
     # region component instantiation
     foreoptic = foreoptics.Foreoptic(eta=foreoptic_eta)
     collimator = lenses.AchromLens(eta=collimator_eta)
-    # bandfilter = filters.Filter(eta=bandfilter_eta)
+    bandfilter = filters.Filter(eta=bandfilter_eta)
     diffractor = diffractors.VPHGrism(eta=diffractor_eta)
     focuser = lenses.AchromLens(eta=focuser_eta)
     sensor = sensors.TauSWIR()
@@ -57,7 +63,7 @@ if __name__ == "__main__":
     eta_optics = (
         foreoptic.eta(lmbda)
         * collimator.eta(lmbda)
-        # * bandfilter.eta(lmbda)
+        * bandfilter.eta(lmbda)
         * diffractor.eta(lmbda)
         * focuser.eta(lmbda)
     )

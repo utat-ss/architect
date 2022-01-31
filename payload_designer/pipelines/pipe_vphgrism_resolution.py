@@ -25,9 +25,9 @@ LOG = logging.getLogger(__name__)
 # endregion
 
 # region parameter config
-lmbda = 1600 # [nm]
-v = np.linspace(start=300, stop=1200, num=100) # [L/mm]
-w = 10 # [mm]
+lmbda = 1600  # [nm]
+v = np.linspace(start=300, stop=1200, num=100)  # [L/mm]
+w = 10  # [mm]
 # endregion
 
 if __name__ == "__main__":
