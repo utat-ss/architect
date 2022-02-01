@@ -152,4 +152,28 @@ You can create a new task (issue) as follows:
 1. If all goes well, merge it in!
 
 
+## Upgrading Project Python Version ⬆️
+When the project changes python version, it is neccesary to create a new poetry environment with the updated python installation. To do so, proceed as follows:
+
+1. Download and install the required python version from the official website.
+
+1. Within the current poetry environment, call:
+    ```
+    poetry env use /full/path/to/new/python.exe
+    ```
+    You can get this path from your envionment variables. Poetry will then generate a new empty environment assigned to run using the new python version.
+
+1. Switch to the new empty environment and call:
+    ```
+    poetry install
+    ```
+    and
+    ```
+    pre-commit install --install-hooks
+    ```
+    To install all the dependencies within this new environment.
+
+You're now ready to start development with the new version of python!
+
+
 
