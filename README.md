@@ -38,6 +38,19 @@ The repo employs [poetry](https://python-poetry.org/) <img src="img/poetry-logo.
 (Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py -UseBasicParsing).Content | python -
 ```
 
+And on Linux or macOS with:
+
+```
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python3 -
+```
+
+The output will include the following line. Ensure that the filepath in brackets (the one in your PowerShell/terminal) has been [added to your Windows PATH](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/) or [Linux/macOS PATH](https://stackoverflow.com/a/19663996): 
+
+```
+To get started you need Poetry's bin directory (C:\Users\WDAGUtilityAccount\AppData\Roaming\Python\Scripts) in your `PATH`
+environment variable.
+```
+
 Clone the repo using [Github Desktop](https://desktop.github.com/) <img src="img/github-desktop-logo.png" height="16"/> or the commandline via:
 
 ```
@@ -49,7 +62,7 @@ From within the cloned repo, run poetry's install command to install all the dep
 poetry install
 ```
 
-Configure your IDE to use the virtual environment poetry has created at `C:\Users\<USERNAME>\AppData\Local\pypoetry\Cache\virtualenvs`. In the case of [VSCode](https://code.visualstudio.com/) <img src="img/vscode-logo.png" height="16"/>, enter the command pallet by going to `View>Command Palette` and search for `Python:Select Interpreter`. Select the appropriate poetry virtual environment for the repo. Restart VSCode if you do not see it listed.
+Configure your IDE to use the virtual environment poetry has created at `C:\Users\<USERNAME>\AppData\Local\pypoetry\Cache\virtualenvs` (you can also find it with the command `poetry show -v`). In the case of [VSCode](https://code.visualstudio.com/) <img src="img/vscode-logo.png" height="16"/>, enter the command pallet by going to `View>Command Palette` and search for `Python:Select Interpreter`. Select the appropriate poetry virtual environment for the repo (usually includes a long jumbled name in brackets). Restart VSCode if you do not see it listed. Once the intepreter is changed, restart your terminal by [deleting the old one](https://code.visualstudio.com/docs/editor/integrated-terminal#_managing-terminals) and launching it again.
 
 Install the pre-commit script and hooks using:
 ```
@@ -70,6 +83,12 @@ This repo uses [pytest](https://docs.pytest.org/en/6.2.x/) for unit testing. To 
 
 ```
 pytest -v
+```
+
+If this command did not work, the IDE did not launch a terminal with the virtual environment loaded. Before launching any commands, enter the environment with:
+
+```
+poetry shell
 ```
 
 You can find an interactive report of test results in `./logs/pytest/pytest-report.html`. Individual tests can also be specified as follows:
