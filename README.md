@@ -11,7 +11,7 @@
 <img src="img/payload-designer-logo.png" height="64">
 
 # Payload Designer
-A design tool for the FINCH Eye payload.
+A design tool for the FINCH Eye payload. Payload Designer enables a unified analysis of the entire payload and all of its components. See the latest version of the [softtware design description](https://www.overleaf.com/read/fpngsrxvqccy) here. 
 
 Built by the [University of Toronto Aerospace Team](https://www.utat.ca/space-systems) :milky_way:.
 
