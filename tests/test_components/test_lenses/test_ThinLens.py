@@ -14,15 +14,14 @@ LOG = logging.getLogger(__name__)
 
 
 def test_get_image_distance():
-    """Test ThinLens.get_image_distance()."""
+    """Test get_image_distance()."""
 
     # region parameters
     f = 5
-
     ans = 5
     # endregion
 
-    # region component instantiation
+    # region components
     focuser = lenses.ThinLens(f=f)
     # endregion
 
@@ -41,15 +40,14 @@ def test_get_image_distance():
 
 
 def test_get_source_distance():
-    """Test ThinLens.get_source_distance()."""
+    """Test get_source_distance()."""
 
     # region parameters
     f = 5
-
     ans = 5
     # endregion
 
-    # region component instantiation
+    # region components
     collimator = lenses.ThinLens(f=f)
     # endregion
 
@@ -68,7 +66,7 @@ def test_get_source_distance():
 
 
 def test_get_image_height():
-    """Test ThinLens.get_image_height()."""
+    """Test get_image_height()."""
 
     # region parameters
     f = 4
@@ -97,7 +95,7 @@ def test_get_image_height():
 
 
 def test_get_image_height_vectorized():
-    """Test ThinFocuser.get_image_height() in vectorized mode."""
+    """Test get_image_height() in vectorized mode."""
 
     # parameters
     f = np.array([1, 2, 3])
@@ -114,7 +112,7 @@ def test_get_image_height_vectorized():
 
 
 def test_get_source_height():
-    """Test ThinLens.get_source_height()."""
+    """Test get_source_height()."""
 
     # region parameters
     f = 4

@@ -14,7 +14,7 @@ repos:
   rev: v1.4
   hooks:
     - id: docformatter
-      args: [--blank, --in-place, --recursive, --wrap-descriptions=80, --wrap-summaries=88]
+      args: [--blank, --in-place, --recursive, --wrap-descriptions=88, --wrap-summaries=80]
 
 - repo: https://github.com/pycqa/pylint
   rev: v2.12.2

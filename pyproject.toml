@@ -45,8 +45,8 @@ in-place = true
 make-summary-multi-line = false
 pre-summary-newline = false
 recursive = true
-wrap-descriptions = 80
-wrap-summaries = 88
+wrap-descriptions = 88
+wrap-summaries = 80
 
 [tool.pylint.messages_control]
 max-line-length = 88
