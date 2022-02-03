@@ -1,4 +1,5 @@
-"""Calculate resolution for VPH grism from wavelength, fringe frequency, beam width."""
+"""Calculate resolution for VPH grism from wavelength, fringe frequency, beam
+width."""
 
 # stdlib
 import logging
