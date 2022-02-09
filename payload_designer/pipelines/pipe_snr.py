@@ -7,6 +7,7 @@ from pathlib import Path
 
 # external
 import numpy as np
+import pandas as pd
 
 # project
 from payload_designer.components import (
@@ -76,8 +77,9 @@ if __name__ == "__main__":
     # endregion
 
     # region plots
-    # fig = plotlib.line(x=lmbda, y=L_target(lmbda))
-    fig = plotlib.line(x=lmbda, y=snr)
-    # fig = plotlib.line(x=lmbda, y=signal)
-    # fig = plotlib.line(x=lmbda, y=noise)
+    dfd = {"$\lambda$": lmbda.flatten(), "SNR": snr.flatten()}
+    df = pd.DataFrame(data=dfd)
+    LOG.debug(df)
+
+    plotlib.line(df=df, x="$\lambda$", y="SNR")
     # endregion
