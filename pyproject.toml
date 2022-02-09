@@ -50,7 +50,7 @@ wrap-summaries = 80
 
 [tool.pylint.messages_control]
 max-line-length = 88
-disable = ["invalid-name","too-many-arguments", "too-many-locals", "arguments-differ", "unnecessary-lambda", "too-many-instance-attributes", "protected-access", "duplicate-code", "too-few-public-methods", "logging-fstring-interpolation", "not-callable", "too-many-statements", "pointless-statement", "not-context-manager","fixme","too-many-branches","too-many-lines","line-too-long"]
+disable = ["invalid-name","too-many-arguments", "too-many-locals", "arguments-differ", "unnecessary-lambda", "too-many-instance-attributes", "protected-access", "duplicate-code", "too-few-public-methods", "logging-fstring-interpolation", "not-callable", "too-many-statements", "pointless-statement", "not-context-manager","fixme","too-many-branches","too-many-lines","line-too-long","anomalous-backslash-in-string","too-many-function-args"]
 generated-members=["numpy.*","torch.*","pygame.*"] # https://github.com/pytorch/pytorch/issues/701
 
 [tool.coverage.run]

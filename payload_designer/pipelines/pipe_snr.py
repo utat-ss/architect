@@ -27,7 +27,9 @@ log_path = Path(f"logs/{filename}")
 
 # region logging config
 log_path.mkdir(parents=True, exist_ok=True)
-logging.config.fileConfig(fname="log.conf", defaults={"path": log_path})
+logging.config.fileConfig(
+    fname="log.conf", defaults={"path": log_path}, disable_existing_loggers=False
+)
 LOG = logging.getLogger(__name__)
 # endregion
 
@@ -68,18 +70,18 @@ if __name__ == "__main__":
         * diffractor.eta(lmbda)
         * focuser.eta(lmbda)
     )
-    LOG.info(f"Optical transmittance: {eta_optics}%")
+    LOG.info(f"Optical transmittance:\n{eta_optics}%")
 
     snr, signal, noise = sensor.get_snr(
         L_target=L_target, eta_optics=eta_optics, f_n=f_n, lmbda=lmbda
     )
-    LOG.info(f"SNR: {snr}")
+    LOG.info(f"SNR:\n{snr}")
     # endregion
 
     # region plots
     dfd = {"$\lambda$": lmbda.flatten(), "SNR": snr.flatten()}
     df = pd.DataFrame(data=dfd)
-    LOG.debug(df)
+    LOG.debug(f"\n{df}")
 
     plotlib.line(df=df, x="$\lambda$", y="SNR")
     # endregion
