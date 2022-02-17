@@ -31,6 +31,7 @@ class Sensor:
         px_x (int, optional): Pixel count in cross-track direction [px]. Defaults to None.
         px_y (int, optional): Pixel count in along-track direction [px]. Defaults to None.
         sigma_read (int, optional): Readout noise [e-/px]. Defaults to None.
+        size (int, int, optional): (width, height) of sensor face [mm]. Defaults to None.
 
     """
 
@@ -48,6 +49,7 @@ class Sensor:
         px_x=None,
         px_y=None,
         sigma_read=None,
+        size=(None, None),
     ):
         self.M = M
         self.V = V
@@ -61,6 +63,7 @@ class Sensor:
         self.px_x = px_x
         self.px_y = px_y
         self.sigma_read = sigma_read
+        self.size = size
 
     def get_snr(self, L_target, eta_optics, f_n, lmbda):
         """Calculates the signal to noise ratio from the sensor and system
@@ -145,4 +148,5 @@ class TauSWIR(Sensor):
             n_bit=14,
             n_well=19,
             sigma_read=50,
+            size=(9.6, 7.68),
         )
