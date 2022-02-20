@@ -1,4 +1,5 @@
-"""Calculate GSD and Swath."""
+"""Calculate GSD and Swath. All formulas are from https://www.desmos.com/calculator/vnclx0hswx (GSD flat Earth, swath) and 
+https://www.desmos.com/calculator/rsv0oowzsv (GSD curved Earth)"""
 
 # stdlib
 import logging
