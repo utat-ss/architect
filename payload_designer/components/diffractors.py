@@ -561,14 +561,27 @@ class VPHGrism:
         assert self.n_3 is not None, "n_3 is not set"
         assert self.eff_mat is not None, "prism material efficiency is not set"
 
-        # vectorization
-
-        # unit conversion
+        # region unit conversion
         a_in = np.radians(self.a_in)
         a = np.radians(self.a)
         l = self.l  # nm
         v = self.v * 10 ** -6  # lines/mm to lines/nm
         d = self.d * 10 ** 3  # microns to nm
+        #endregion
+
+        # region vectorization
+        shape = (a_in.size, v.size, l.size, d.size, a, n_g, n_1, n_2, n_3, eff_mat)
+        a_in = utillib.orient_and_broadcast(a=a_in, dim=0, shape=shape)
+        v = utillib.orient_and_broadcast(a=v, dim=1, shape=shape)
+        l = utillib.orient_and_broadcast(a=l, dim=2, shape=shape)
+        d = utillib.orient_and_broadcast(a=d, dim=3, shape=shape)
+        a = utillib.orient_and_broadcast(a=a, dim=4, shape=shape)
+        n_g = utillib.orient_and_broadcast(a=n_g, dim=5, shape=shape)
+        n_1 = utillib.orient_and_broadcast(a=n_1, dim=6, shape=shape)
+        n_2 = utillib.orient_and_broadcast(a=n_2, dim=7, shape=shape)
+        n_3 = utillib.orient_and_broadcast(a=n_3, dim=8, shape=shape)
+        eff_mat = utillib.orient_and_broadcast(a=eff_mat, dim=9, shape=shape)
+        #endregion
 
         angle_1 = a_in + a
         angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=self.n_1, n_2=self.n_2)
