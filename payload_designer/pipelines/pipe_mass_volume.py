@@ -114,5 +114,6 @@ if __name__ == "__main__":
     # endregion
 
     # region plots
-    plotlib.surface(x=ffl_collimator, y=bfl_focuser, z=Vz_tot)
+    plotlib.line(x=ffl_collimator, y=Vz_tot)
+    plotlib.line(x=bfl_focuser, y=Vz_tot)
     # endregion
