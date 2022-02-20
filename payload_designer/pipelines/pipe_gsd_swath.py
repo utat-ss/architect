@@ -62,9 +62,9 @@ if __name__ == "__main__":
     # endregion
 
     # region pipeline
-    x_sen = np.divide(np.multiply(H, s_mu), np.multiply(f, np.cos(a))) # sensor-limited GSD
-    x_opt = np.multiply(1.22, np.divide(np.multiply(l, H), np.multiply(d, np.cos(a)))) # diffraction-limited GSD
-    x_abs = max(x_sen, x_opt)
+    x_sen = np.divide(np.multiply(H, s_mu), np.multiply(f, np.cos(a))) # sensor-limited GSD, flat Earth
+    x_opt = np.multiply(1.22, np.divide(np.multiply(l, H), np.multiply(d, np.cos(a)))) # diffraction-limited GSD, flat Earth
+    x_abs = max(x_sen, x_opt) # actual system GSD, flat Earth
 
     S_wid = np.multiply(np.divide(np.multiply(H, s_x), np.multiply(f, np.cos(a))), 10^(-3)) # swath width
     S_len = np.multiply(np.divide(np.multiply(H, s_y), np.multiply(f, np.cos(a))), 10^(-3)) # swath length
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     exp2b = np.power(np.divide(np.add(term1b, term2b), term3), 2)
     D1 = np.power(np.add(exp1a, exp2a), 0.5)
     D2 = np.power(np.add(exp1b, exp2b), 0.5)
-    y = np.divide(np.multiply(min(D1, D2), s_mu), f)
+    y = np.divide(np.multiply(min(D1, D2), s_mu), f) # GSD as function of skew angle
     # endregion
 
     # region plots
