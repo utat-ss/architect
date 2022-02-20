@@ -39,20 +39,10 @@ Vx = np.zeros(7)
 Vy = np.zeros(7)
 Vz = np.zeros(7)
 
-dc = None
-nc = 1.51680  # for N-BK7
-R1c = None
-R2c = None
-
-df = None
-nf = 1.51680  # for N-BK7
-R1f = None
-R2f = None
-
 # foreoptics_cmount = None
-collimator_to_filter = 1 # CODE V default, mechanical constraint
-filter_to_diffractor = 1 # CODE V default, mechanical constraint
-diffractor_to_focuser = 1 # assuming that the beam diameter leaving the grism is NOT initially smaller than the sensor face
+collimator_to_filter = 1  # CODE V default, mechanical constraint
+filter_to_diffractor = 1  # CODE V default, mechanical constraint
+diffractor_to_focuser = 1  # assuming that the beam diameter leaving the grism is NOT initially smaller than the sensor face
 sensor_to_frontplane = 12.55
 
 # endregion
@@ -61,14 +51,18 @@ if __name__ == "__main__":
     # region component instantiation
     foreoptic = foreoptics.Foreoptic(mass=80, V=(44, 44, 54))
     slit = slits.Slit(mass=10, V=(15, 15, 0.1))
-    collimator = lenses.AchromLens(mass=180, V=(12.5, 12.5, 10))  # mass estimate AC508-075-C
+    collimator = lenses.AchromLens(
+        mass=180, V=(12.5, 12.5, 10)
+    )  # mass estimate AC508-075-C
     filter = filters.Filter(mass=40, V=(12.5, 12.5, 1))  # mass estimate FB1590-12
     grating = diffractors.VPHGrating(mass=0.28, V=(25.4, 25.4, 6))  # not grism
-    focuser = lenses.AchromLens(mass=180, V=(12.5, 12.5, 10))  # mass estimate AC508-075-C
+    focuser = lenses.AchromLens(
+        mass=180, V=(12.5, 12.5, 10)
+    )  # mass estimate AC508-075-C
     sensor = sensors.Sensor(M=81, V=(38, 38, 36))
 
-    collimator_thick = lenses.ThickLens(d=dc, n=nc, R1=R1c, R2=R2c)
-    focuser_thick = lenses.ThickLens(d=df, n=nf, R1=R1f, R2=R2f)
+    # collimator_thick = lenses.ThickLens(d=dc, n=nc, R1=R1c, R2=R2c)
+    # focuser_thick = lenses.ThickLens(d=df, n=nf, R1=R1f, R2=R2f)
     # endregion
 
     # region pipeline
@@ -90,21 +84,25 @@ if __name__ == "__main__":
 
     # efl_foreoptic = 100
     # bfl_foreoptic = efl_foreoptic - foreoptics_cmount
-    bfl_foreoptic = 9 # min bfl estimate in #payload (Maggie)
+    bfl_foreoptic = 9  # min bfl estimate in #payload (Maggie)
 
-    efl_collimator = collimator_thick.get_focal_length()
-    h1c, h2c = collimator_thick.get_principal_planes()
+    # efl_collimator = np.linspace(start=1, stop=50, num=100)
+    # h1c, h2c = collimator_thick.get_principal_planes()
+    # ffl_collimator = efl_collimator - h1c
+    ffl_collimator = np.linspace(start=1, stop=50, num=100)
 
-    efl_focuser = focuser_thick.get_focal_length()
-    h1f, h2f = focuser_thick.get_principal_planes()
+    # efl_focuser = np.linspace(start=1, stop=50, num=100)
+    # h1f, h2f = focuser_thick.get_principal_planes()
+    # bfl_focuser = efl_focuser - h2f
+    bfl_focuser = np.linspace(start=1, stop=50, num=100)
 
     spacing_tot = (
         bfl_foreoptic
-        + (efl_collimator - h1c)
+        + ffl_collimator
         + collimator_to_filter
         + filter_to_diffractor
         + diffractor_to_focuser
-        + (efl_focuser - h2f - sensor_to_frontplane)
+        + (bfl_focuser - sensor_to_frontplane)
     )
 
     Vx_max = max(Vx)
@@ -113,4 +111,8 @@ if __name__ == "__main__":
 
     tot_mass = sum(masses)
     tot_V = (Vx_max, Vy_max, Vz_tot)
+    # endregion
+
+    # region plots
+    plotlib.surface(x=ffl_collimator, y=bfl_focuser, z=Vz_tot)
     # endregion
