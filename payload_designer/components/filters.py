@@ -46,6 +46,8 @@ class Filter:
         phi_1=None,
         phi_2=None,
         theta=None,
+        mass=None,
+        V=None,
     ):
         self.A = A
         self.F = F
@@ -76,6 +78,8 @@ class Filter:
         self.phi_1 = phi_1
         self.phi_2 = phi_2
         self.theta = theta
+        self.mass = mass
+        self.V = V
 
     def effective_refractive_index(self):
         assert self.epsilon_1 is not None, "epsilon_1 is not set."

@@ -25,6 +25,8 @@ class SRGrating:
         m (integer, optional): diffraction order. Defaults to None.
         W (float, optional): ruled width of grating. Defaults to None.
         R (float, optional): resolving power. Defaults to None.
+        mass (float, optional): mass of component [g]. Defaults to None.
+        V (tuple[float, float, float], optional): Volume envelope in x,y,z [mm]. Defaults to None.
 
     """
 
@@ -37,6 +39,8 @@ class SRGrating:
         m=None,
         W=None,
         R=None,
+        mass=None,
+        V=None,
     ):
         self.alpha = alpha
         self.beta = beta
@@ -45,6 +49,8 @@ class SRGrating:
         self.m = m
         self.W = W
         self.R = R
+        self.mass = mass
+        self.V = V
 
     def get_angle_out(self):
         """Calculates the angle of the diffracted light exiting the diffraction
@@ -170,6 +176,8 @@ class VPHGrating:
         m (integer, optional): diffraction order. Defaults to None.
         delta_n2 (float, optional): semiamplitude of the refractive-index modulation. Defaults to None.
         d (float, optional): grating thickness. Defaults to None.
+        mass (float, optional): mass of component [g]. Defaults to None.
+        V (tuple[float, float, float], optional): Volume envelope in x,y,z [mm]. Defaults to None.
 
     """
 
@@ -185,6 +193,8 @@ class VPHGrating:
         delta_n2=None,
         d=None,
         phi=None,
+        mass=None,
+        V=None,
     ):
 
         self.a_0 = a_0
@@ -197,6 +207,8 @@ class VPHGrating:
         self.delta_n2 = delta_n2
         self.d = d
         self.phi = phi
+        self.mass = mass
+        self.V = V
 
     def get_angle_out(self):
 
@@ -329,6 +341,8 @@ class VPHGrism:
         t (float, optional): transmision ratio. Defaults to None.
         v (float, optional): fringe frequency in lines/mm. Defaults to None.
         w (float, optional): slit width in mm. Defaults to None.
+        mass (float, optional): mass of component [g]. Defaults to None.
+        V (tuple[float, float, float], optional): Volume envelope in x,y,z [mm]. Defaults to None.
 
     """
 
@@ -354,6 +368,8 @@ class VPHGrism:
         t=None,
         v=None,
         w=None,
+        mass=None,
+        V=None,
     ):
         self.N = N
         self.R = R
@@ -375,6 +391,8 @@ class VPHGrism:
         self.t = t
         self.v = v
         self.w = w
+        self.mass = mass
+        self.V = V
 
     def get_angle_out(self):
         """Calculates the outgoing angle from the grism.
