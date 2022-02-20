@@ -40,9 +40,9 @@ Vy = np.zeros(7)
 Vz = np.zeros(7)
 
 # foreoptics_cmount = None
-collimator_to_filter = 1  # CODE V default, mechanical constraint
-filter_to_diffractor = 1  # CODE V default, mechanical constraint
-diffractor_to_focuser = 1  # assuming that the beam diameter leaving the grism is NOT initially smaller than the sensor face
+collimator_to_filter = 5.121
+filter_to_diffractor = 4.205
+diffractor_to_focuser = 6.331
 sensor_to_frontplane = 12.55
 
 # endregion
