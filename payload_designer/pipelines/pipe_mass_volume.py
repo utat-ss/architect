@@ -53,7 +53,7 @@ sensor_to_frontplane = 12.55
 
 if __name__ == "__main__":
     # region component instantiation
-    foreoptic = foreoptics.Foreoptic(mass=80, V=(44, 44, 54))
+    foreoptic = foreoptics.Foreoptic(mass=80, V=(44, 44, 54)) # 54mm includes spacing between foreoptic and slit
     slit = slits.Slit(mass=10, V=(15, 15, 0.1))
     collimator = lenses.AchromLens(
         mass=180, V=(12.5, 12.5, 10)
@@ -88,8 +88,7 @@ if __name__ == "__main__":
 
     # efl_foreoptic = 100
     # bfl_foreoptic = efl_foreoptic - foreoptics_cmount
-    bfl_foreoptic = 9  # min bfl estimate in #payload (Maggie) - in the plots as a constraint (to see where the bfl is being constrained)
-
+    # bfl_foreoptic = 9  # min bfl estimate in #payload (Maggie) - in the plots as a constraint (to see where the bfl is being constrained)
 
     # efl_collimator = np.linspace(start=1, stop=50, num=100)
     # h1c, h2c = collimator_thick.get_principal_planes()
@@ -102,8 +101,7 @@ if __name__ == "__main__":
     bfl_focuser = np.linspace(start=1, stop=50, num=100)
 
     spacing_tot = (
-        bfl_foreoptic
-        + ffl_collimator
+        ffl_collimator
         + collimator_to_filter
         + filter_to_diffractor
         + diffractor_to_focuser
@@ -116,8 +114,12 @@ if __name__ == "__main__":
 
     tot_mass = sum(masses)
     tot_V = (Vx_max, Vy_max, Vz_tot)
+
+    print(tot_mass)
+    print(tot_V)
     # endregion
 
+'''
     # region plots
     # plot 1
     x1 = ffl_collimator
@@ -126,10 +128,9 @@ if __name__ == "__main__":
     shape1 = (x1.size, y1.size)
 
     x1 = utillib.orient_and_broadcast(a=x1, dim=0, shape=shape1)
-    y1 = utillib.orient_and_broadcast(a=y1, dim=1, shape=shape1)
 
     dfd1 = {"x1": x1.flatten(), "y1": y1.flatten()}
-    df1 = pd.DataFrame(data.dfd1)
+    df1 = pd.DataFrame(data=dfd1)
     LOG.debug(df1)
 
     plotlib.line(df=df1, x=x1, y=y1, title="Vz vs. FFL Collimator")
@@ -140,12 +141,12 @@ if __name__ == "__main__":
     
     shape2 = (x2.size, y2.size)
 
-    x2 = utillib.orient_and_broadcast(a=x2, dim=0, shape=shape1)
-    y2 = utillib.orient_and_broadcast(a=y2, dim=1, shape=shape1)
+    x2 = utillib.orient_and_broadcast(a=x2, dim=0, shape=shape2)
 
     dfd2 = {"x2": x2.flatten(), "y2": y2.flatten()}
-    df2 = pd.DataFrame(data.dfd2)
+    df2 = pd.DataFrame(data=dfd2)
     LOG.debug(df2)
 
     plotlib.line(df=df2, x=x2, y=y2, title="Vz vs. BFL Focuser")
     # endregion
+'''
