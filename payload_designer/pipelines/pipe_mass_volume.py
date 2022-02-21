@@ -114,12 +114,8 @@ if __name__ == "__main__":
 
     tot_mass = sum(masses)
     tot_V = (Vx_max, Vy_max, Vz_tot)
-
-    print(tot_mass)
-    print(tot_V)
     # endregion
 
-'''
     # region plots
     # plot 1
     x1 = ffl_collimator
@@ -128,11 +124,11 @@ if __name__ == "__main__":
     shape1 = (x1.size, y1.size)
 
     x1 = utillib.orient_and_broadcast(a=x1, dim=0, shape=shape1)
-
-    dfd1 = {"x1": x1.flatten(), "y1": y1.flatten()}
+    
+    dfd1 = {"x1": x1.flatten(), "y1": y1.flatten}
     df1 = pd.DataFrame(data=dfd1)
     LOG.debug(df1)
-
+    
     plotlib.line(df=df1, x=x1, y=y1, title="Vz vs. FFL Collimator")
 
     # plot 2
@@ -149,4 +145,3 @@ if __name__ == "__main__":
 
     plotlib.line(df=df2, x=x2, y=y2, title="Vz vs. BFL Focuser")
     # endregion
-'''
