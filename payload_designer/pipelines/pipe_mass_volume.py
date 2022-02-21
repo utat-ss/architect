@@ -4,7 +4,6 @@
 import logging
 import logging.config
 from pathlib import Path
-import math
 
 # external
 import numpy as np
@@ -53,7 +52,9 @@ sensor_to_frontplane = 12.55
 
 if __name__ == "__main__":
     # region component instantiation
-    foreoptic = foreoptics.Foreoptic(mass=80, V=(44, 44, 54)) # 54mm includes spacing between foreoptic and slit
+    foreoptic = foreoptics.Foreoptic(
+        mass=80, V=(44, 44, 54)
+    )  # 54mm includes spacing between foreoptic and slit
     slit = slits.Slit(mass=10, V=(15, 15, 0.1))
     collimator = lenses.AchromLens(
         mass=180, V=(12.5, 12.5, 10)
@@ -117,31 +118,28 @@ if __name__ == "__main__":
     # endregion
 
     # region plots
-    # plot 1
     x1 = ffl_collimator
     y1 = Vz_tot
-    
-    shape1 = (x1.size, y1.size)
-
-    x1 = utillib.orient_and_broadcast(a=x1, dim=0, shape=shape1)
+    x2 = bfl_focuser
+    y2 = Vz_tot
     
     dfd1 = {"x1": x1.flatten(), "y1": y1.flatten}
     df1 = pd.DataFrame(data=dfd1)
     LOG.debug(df1)
-    
-    plotlib.line(df=df1, x=x1, y=y1, title="Vz vs. FFL Collimator")
-
-    # plot 2
-    x2 = bfl_focuser
-    y2 = Vz_tot
-    
-    shape2 = (x2.size, y2.size)
-
-    x2 = utillib.orient_and_broadcast(a=x2, dim=0, shape=shape2)
 
     dfd2 = {"x2": x2.flatten(), "y2": y2.flatten()}
     df2 = pd.DataFrame(data=dfd2)
     LOG.debug(df2)
-
-    plotlib.line(df=df2, x=x2, y=y2, title="Vz vs. BFL Focuser")
+    
+    # both plots are the same because bfl_focuser = ffl_collimator - probably not very useful?
+    plotlib.line(
+        df=df2, 
+        x=x2, 
+        y=y2, 
+        title="Vz vs. BFL Focuser")
+    plotlib.line(
+        df=df1, 
+        x=x1, 
+        y=y1, 
+        title="Vz vs. FFL Collimator")
     # endregion
