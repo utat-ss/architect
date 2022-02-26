@@ -85,7 +85,6 @@ def test_line_multiple_traces():
     # endregion
 
 
-@pytest.mark.star
 @pytest.mark.plot
 def test_scatter():
     """Test the scatter plot function with full dimensionality."""
