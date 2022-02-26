@@ -8,6 +8,7 @@ from pathlib import Path
 
 # external
 import numpy as np
+import pandas as pd
 
 # project
 #from payload_designer.components import sensors
@@ -26,77 +27,95 @@ LOG = logging.getLogger(__name__)
 # endregion
 
 # region parameter config
-# GSD and Swath
+# for both GSD and swath
 flight_h = np.linspace(start=160, stop=2000, num=100) # [km]
 pix_pitch = 15 # [um] replace with actual value
 foc_len = np.linspace(start=1, stop=100, num=100) # [mm]
-skew_a = -20 # [deg] skew angle from nadir; replace with actual value
+skew_angle = -20 # [deg] skew angle from nadir; replace with actual value
 wavelength = 800 # [nm] replace with actual value
 aperture_d = 10 # [mm] replace with actual value
 
-# GSD as function of skew angle only
+# for GSD as function of skew angle
 theta = np.linspace(start=-70, stop=70, num=100) # [deg]
 R_E = 6.371*10^6 # [m] radius of Earth
-r_orb = R_E + np.multiply(flight_h, 10^3) # [m] radius of orbit
+r_orb = R_E + (flight_h * 10^3) # [m] radius of orbit
 
-# Swath only
+# for swath
 pix_across = 2000 # replace with actual sensor pixel count in across-track direction
 pix_along = 1800 # replace with actual sensor pixel count in along-track direction
-sens_hor = np.multiply(pix_across, pix_pitch) # [um] horizontal sensor size
-sens_ver = np.multiply(pix_along, pix_pitch) # [um] vertical sensor size
+sens_hor = pix_across * pix_pitch # [um] horizontal sensor size
+sens_ver = pix_along * pix_pitch # [um] vertical sensor size
 # endregion
 
 # region unit conversions
-H = np.multiply(flight_h, 10^3) # [m]
-s_mu = np.multiply(pix_pitch, 10^(-6)) # [m]
-f = np.multiply(foc_len, 10^(-3)) # [m]
-a = np.divide(np.multiply(np.pi, skew_a), 180) # [rad]
-l = np.multiply(wavelength, 10^(-9)) # [m]
-d = np.multiply(aperture_d, 10^(-3)) # [m]
-s_x = np.multiply(sens_hor, 10^(-6)) # [m]
-s_y = np.multiply(sens_ver, 10^(-6)) # [m]
+flight_h = flight_h * 10^3 # [m]
+pix_pitch = pix_pitch * 10^(-6) # [m]
+foc_len = foc_len * 10^(-3) # [m]
+skew_angle = (np.pi * skew_angle) / 180 # [rad]
+wavelength = wavelength * 10^(-9) # [m]
+aperture_d = aperture_d * 10^(-3) # [m]
+sens_hor_size = sens_hor * 10^(-6) # [m]
+sens_ver_size = sens_ver * 10^(-6) # [m]
 #endregion
 
 if __name__ == "__main__":
     # region component instantiation
-    #sensor = sensors.Sensor(px_x = px_x)
+    # sensor = sensors.Sensor(px_x = px_x)
     # endregion
 
     # region pipeline
-    x_sen = np.divide(np.multiply(H, s_mu), np.multiply(f, np.cos(a))) # sensor-limited GSD, flat Earth
-    x_opt = np.multiply(1.22, np.divide(np.multiply(l, H), np.multiply(d, np.cos(a)))) # diffraction-limited GSD, flat Earth
-    x_abs = max(x_sen, x_opt) # actual system GSD, flat Earth
+    gsd_sen_lim = (flight_h * pix_pitch) / (foc_len * np.cos(skew_angle)) # sensor-limited GSD, flat Earth
+    gsd_diffrac_lim = (1.22 * wavelength * flight_h) / (aperture_d * np.cos(skew_angle)) # diffraction-limited GSD, flat Earth
+    gsd_abs = max(gsd_sen_lim, gsd_diffrac_lim) # actual system GSD, flat Earth
 
-    S_wid = np.multiply(np.divide(np.multiply(H, s_x), np.multiply(f, np.cos(a))), 10^(-3)) # swath width
-    S_len = np.multiply(np.divide(np.multiply(H, s_y), np.multiply(f, np.cos(a))), 10^(-3)) # swath length
+    swath_wid = ((flight_h * sens_hor_size) / (foc_len * np.cos(skew_angle))) * 10^(-3) # swath width
+    swath_len = ((flight_h * sens_ver_size) / (foc_len * np.cos(skew_angle))) * 10^(-3) # swath length
     
-    term1a = np.multiply(np.multiply(2, r_orb), np.cot(theta))
-    term1b = np.multiply(np.multiply(-2, r_orb), np.power(np.cot(theta), 2))
-    sqrt1 = np.multiply(np.multiply(4, np.power(R_E, 2)), np.power(np.cot(theta), 2))
-    sqrt2 = np.multiply(4, np.power(r_orb, 2))
-    sqrt3 = np.multiply(4, np.power(R_E, 2))
-    term2a = np.power(np.add(np.add(sqrt1, sqrt2), sqrt3), 2)
-    term2b = np.multiply(np.cot(theta), np.power(np.add(np.add(sqrt1, sqrt2), sqrt3), 2))
-    term3 = np.multiply(2, np.power(np.cot(theta), 2))
-    exp1a = np.power(np.divide(np.add(term1a, term2a), term3), 2)
-    exp2a = np.power(np.divide(np.subtract(term1b, term2b), term3), 2)
-    exp1b = np.power(np.divide(np.subtract(term1a, term2a), term3), 2)
-    exp2b = np.power(np.divide(np.add(term1b, term2b), term3), 2)
-    D1 = np.power(np.add(exp1a, exp2a), 0.5)
-    D2 = np.power(np.add(exp1b, exp2b), 0.5)
-    y = np.divide(np.multiply(min(D1, D2), s_mu), f) # GSD as function of skew angle
+    term_1a = 2 * r_orb * np.cot(theta)
+    term_1b = -2 * r_orb * (np.cot(theta))^2
+    term_2a = ((4 * R_E^2 * (np.cot(theta))^2) - (4 * r_orb^2) + (4 * R_E^2))^(0.5)
+    term_2b = np.cot(theta) * ((4 * R_E^2 * (np.cot(theta))^2) - (4 * r_orb^2) + (4 * R_E^2))^(0.5)
+    term_3 = 2 * ((np.cot(theta))^2 + 1)
+
+    curv_1 = (((term_1a + term_2a) / term_3)^2 + ((term_1b - term_2b) / term_3)^2)^(0.5) # curvature
+    curv_2 = (((term_1a - term_2a) / term_3)^2 + ((term_1b + term_2b) / term_3)^2)^(0.5) # curvature
+    gsd_skew = min(curv_1, curv_2) * pix_pitch / foc_len # GSD as function of skew angle
     # endregion
 
     # region plots
+    dfd1 = {"focal length": foc_len.flatten(), "sensor-limited gsd": gsd_sen_lim.flatten()}
+    df1 = pd.DataFram(data=dfd1)
+    LOG.debug(df1)
+
+    dfd2 = {"focal length": foc_len.flatten(), "diffraction-limited gsd": gsd_diffrac_lim.flatten()}
+    df2 = pd.DataFram(data=dfd2)
+    LOG.debug(df2)
+
+    dfd3 = {"focal length": foc_len.flatten(), "absolute gsd": gsd_abs.flatten()}
+    df3 = pd.DataFram(data=dfd3)
+    LOG.debug(df3)
+
+    dfd4 = {"skew angle": theta.flatten(), "gsd skew": gsd_skew.flatten()}
+    df4 = pd.DataFram(data=dfd4)
+    LOG.debug(df4)
+
+    dfd5 = {"focal length": foc_len.flatten(), "swath width": swath_wid.flatten()}
+    df5 = pd.DataFram(data=dfd5)
+    LOG.debug(df5)
+
+    dfd6 = {"focal length": foc_len.flatten(), "swath length": swath_len.flatten()}
+    df6 = pd.DataFram(data=dfd6)
+    LOG.debug(df6)
+    
     # GSD - flat earth
-    plotlib.line(x=f, y=x_sen)
-    plotlib.line(x=f, y=x_opt)
-    plotlib.line(x=f, y=x_abs)
+    plotlib.line(df=df1, x=foc_len, y=gsd_sen_lim, title="Sensor-limited GSD vs Focal Length")
+    plotlib.line(df=df2, x=foc_len, y=gsd_diffrac_lim, title="Diffraction-limited GSD vs Focal Length")
+    plotlib.line(df=df3, x=foc_len, y=gsd_abs, title="Absolute GSD vs Focal Length")
 
     # GSD - considering Earth curvature
-    plotlib.line(x=theta, y=y)
+    plotlib.line(df=df4, x=theta, y=gsd_skew, title="Absolute GSD vs Skew Angle")
 
-    # Swath
-    plotlib.line(x=f, y=S_wid)
-    plotlib.line(x=f, y=S_len)
+    # swath
+    plotlib.line(df=df5, x=foc_len, y=swath_wid, title="Swath Width vs Focal Length")
+    plotlib.line(df=df6, x=foc_len, y=swath_len, title="Swath Length vs Focal Length")
     # endregion
