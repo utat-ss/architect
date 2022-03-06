@@ -7,6 +7,7 @@ import math
 # external
 import numpy as np
 import scipy.constants as sc
+from payload_designer.components.basecomponent import BaseComponent
 
 # project
 from payload_designer.libs import physlib, utillib
@@ -14,7 +15,7 @@ from payload_designer.libs import physlib, utillib
 LOG = logging.getLogger(__name__)
 
 
-class SRGrating:
+class SRGrating(BaseComponent):
     """Surface-Relief Diffraction Grating component.
 
     Args:
@@ -156,7 +157,7 @@ class SRGrating:
         return b_to_a
 
 
-class VPHGrating:
+class VPHGrating(BaseComponent):
     """Volume-Phase Holographic grating component.
 
     Args:
@@ -305,7 +306,7 @@ class VPHGrating:
         return lmda_eff
 
 
-class VPHGrism:
+class VPHGrism(BaseComponent):
     """Volume-Phase Holographic grating grism component.
 
     Args:

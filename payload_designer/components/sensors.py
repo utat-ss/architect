@@ -8,6 +8,7 @@ from pathlib import Path
 # external
 import numpy as np
 import scipy.constants as sc
+from payload_designer.components.basecomponent import BaseComponent
 
 # project
 from payload_designer.libs import utillib
@@ -15,7 +16,7 @@ from payload_designer.libs import utillib
 LOG = logging.getLogger(__name__)
 
 
-class Sensor:
+class Sensor(BaseComponent):
     """Sensor component model.
 
     Args:
