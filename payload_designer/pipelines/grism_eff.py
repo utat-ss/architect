@@ -29,10 +29,10 @@ LOG = logging.getLogger(__name__)
 # endregion
 
 # region parameter config
-l = np.linspace(start=90, stop=1800, num=20)  # [nm]
-v = np.linspace(start=900, stop=1200, num=20)  # [L/mm]
-a_in = np.linspace(start=0, stop=20, num=20)
-d = np.linspace(start=0.25, stop=5, num=20)
+l = np.linspace(start=90, stop=1800, num=3)  # [nm]
+v = np.linspace(start=900, stop=1200, num=3)  # [L/mm]
+a_in = np.linspace(start=0, stop=20, num=3)
+d = np.linspace(start=0.25, stop=5, num=3)
 
 n_g = 0.1
 n_3 = 1.3
@@ -67,26 +67,26 @@ if __name__ == "__main__":
     #df2=df.loc[((df['a_in [°]'] == 0.0) & (df['d [μm]'] == 2.0) & (df['l [nm]'] == 1620) & (df['v [lines/mm]'] == 1200))],
     #LOG.debug(df2.to_string())
     plotlib.line(
-        df=df.loc[((df['d [μm]'] == 2.0) & (df['l [nm]'] == 1620.0) & (df['v [lines/mm]'] == 1200.000000)& (df['a_in [°]'] >= 0.0))],
+        df=df.loc[((df['d [um]'] == 2.0) & (df['l [nm]'] == 1620.0) & (df['v [lines/mm]'] == 1200.000000)& (df['a_in [°]'] >= 0.0))],
         x="a_in [°]",
         y="eff",
-        title="Grism Efficiency vs Incident Ray Angle with d = 2μm, l = 1620nm, v = 1200lines/mm",
+        title="Grism Efficiency vs Incident Ray Angle with d = 2um, l = 1620nm, v = 1200lines/mm",
     )
     plotlib.line(
-        df=df.loc[((df['a_in [°]'] == 0.0) & (df['d [μm]'] == 2.0) & (df['l [nm]'] == 1620)& (df['v [lines/mm]'] > 900))],
+        df=df.loc[((df['a_in [°]'] == 0.0) & (df['d [um]'] == 2.0) & (df['l [nm]'] == 1620.0)& (df['v [lines/mm]'] > 900))],
         x="v [lines/mm]",
         y="eff",
-        title="Grism Efficiency vs Fringe Frequency with d = 2μm, l = 1620nm, a_in = 0°",
+        title="Grism Efficiency vs Fringe Frequency with d = 2um, l = 1620nm, a_in = 0°",
     )
     plotlib.line(
-        df=df.loc[((df['a_in [°]'] == 0.0) & (df['d [μm]'] == 2.0) & (df['v [lines/mm]'] == 1200)& (df['l [nm]'] > 1440))],
+        df=df.loc[((df['a_in [°]'] == 0.0) & (df['d [um]'] == 2.0) & (df['v [lines/mm]'] == 1200)& (df['l [nm]'] > 1440))],
         x="l [nm]",
         y="eff",
-        title="Grism Efficiency vs Wavelength with d = 2μm, a_in = 0°, v = 1200lines/mm",
+        title="Grism Efficiency vs Wavelength with d = 2um, a_in = 0°, v = 1200lines/mm",
     )
     plotlib.line(
-        df=df.loc[((df['a_in [°]'] == 0.0) & (df['v [lines/mm]'] == 1200) & (df['l [nm]'] == 1620)& (df['d [μm]'] > 0.75))],
-        x="d [μm]",
+        df=df.loc[((df['a_in [°]'] == 0.0) & (df['v [lines/mm]'] == 1200) & (df['l [nm]'] == 1620)& (df['d [um]'] > 0.75))],
+        x="d [um]",
         y="eff",
         title="Grism Efficiency vs DCG Thickness with l = 1620nm, a_in = 0°, v = 1200lines/mm",
     )
