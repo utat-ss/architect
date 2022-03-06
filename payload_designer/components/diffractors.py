@@ -7,6 +7,7 @@ import math
 # external
 import numpy as np
 import scipy.constants as sc
+import pandas as pd
 
 # project
 from payload_designer.libs import physlib, utillib
@@ -577,9 +578,9 @@ class VPHGrism:
         # region unit conversion
         a_in = np.radians(a_in)
         a = np.radians(a)
-        l = l  # nm
-        v = v * 10 ** -6  # lines/mm to lines/nm
-        d = d * 10 ** 3  # microns to nm
+        l = l * 10 ** -9  # nm to m
+        v = v * 10 ** 3  # lines/mm to lines/m
+        d = d * 10 ** -6  # microns to m
         # endregion
 
         # region broadcasting
@@ -606,7 +607,7 @@ class VPHGrism:
         n_3 = utillib.orient_and_broadcast(a=self.n_3, dim=8, shape=shape)
         eff_mat = utillib.orient_and_broadcast(a=self.eff_mat, dim=9, shape=shape)
         # endregion
-
+        
         # region pipeline
         angle_1 = a_in + a
         angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=self.n_1, n_2=self.n_2)
@@ -633,10 +634,18 @@ class VPHGrism:
         )  # angle_5 being close to bragg angle = more efficiency
         n_p = n_p * self.eff_mat * self.eff_mat
         # endregion
-
+        
         # region unit reconversion
-        # TODO
-
+        l = l * 10 **9 #m to nm
+        v = v * 10 ** -3 #lines/m to lines/mm
+        d = d * 10 ** 6 #m to microns
+        a_in = np.degrees(a_in)
+        a = np.degrees(a)
         # endregion
+        #dictionary region
+        
+        dfd = {"a_in [°]": a_in.flatten(), "d [μm]": d.flatten(), "l [nm]": l.flatten(), "v [lines/mm]": v.flatten(), "a [°]": a.flatten(),  "n_1": n_1.flatten(), "n_2": n_2.flatten(), "n_3": n_3.flatten(), "eff_mat": eff_mat.flatten(),"eff": n_p.flatten()}
+        df = pd.DataFrame(data=dfd)
+        LOG.debug(f"dataframe:\n{df.to_string()}")
 
-        return n_p
+        return n_p, df
