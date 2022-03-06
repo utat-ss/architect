@@ -1,13 +1,12 @@
 from .diffractors import SRGrating, VPHGrating, VPHGrism
 from .filters import Filter
 from .foreoptics import Foreoptic
-from .lenses import ThinLens, ThickLens, AchromLens
+from .lenses import AchromLens, ThickLens, ThinLens
 from .sensors import Sensor, TauSWIR
 from .slits import Slit
 
 
 class Components:
-
     def __init__(self):
         self.sr_grating_component = SRGrating()
         self.vph_grating_component = VPHGrating()

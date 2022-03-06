@@ -8,9 +8,9 @@ from pathlib import Path
 # external
 import numpy as np
 import scipy.constants as sc
-from payload_designer.components.basecomponent import BaseComponent
 
 # project
+from payload_designer.components.basecomponent import BaseComponent
 from payload_designer.libs import utillib
 
 LOG = logging.getLogger(__name__)
@@ -115,7 +115,7 @@ class Sensor(BaseComponent):
         sigma_dark = i_dark * dt
         LOG.debug(f"Dark noise: {sigma_dark} [e-/px]")
 
-        sigma_quantization = (1 / math.sqrt(12)) * n_well / 2**self.n_bit
+        sigma_quantization = (1 / math.sqrt(12)) * n_well / 2 ** self.n_bit
         LOG.debug(f"Quantization noise: {sigma_quantization} [e-/px]")
 
         noise = np.sqrt(

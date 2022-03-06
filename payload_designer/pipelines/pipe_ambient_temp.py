@@ -1,12 +1,13 @@
-"""
-Calculate the net operating temperature across all components.
-"""
+"""Calculate the net operating temperature across all components."""
+# project
 from payload_designer.components.components import Components
 
 
 def get_components():
     obj = Components()
-    return [a for a in dir(obj) if not a.startswith('__') and not callable(getattr(obj, a))]
+    return [
+        a for a in dir(obj) if not a.startswith("__") and not callable(getattr(obj, a))
+    ]
 
 
 def filter_components(components):
@@ -27,8 +28,14 @@ def calculate_ambient_operating_temp():
     min_component = filtered_components[operating_ranges.index(min_range)]
 
     print(f"Component: {min_component}")
-    print(f"range: {min_component.min_operating_temp} - \
-        {min_component.max_operating_temp}")
+    print(
+        f"range: {min_component.min_operating_temp} - \
+        {min_component.max_operating_temp}"
+    )
 
-    return min_component, min_range, min_component.min_operating_temp, \
-        min_component.max_operating_temp
+    return (
+        min_component,
+        min_range,
+        min_component.min_operating_temp,
+        min_component.max_operating_temp,
+    )

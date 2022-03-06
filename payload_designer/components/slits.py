@@ -7,9 +7,9 @@ import math
 # external
 import numpy as np
 import scipy.constants as sc
-from payload_designer.components.basecomponent import BaseComponent
 
 # project
+from payload_designer.components.basecomponent import BaseComponent
 from payload_designer.libs import physlib, utillib
 
 LOG = logging.getLogger(__name__)
