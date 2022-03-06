@@ -114,7 +114,7 @@ class Sensor:
         sigma_dark = i_dark * dt
         LOG.debug(f"Dark noise: {sigma_dark} [e-/px]")
 
-        sigma_quantization = (1 / math.sqrt(12)) * n_well / 2**self.n_bit
+        sigma_quantization = (1 / math.sqrt(12)) * n_well / 2 ** self.n_bit
         LOG.debug(f"Quantization noise: {sigma_quantization} [e-/px]")
 
         noise = np.sqrt(
