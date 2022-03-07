@@ -16,6 +16,7 @@ from payload_designer.components import (
     foreoptics,
     lenses,
     sensors,
+    slits,
 )
 from payload_designer.libs import plotlib, utillib
 
@@ -36,6 +37,9 @@ LOG = logging.getLogger(__name__)
 # region parameter config
 lmbda = np.linspace(start=900, stop=1700, num=100)  # [nm]
 f_n = 1.5
+w_s = 1  # slit width [mm]
+l_s = 20  # slit length [mm]
+d_i = 20  # image diameter from foreoptics incident on slit [mm]
 
 # LUTS
 foreoptic_eta = utillib.LUT(Path("data/foreoptic_transmittance.csv"))
@@ -52,7 +56,8 @@ L_target = utillib.LUT(
 
 if __name__ == "__main__":
     # region component instantiation
-    foreoptic = foreoptics.Foreoptic(eta=foreoptic_eta)
+    foreoptic = foreoptics.Foreoptic(eta=foreoptic_eta, d_i=d_i)
+    slit = slits.Slit(w_s=w_s, l_s=l_s)
     collimator = lenses.AchromLens(eta=collimator_eta)
     bandfilter = filters.Filter(eta=bandfilter_eta)
     diffractor = diffractors.VPHGrism(eta=diffractor_eta)
@@ -72,8 +77,15 @@ if __name__ == "__main__":
     )
     LOG.info(f"Optical transmittance:\n{eta_optics}%")
 
+    epsilon = slit.get_slit_area() / foreoptic.get_image_area()
+    LOG.info(f"Fraction of image not blocked:\n{epsilon}")
+
     snr, signal, noise = sensor.get_snr(
-        L_target=L_target, eta_optics=eta_optics, f_n=f_n, lmbda=lmbda
+        L_target=L_target,
+        eta_optics=eta_optics,
+        epsilon=epsilon,
+        f_n=f_n,
+        lmbda=lmbda,
     )
     LOG.info(f"SNR:\n{snr}")
     # endregion

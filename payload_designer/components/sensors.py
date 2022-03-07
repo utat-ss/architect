@@ -62,7 +62,7 @@ class Sensor:
         self.px_y = px_y
         self.sigma_read = sigma_read
 
-    def get_snr(self, L_target, eta_optics, f_n, lmbda):
+    def get_snr(self, L_target, eta_optics, epsilon, f_n, lmbda):
         """Calculates the signal to noise ratio from the sensor and system
         parameters.
 
@@ -104,6 +104,7 @@ class Sensor:
             * (A_d / f_n ** 2)
             * self.eta_sensor(lmbda)
             * eta_optics
+            * epsilon
             * L_target(lmbda)
             * dt
         )

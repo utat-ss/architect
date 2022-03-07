@@ -21,7 +21,7 @@ class Slit:
         w_i (float, optional): image width. Defaults to None.
         m (float, optional): magnification of the optical bench. Defaults to None.
         f (float, optional): focal length of the foreoptics. Defaults to None.
-        w_s (float, optional): slit width. Defaults to None.
+        w_s (float, optional): slit width [mm]. Defaults to None.
         l_s (float, optional): slit length. Defaults to None.
         w_o (float, optional): object width. Defaults to None.
         w_d (float, optional): detector width. Defaults to None.
@@ -111,3 +111,17 @@ class Slit:
         w_s = np.divide(self.w_d, self.m)
 
         return w_s
+
+    def get_slit_area(self):
+        """Caculates the slit area.
+
+        Returns:
+            float: slit area [mm^2].
+
+        """
+        assert self.w_s is not None, "w_s is not set."
+        assert self.l_s is not None, "l_s is not set."
+
+        a_s = self.w_s * self.l_s
+
+        return a_s

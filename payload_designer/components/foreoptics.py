@@ -22,6 +22,7 @@ class Foreoptic:
         a_in_max (float, optional): maximum angle of incidence in degrees. Defaults to None.
         b (float, optional): source radiance. Defaults to None.
         dm_a (float, optional): aperture diameter. Defaults to None.
+        d_i (float, optional): image diameter [mm]. Defaults to None.
         ds_i (float, optional): image distance. Defaults to None.
         ds_o (float, optional): object distance. Defaults to None.
         eta (LUT, optional) transmittace LUT object. Defaults to None.
@@ -44,6 +45,7 @@ class Foreoptic:
         n=None,
         na=None,
         s=None,
+        d_i=None,
     ):
         self.a_in_max = a_in_max
         self.b = b
@@ -55,6 +57,7 @@ class Foreoptic:
         self.n = n
         self.na = na
         self.s = s
+        self.d_i = d_i
 
     def get_aperture_diameter(self):
         """Calculate the aperture diamter.
@@ -170,3 +173,16 @@ class Foreoptic:
         f = np.multiply(self.b, self.g)
 
         return f
+
+    def get_image_area(self):
+        """Calculate the image area.
+
+        Returns:
+            float: image area [mm^2].
+
+        """
+        assert self.d_i is not None, "d_i is not set."
+
+        a_i = math.pi * (self.d_i / 2) ** 2
+
+        return a_i
