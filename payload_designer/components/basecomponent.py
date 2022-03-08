@@ -15,7 +15,7 @@ class BaseComponent:
     """
 
     def __init__(
-        self, min_operating_temp=Optional[float], max_operating_temp=Optional[float]
+        self, min_operating_temp: float = None, max_operating_temp:float = None,
     ):
         self.min_operating_temp = min_operating_temp
         self.max_operating_temp = max_operating_temp
