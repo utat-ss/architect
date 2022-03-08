@@ -7,10 +7,10 @@ class BaseComponent:
     of all components (i.e. shared attributes/methods)
 
     Args:
-        min_operating_temp (float, optional): the min. temparature the
-                                              component can generate
-        max_operating_temp (float, optional): the max. temperature the
-                                              component can generate
+        min_operating_temp: the minimum temperature the
+                                              component can tolerate.
+        max_operating_temp: the maximum temperature the
+                                              component can tolerate.
 
     """
 
