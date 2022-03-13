@@ -6,8 +6,8 @@ import math
 
 # external
 import numpy as np
-import scipy.constants as sc
 import pandas as pd
+import scipy.constants as sc
 
 # project
 from payload_designer.libs import physlib, utillib
@@ -562,83 +562,44 @@ class VPHGrism:
         assert self.n_3 is not None, "n_3 is not set"
         assert self.eff_mat is not None, "prism material efficiency is not set"
 
-        # region vectorization
-        a_in = np.array(self.a_in)
-        a = np.array(self.a)
-        d = np.array(self.d)
-        l = np.array(self.l)
-        v = np.array(self.v)
-        n_g = np.array(self.n_g)
-        n_1 = np.array(self.n_1)
-        n_2 = np.array(self.n_2)
-        n_3 = np.array(self.n_3)
-        eff_mat = np.array(self.eff_mat)
-        # endregion
-
         # region unit conversion
-        a_in = np.radians(a_in)
-        a = np.radians(a)
-        l = l * 10 ** -9  # nm to m
-        v = v * 10 ** 3  # lines/mm to lines/m
-        d = d * 10 ** -6  # microns to m
+        a = np.radians(self.a)
+        a_in = np.radians(self.a_in)
+        d = self.d * 1e-6  # microns to m
+        eff_mat = self.eff_mat
+        l = self.l * 1e-9  # nm to m
+        n_1 = self.n_1
+        n_2 = self.n_2
+        n_3 = self.n_3
+        n_g = self.n_g
+        v = self.v * 1e3  # lines/mm to lines/m
         # endregion
 
-        # region broadcasting
-        shape = (
-            a_in.size,
-            v.size,
-            l.size,
-            d.size,
-            a.size,
-            n_g.size,
-            n_1.size,
-            n_2.size,
-            n_3.size,
-            eff_mat.size,
-        )
-        a_in = utillib.orient_and_broadcast(a=a_in, dim=0, shape=shape)
-        v = utillib.orient_and_broadcast(a=v, dim=1, shape=shape)
-        l = utillib.orient_and_broadcast(a=l, dim=2, shape=shape)
-        d = utillib.orient_and_broadcast(a=d, dim=3, shape=shape)
-        a = utillib.orient_and_broadcast(a=a, dim=4, shape=shape)
-        n_g = utillib.orient_and_broadcast(a=self.n_g, dim=5, shape=shape)
-        n_1 = utillib.orient_and_broadcast(a=self.n_1, dim=6, shape=shape)
-        n_2 = utillib.orient_and_broadcast(a=self.n_2, dim=7, shape=shape)
-        n_3 = utillib.orient_and_broadcast(a=self.n_3, dim=8, shape=shape)
-        eff_mat = utillib.orient_and_broadcast(a=self.eff_mat, dim=9, shape=shape)
-        # endregion
-        
-        # region pipeline
+        # region evaluation
         angle_1 = a_in + a
-        angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=self.n_1, n_2=self.n_2)
+        angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=n_1, n_2=n_2)
         angle_3 = a - angle_2
-        angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=self.n_2, n_2=self.n_3)
+        angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=n_2, n_2=n_3)
         angle_5 = angle_4
         L = 1 / v  # nm/lines
 
-        Q = (l ** 2) / (self.n_g * self.n_3 * L ** 2)
-        if np.any(Q < 10):
-            LOG.warn(
-                f"Q<10 requirement not met, diffraction efficiency formula not valid\nQ = {Q}"
-            )
         # diffraction efficiency
-        n_p = (np.sin((math.pi * self.n_g * d) / (l * np.cos(angle_5))) ** 2) + (
+        n_p = (np.sin((math.pi * n_g * d) / (l * np.cos(angle_5))) ** 2) + (
             (1 / 2)
             * (
                 np.sin(
-                    ((math.pi * self.n_g * d) * np.cos(2 * angle_5))
-                    / (l * np.cos(angle_5))
+                    ((math.pi * n_g * d) * np.cos(2 * angle_5)) / (l * np.cos(angle_5))
                 )
             )
             ** 2
         )  # angle_5 being close to bragg angle = more efficiency
-        n_p = n_p * self.eff_mat * self.eff_mat
+        n_p = n_p * eff_mat * eff_mat
         # endregion
-        
+
         # region unit reconversion
-        l = l * 10 **9 #m to nm
-        v = v * 10 ** -3 #lines/m to lines/mm
-        d = d * 10 ** 6 #m to microns
+        l = l * 1e9  # m to nm
+        v = v * 1e-3  # lines/m to lines/mm
+        d = d * 1e6  # m to microns
         a_in = np.degrees(a_in)
         a = np.degrees(a)
         # endregion
@@ -648,4 +609,4 @@ class VPHGrism:
         df = pd.DataFrame(data=dfd)
         LOG.debug(f"dataframe:\n{df.to_string()}")
 
-        return n_p, df
+        return n_p
