@@ -10,22 +10,29 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
+
     - name: Checkout repository
       uses: actions/checkout@master
+
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@master
       with:
-        python-version: 3.9
+        python-version: 3.10.x
+
     - name: Install dependencies
       run: |
-        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python -
+        curl -sSL https://install.python-poetry.org | python3 -
+        poetry config virtualenvs.in-project true
+        poetry run pip install --upgrade setuptools==57.5.0
         poetry install
-    - name: Pytest
+  
+    - name: Run tests
       run: |
         poetry run pytest -v --cov-report=xml
+
     - name: Upload coverage to Codecov 
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@master
       with:
         files: coverage.xml
         name: codecov-umbrella
-        fail_ci_if_error: true
+        fail_ci_if_error: false
