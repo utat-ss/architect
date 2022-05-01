@@ -96,12 +96,12 @@ class Sensor:
         # endregion
 
         # region signal
-        A_d = p ** 2
+        A_d = p**2
 
         s_target = (
             (sc.pi / 4)
             * (lmbda / (sc.h * sc.c))
-            * (A_d / f_n ** 2)
+            * (A_d / f_n**2)
             * self.eta_sensor(lmbda)
             * eta_optics
             * epsilon
@@ -115,14 +115,14 @@ class Sensor:
         sigma_dark = i_dark * dt
         LOG.debug(f"Dark noise: {sigma_dark} [e-/px]")
 
-        sigma_quantization = (1 / math.sqrt(12)) * n_well / 2 ** self.n_bit
+        sigma_quantization = (1 / math.sqrt(12)) * n_well / 2**self.n_bit
         LOG.debug(f"Quantization noise: {sigma_quantization} [e-/px]")
 
         noise = np.sqrt(
             s_target
-            + self.n_bin * sigma_dark ** 2
-            + sigma_quantization ** 2
-            + self.n_bin * self.sigma_read ** 2
+            + self.n_bin * sigma_dark**2
+            + sigma_quantization**2
+            + self.n_bin * self.sigma_read**2
         )
         LOG.debug(f"Noise: {noise}")
         # endregion

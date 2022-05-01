@@ -356,7 +356,7 @@ class AchromLens:
         assert self.f_eq is not None, "f_eq is not set."
 
         # region unit conversions
-        f_eq = self.f_eq * 10 ** -3  # mm to m
+        f_eq = self.f_eq * 10**-3  # mm to m
         # endregion
 
         f_1 = f_eq * (self.V_1 - self.V_2) / self.V_1
@@ -368,7 +368,7 @@ class AchromLens:
         assert self.f_eq is not None, "f_eq is not set."
 
         # region unit conversions
-        f_eq = self.f_eq * 10 ** -3  # mm to m
+        f_eq = self.f_eq * 10**-3  # mm to m
         # endregion
 
         f_2 = -f_eq * (self.V_1 - self.V_2) / self.V_2
@@ -377,8 +377,8 @@ class AchromLens:
     def effective_focal_length(self):
 
         # region unit conversions
-        f_1 = self.f_1 * 10 ** -3  # mm to m
-        f_2 = self.f_2 * 10 ** -3  # mm to m
+        f_1 = self.f_1 * 10**-3  # mm to m
+        f_2 = self.f_2 * 10**-3  # mm to m
         # endregion
 
         if f_1 is not None:

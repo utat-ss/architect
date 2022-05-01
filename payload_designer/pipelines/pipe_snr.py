@@ -91,9 +91,9 @@ if __name__ == "__main__":
     # endregion
 
     # region plots
-    dfd = {"$\lambda$": lmbda.flatten(), "SNR": snr.flatten()}
+    dfd = {r"$\lambda$": lmbda.flatten(), "SNR": snr.flatten()}
     df = pd.DataFrame(data=dfd)
     LOG.debug(f"\n{df}")
 
-    plotlib.line(df=df, x="$\lambda$", y="SNR")
+    plotlib.line(df=df, x=r"$\lambda$", y="SNR")
     # endregion

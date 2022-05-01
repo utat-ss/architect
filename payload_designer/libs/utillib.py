@@ -92,7 +92,7 @@ def convert_dark_current_density_to_dark_current(i_dark, p):
 
     """
     p *= 1e-6  # um to m
-    p = p ** 2  # m to m^2/px
+    p = p**2  # m to m^2/px
 
     i_dark *= 1e-9  # nA/cm^2 to A/cm^2
     i_dark *= 1e4  # A/cm^2 to A/m^2

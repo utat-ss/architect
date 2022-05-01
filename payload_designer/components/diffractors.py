@@ -67,7 +67,7 @@ class SRGrating:
         # endregion
 
         # region unit conversions
-        G = G * 10 ** 3  # 1/mm to 1/m
+        G = G * 10**3  # 1/mm to 1/m
         lmda = lmda * 10 ** (-9)  # nm to m
         alpha = np.radians(alpha)  # deg to rad
         # endregion
@@ -404,7 +404,7 @@ class VPHGrism:
         # endregion
 
         # region unit conversions
-        l = l * 10 ** -9  # m to nm
+        l = l * 10**-9  # m to nm
         a_in = np.radians(a_in)  # deg to rad
         a = np.radians(self.a)  # deg to rad
         # endregion
@@ -445,7 +445,7 @@ class VPHGrism:
         # unit conversions
         a_in = np.radians(self.a_in)  # deg to rad
         a = np.radians(self.a)
-        v = self.v * 10 ** -6  # lines/mm to lines/nm
+        v = self.v * 10**-6  # lines/mm to lines/nm
 
         angle_1 = a_in + a
         angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=self.n_1, n_2=self.n_2)
@@ -475,7 +475,7 @@ class VPHGrism:
             R = self.m * self.N
         elif self.m is not None and self.v is not None and self.w is not None:
             R = (
-                self.m * (self.v * (1 / (10 ** -3))) * (self.w * 10 ** -3)
+                self.m * (self.v * (1 / (10**-3))) * (self.w * 10**-3)
             )  # v -> lines/mm to lines/m. w -> mm to m
         else:
             raise ValueError("l and dl or m and N or m and n and w must be set.")
@@ -567,8 +567,8 @@ class VPHGrism:
         a_in = np.radians(self.a_in)
         a = np.radians(self.a)
         l = self.l  # nm
-        v = self.v * 10 ** -6  # lines/mm to lines/nm
-        d = self.d * 10 ** 3  # microns to nm
+        v = self.v * 10**-6  # lines/mm to lines/nm
+        d = self.d * 10**3  # microns to nm
 
         angle_1 = a_in + a
         angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=self.n_1, n_2=self.n_2)
@@ -577,7 +577,7 @@ class VPHGrism:
         angle_5 = angle_4
         L = 1 / v  # nm/lines
 
-        Q = (l ** 2) / (self.n_g * self.n_3 * L ** 2)
+        Q = (l**2) / (self.n_g * self.n_3 * L**2)
         if np.any(Q < 10):
             raise ValueError(
                 "Q requirement not met, diffraction efficiency formula not valid"

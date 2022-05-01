@@ -87,7 +87,7 @@ class Filter:
 
         A = self.epsilon_1 + self.epsilon_2 + self.N * np.pi
         n_star = (
-            (0.5 * A + self.k * np.pi) / ((0.5 * A / self.n ** 2) + 2 * self.J)
+            (0.5 * A + self.k * np.pi) / ((0.5 * A / self.n**2) + 2 * self.J)
         ) ** 0.5
         return n_star
 
