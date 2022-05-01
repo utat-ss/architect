@@ -31,6 +31,8 @@ class Foreoptic(BaseComponent):
         n (float, optional): f-number. Defaults to None.
         na (float, optional): numerical aperture. Defaults to None.
         s (float, optional): area of emitting source. Defaults to None.
+        mass (float, optional): mass of component [g]. Defaults to None.
+        V (tuple[float, float, float], optional): Volume envelope in x,y,z [mm]. Defaults to None.
 
     """
 
@@ -46,6 +48,8 @@ class Foreoptic(BaseComponent):
         n=None,
         na=None,
         s=None,
+        mass=None,
+        V=None,
         d_i=None,
     ):
         self.a_in_max = a_in_max
@@ -58,6 +62,8 @@ class Foreoptic(BaseComponent):
         self.n = n
         self.na = na
         self.s = s
+        self.mass = mass
+        self.V = V
         self.d_i = d_i
 
     def get_aperture_diameter(self):

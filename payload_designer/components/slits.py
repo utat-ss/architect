@@ -28,6 +28,8 @@ class Slit(BaseComponent):
         w_d (float, optional): detector width. Defaults to None.
         fov_h (float, optional): horizontal field of view in degrees. Defaults to None.
         fov_v (float, optional): vertical field of view in degrees. Defaults to None.
+        mass (float, optional): mass of component [g]. Defaults to None.
+        V (tuple[float, float, float], optional): Volume envelope in x,y,z [mm]. Defaults to None.
 
     """
 
@@ -42,6 +44,8 @@ class Slit(BaseComponent):
         w_d=None,
         fov_h=None,
         fov_v=None,
+        mass=None,
+        V=None,
     ):
         self.w_i = w_i
         self.m = m
@@ -52,6 +56,8 @@ class Slit(BaseComponent):
         self.w_d = w_d
         self.fov_h = fov_h
         self.fov_v = fov_v
+        self.mass = mass
+        self.V = V
 
     def get_horizontal_field_of_view(self):
         """Caculates the horizontal field of view.
