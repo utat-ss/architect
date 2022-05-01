@@ -9,12 +9,13 @@ import numpy as np
 import scipy.constants as sc
 
 # project
+from payload_designer.components.basecomponent import BaseComponent
 from payload_designer.libs import physlib, utillib
 
 LOG = logging.getLogger(__name__)
 
 
-class Filter:
+class Filter(BaseComponent):
     def __init__(
         self,
         A=None,
@@ -46,6 +47,8 @@ class Filter:
         phi_1=None,
         phi_2=None,
         theta=None,
+        mass=None,
+        V=None,
     ):
         self.A = A
         self.F = F
@@ -76,6 +79,8 @@ class Filter:
         self.phi_1 = phi_1
         self.phi_2 = phi_2
         self.theta = theta
+        self.mass = mass
+        self.V = V
 
     def effective_refractive_index(self):
         assert self.epsilon_1 is not None, "epsilon_1 is not set."

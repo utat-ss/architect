@@ -3,18 +3,20 @@
 # stdlib
 import logging
 import math
+from lib2to3.pytree import Base
 
 # external
 import numpy as np
 import scipy.constants as sc
 
 # project
+from payload_designer.components.basecomponent import BaseComponent
 from payload_designer.libs import physlib, utillib
 
 LOG = logging.getLogger(__name__)
 
 
-class ThinLens:
+class ThinLens(BaseComponent):
     """Thin singlet lens component.
 
     Args:
@@ -28,6 +30,8 @@ class ThinLens:
         f (array_like[float], optional): focal length [mm]. Defaults to None.
         h_i (array_like[float], optional): image height above optical axis [mm]. Defaults to None.
         h_o (array_like[float], optional): source height above optical axis [mm]. Defaults to None.
+        mass (float, optional): mass of component [g]. Defaults to None.
+        V (tuple[float, float, float], optional): Volume envelope in x,y,z [mm]. Defaults to None.
 
     """
 
@@ -43,6 +47,8 @@ class ThinLens:
         f=None,
         h_i=None,
         h_o=None,
+        mass=None,
+        V=None,
     ):
         self.D = D
         self.M = M
@@ -54,6 +60,8 @@ class ThinLens:
         self.f = f
         self.h_i = h_i
         self.h_o = h_o
+        self.mass = mass
+        self.V = V
 
     def get_image_distance(self):
         """Calculate image distance for focuser.
@@ -165,12 +173,8 @@ class ThinLens:
         return f
 
 
-class ThickLens:
+class ThickLens(BaseComponent):
     """Thick singlet lens component.
-
-    asdsad asd aopsd oamf ian iawwwwwwsm soadasodas om asopd opamd oasdmoasdmoasmdo asmd osamd oasdmoasm opasdm pa ad msad
-    as dsa pissoam oam osam opasm fopa oamsa odmwoa dmaopsdao d,oasm foamopam sod aos,d oas, doas
-    aspd mas mopad
 
     Args:
         h1 (float, optional): distance from the primary vertex to the primary principal plane. Defaults to None.
@@ -186,6 +190,8 @@ class ThickLens:
         a2 (float, optional): the emergent ray angle relative to the optical axis in deg. Defaults to None.
         x1 (float, optional): object height relative to the optical axis for the collimator model. Defaults to None.
         x2 (float, optional): image height relative to the optical axis for the focuser model. Defaults to None.
+        mass (float, optional): mass of component [g]. Defaults to None.
+        V (tuple[float, float, float], optional): Volume envelope in x,y,z [mm]. Defaults to None.
 
     Distances and heights can be in any units (e.g., mm, cm, m, etc.) as long as the units are consistent.
 
@@ -206,6 +212,8 @@ class ThickLens:
         a2=None,
         x1=None,
         x2=None,
+        mass=None,
+        V=None,
     ):
         self.h1 = h1
         self.h2 = h2
@@ -220,6 +228,8 @@ class ThickLens:
         self.a2 = a2
         self.x1 = x1
         self.x2 = x2
+        self.mass = mass
+        self.V = V
 
     def get_focal_length(self):
         """Calculate the focal length of a thick lens in a vacuum.
@@ -321,7 +331,7 @@ class ThickLens:
         return np.degrees(a2)
 
 
-class AchromLens:
+class AchromLens(BaseComponent):
     """Achromatic doublet component.
 
     Args:
@@ -331,6 +341,8 @@ class AchromLens:
         f_1 (float, optional): Focal length of first element (mm). Defaults to None.
         f_2 (float, optional): Focal length of second element (mm). Defaults to None.
         f_eq (float, optional): Effective focal length of system (mm). Defaults to None.
+        mass (float, optional): mass of component [g]. Defaults to None.
+        V (tuple[float, float, float], optional): Volume envelope in x,y,z [mm]. Defaults to None.
 
     """
 
@@ -342,6 +354,8 @@ class AchromLens:
         f_1=None,
         f_2=None,
         f_eq=None,
+        mass=None,
+        V=None,
     ):
         self.V_1 = V_1
         self.V_2 = V_2
@@ -349,6 +363,8 @@ class AchromLens:
         self.f_1 = f_1
         self.f_2 = f_2
         self.f_eq = f_eq
+        self.mass = mass
+        self.V = V
 
     def focal_length_1(self):
         assert self.V_1 is not None, "V_1 is not set."

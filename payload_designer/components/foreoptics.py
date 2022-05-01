@@ -10,12 +10,13 @@ import numpy as np
 import scipy.constants as sc
 
 # project
+from payload_designer.components.basecomponent import BaseComponent
 from payload_designer.libs import utillib
 
 LOG = logging.getLogger(__name__)
 
 
-class Foreoptic:
+class Foreoptic(BaseComponent):
     """Foreoptic component.
 
     Args:
@@ -30,6 +31,8 @@ class Foreoptic:
         n (float, optional): f-number. Defaults to None.
         na (float, optional): numerical aperture. Defaults to None.
         s (float, optional): area of emitting source. Defaults to None.
+        mass (float, optional): mass of component [g]. Defaults to None.
+        V (tuple[float, float, float], optional): Volume envelope in x,y,z [mm]. Defaults to None.
 
     """
 
@@ -45,6 +48,8 @@ class Foreoptic:
         n=None,
         na=None,
         s=None,
+        mass=None,
+        V=None,
         d_i=None,
     ):
         self.a_in_max = a_in_max
@@ -57,6 +62,8 @@ class Foreoptic:
         self.n = n
         self.na = na
         self.s = s
+        self.mass = mass
+        self.V = V
         self.d_i = d_i
 
     def get_aperture_diameter(self):
