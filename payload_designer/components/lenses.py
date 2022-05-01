@@ -3,18 +3,20 @@
 # stdlib
 import logging
 import math
+from lib2to3.pytree import Base
 
 # external
 import numpy as np
 import scipy.constants as sc
 
 # project
+from payload_designer.components.basecomponent import BaseComponent
 from payload_designer.libs import physlib, utillib
 
 LOG = logging.getLogger(__name__)
 
 
-class ThinLens:
+class ThinLens(BaseComponent):
     """Thin singlet lens component.
 
     Args:
@@ -171,7 +173,7 @@ class ThinLens:
         return f
 
 
-class ThickLens:
+class ThickLens(BaseComponent):
     """Thick singlet lens component.
 
     Args:
@@ -329,7 +331,7 @@ class ThickLens:
         return np.degrees(a2)
 
 
-class AchromLens:
+class AchromLens(BaseComponent):
     """Achromatic doublet component.
 
     Args:

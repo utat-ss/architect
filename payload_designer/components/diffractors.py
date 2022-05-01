@@ -6,15 +6,17 @@ import math
 
 # external
 import numpy as np
+import pandas as pd
 import scipy.constants as sc
 
 # project
+from payload_designer.components.basecomponent import BaseComponent
 from payload_designer.libs import physlib, utillib
 
 LOG = logging.getLogger(__name__)
 
 
-class SRGrating:
+class SRGrating(BaseComponent):
     """Surface-Relief Diffraction Grating component.
 
     Args:
@@ -162,7 +164,7 @@ class SRGrating:
         return b_to_a
 
 
-class VPHGrating:
+class VPHGrating(BaseComponent):
     """Volume-Phase Holographic grating component.
 
     Args:
@@ -317,7 +319,7 @@ class VPHGrating:
         return lmda_eff
 
 
-class VPHGrism:
+class VPHGrism(BaseComponent):
     """Volume-Phase Holographic grating grism component.
 
     Args:
@@ -579,37 +581,51 @@ class VPHGrism:
         assert self.n_3 is not None, "n_3 is not set"
         assert self.eff_mat is not None, "prism material efficiency is not set"
 
-        # vectorization
-
-        # unit conversion
-        a_in = np.radians(self.a_in)
+        # region unit conversion
         a = np.radians(self.a)
-        l = self.l  # nm
-        v = self.v * 10 ** -6  # lines/mm to lines/nm
-        d = self.d * 10 ** 3  # microns to nm
+        a_in = np.radians(self.a_in)
+        d = self.d * 1e-6  # microns to m
+        eff_mat = self.eff_mat
+        l = self.l * 1e-9  # nm to m
+        n_1 = self.n_1
+        n_2 = self.n_2
+        n_3 = self.n_3
+        n_g = self.n_g
+        v = self.v * 1e3  # lines/mm to lines/m
+        # endregion
 
+        # region evaluation
         angle_1 = a_in + a
-        angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=self.n_1, n_2=self.n_2)
+        angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=n_1, n_2=n_2)
         angle_3 = a - angle_2
-        angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=self.n_2, n_2=self.n_3)
+        angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=n_2, n_2=n_3)
         angle_5 = angle_4
         L = 1 / v  # nm/lines
 
-        Q = (l ** 2) / (self.n_g * self.n_3 * L ** 2)
-        if np.any(Q < 10):
-            raise ValueError(
-                "Q requirement not met, diffraction efficiency formula not valid"
-            )
         # diffraction efficiency
-        n_p = (np.sin((math.pi * self.n_g * d) / (l * np.cos(angle_5))) ** 2) + (
+        n_p = (np.sin((math.pi * n_g * d) / (l * np.cos(angle_5))) ** 2) + (
             (1 / 2)
             * (
                 np.sin(
-                    ((math.pi * self.n_g * d) * np.cos(2 * angle_5))
-                    / (l * np.cos(angle_5))
+                    ((math.pi * n_g * d) * np.cos(2 * angle_5)) / (l * np.cos(angle_5))
                 )
             )
             ** 2
         )  # angle_5 being close to bragg angle = more efficiency
-        n_p = n_p * self.eff_mat * self.eff_mat
+        n_p = n_p * eff_mat * eff_mat
+        # endregion
+
+        # region unit reconversion
+        l = l * 1e9  # m to nm
+        v = v * 1e-3  # lines/m to lines/mm
+        d = d * 1e6  # m to microns
+        a_in = np.degrees(a_in)
+        a = np.degrees(a)
+        # endregion
+        #dictionary region
+        
+        dfd = {"a_in [°]": a_in.flatten(), "d [um]": d.flatten(), "l [nm]": l.flatten(), "v [lines/mm]": v.flatten(), "a [°]": a.flatten(),  "n_1": n_1.flatten(), "n_2": n_2.flatten(), "n_3": n_3.flatten(), "eff_mat": eff_mat.flatten(),"eff": n_p.flatten()}
+        df = pd.DataFrame(data=dfd)
+        LOG.debug(f"dataframe:\n{df.to_string()}")
+
         return n_p

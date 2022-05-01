@@ -19,7 +19,7 @@ def test_phase_shift():
     theta = 20
     lambda_0 = 1500
     # component instantiation
-    bandpass = filter.Filter(n_0=n_0, n_star=n_star, theta=theta, lambda_0=lambda_0)
+    bandpass = filters.Filter(n_0=n_0, n_star=n_star, theta=theta, lambda_0=lambda_0)
     # evaluation
     h = bandpass.phase_shift()
     LOG.info(f"Phase Shift: {h}")

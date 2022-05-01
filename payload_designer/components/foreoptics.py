@@ -10,18 +10,20 @@ import numpy as np
 import scipy.constants as sc
 
 # project
+from payload_designer.components.basecomponent import BaseComponent
 from payload_designer.libs import utillib
 
 LOG = logging.getLogger(__name__)
 
 
-class Foreoptic:
+class Foreoptic(BaseComponent):
     """Foreoptic component.
 
     Args:
         a_in_max (float, optional): maximum angle of incidence in degrees. Defaults to None.
         b (float, optional): source radiance. Defaults to None.
         dm_a (float, optional): aperture diameter. Defaults to None.
+        d_i (float, optional): image diameter [mm]. Defaults to None.
         ds_i (float, optional): image distance. Defaults to None.
         ds_o (float, optional): object distance. Defaults to None.
         eta (LUT, optional) transmittace LUT object. Defaults to None.
@@ -48,6 +50,7 @@ class Foreoptic:
         s=None,
         mass=None,
         V=None,
+        d_i=None,
     ):
         self.a_in_max = a_in_max
         self.b = b
@@ -61,6 +64,7 @@ class Foreoptic:
         self.s = s
         self.mass = mass
         self.V = V
+        self.d_i = d_i
 
     def get_aperture_diameter(self):
         """Calculate the aperture diamter.
@@ -176,3 +180,16 @@ class Foreoptic:
         f = np.multiply(self.b, self.g)
 
         return f
+
+    def get_image_area(self):
+        """Calculate the image area.
+
+        Returns:
+            float: image area [mm^2].
+
+        """
+        assert self.d_i is not None, "d_i is not set."
+
+        a_i = math.pi * (self.d_i / 2) ** 2
+
+        return a_i

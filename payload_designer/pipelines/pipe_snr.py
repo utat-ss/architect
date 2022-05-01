@@ -7,6 +7,7 @@ from pathlib import Path
 
 # external
 import numpy as np
+import pandas as pd
 
 # project
 from payload_designer.components import (
@@ -15,6 +16,7 @@ from payload_designer.components import (
     foreoptics,
     lenses,
     sensors,
+    slits,
 )
 from payload_designer.libs import plotlib, utillib
 
@@ -26,13 +28,18 @@ log_path = Path(f"logs/{filename}")
 
 # region logging config
 log_path.mkdir(parents=True, exist_ok=True)
-logging.config.fileConfig(fname="log.conf", defaults={"path": log_path})
+logging.config.fileConfig(
+    fname="log.conf", defaults={"path": log_path}, disable_existing_loggers=False
+)
 LOG = logging.getLogger(__name__)
 # endregion
 
 # region parameter config
 lmbda = np.linspace(start=900, stop=1700, num=100)  # [nm]
 f_n = 1.5
+w_s = 1  # slit width [mm]
+l_s = 20  # slit length [mm]
+d_i = 20  # image diameter from foreoptics incident on slit [mm]
 
 # LUTS
 foreoptic_eta = utillib.LUT(Path("data/foreoptic_transmittance.csv"))
@@ -49,7 +56,8 @@ L_target = utillib.LUT(
 
 if __name__ == "__main__":
     # region component instantiation
-    foreoptic = foreoptics.Foreoptic(eta=foreoptic_eta)
+    foreoptic = foreoptics.Foreoptic(eta=foreoptic_eta, d_i=d_i)
+    slit = slits.Slit(w_s=w_s, l_s=l_s)
     collimator = lenses.AchromLens(eta=collimator_eta)
     bandfilter = filters.Filter(eta=bandfilter_eta)
     diffractor = diffractors.VPHGrism(eta=diffractor_eta)
@@ -67,17 +75,25 @@ if __name__ == "__main__":
         * diffractor.eta(lmbda)
         * focuser.eta(lmbda)
     )
-    LOG.info(f"Optical transmittance: {eta_optics}%")
+    LOG.info(f"Optical transmittance:\n{eta_optics}%")
+
+    epsilon = slit.get_slit_area() / foreoptic.get_image_area()
+    LOG.info(f"Fraction of image not blocked:\n{epsilon}")
 
     snr, signal, noise = sensor.get_snr(
-        L_target=L_target, eta_optics=eta_optics, f_n=f_n, lmbda=lmbda
+        L_target=L_target,
+        eta_optics=eta_optics,
+        epsilon=epsilon,
+        f_n=f_n,
+        lmbda=lmbda,
     )
-    LOG.info(f"SNR: {snr}")
+    LOG.info(f"SNR:\n{snr}")
     # endregion
 
     # region plots
-    # fig = plotlib.line(x=lmbda, y=L_target(lmbda))
-    fig = plotlib.line(x=lmbda, y=snr)
-    # fig = plotlib.line(x=lmbda, y=signal)
-    # fig = plotlib.line(x=lmbda, y=noise)
+    dfd = {"$\lambda$": lmbda.flatten(), "SNR": snr.flatten()}
+    df = pd.DataFrame(data=dfd)
+    LOG.debug(f"\n{df}")
+
+    plotlib.line(df=df, x="$\lambda$", y="SNR")
     # endregion

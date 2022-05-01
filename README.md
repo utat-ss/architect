@@ -1,4 +1,4 @@
-[![Python Version](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Pre-Commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
 [![GitHub repo size](https://img.shields.io/github/repo-size/spacesys-finch/payload-designer)](https://github.com/spacesys-finch/payload-designer)
@@ -19,85 +19,98 @@ Built by the [University of Toronto Aerospace Team](https://www.utat.ca/space-sy
 
 
 # Contribution
-## Setup
-This section will take you through the procedure to configure your development environment. At a glance:
-1. Install project's python version
-1. Install git
-1. Install poetry
-1. Clone repository
-1. Run poetry install
-1. Configure IDE virtual environment
-1. Install pre-commit hooks
+Instructions for contributing to this project are shown here.
+## Setup ⚙️
+This section will take you through the procedure to take your development environment from zero to hero.
+1. Install python from the official [website](https://www.python.org/downloads/).
 
-Begin by installing the project's python version. See the badges at the top of the README for the version number.
+    The project runs on python `3.10`.
 
-If not already installed, install [git](https://git-scm.com/).
+1. Install [git](https://git-scm.com/).
 
-The repo employs [poetry](https://python-poetry.org/) <img src="img/poetry-logo.png" height="16"/> as its dependency and environment manager. Poetry can be installed through the Windows Powershell via:
-```
-(Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py -UseBasicParsing).Content | python -
-```
+1. Install [poetry](https://python-poetry.org/).
 
-And on Linux or macOS with:
+    The project uses poetry as its package manager. Poetry allows you to run a single command to install all the dependencies for the project. Install it through the Windows Powershell via:
+    ```
+    (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+    ```
 
-```
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python3 -
-```
+    On Linux/MacOS with:
+    ```
+    curl -sSL https://install.python-poetry.org | python3 -
+    ```
 
-The output will include the following line. Ensure that the filepath in brackets (the one in your PowerShell/terminal) has been [added to your Windows PATH](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/) or [Linux/macOS PATH](https://stackoverflow.com/a/19663996): 
+    Once poetry is installed, if it does not say it has automatically add itself to your PATH, add its executible directory to your PATH:
 
-```
-To get started you need Poetry's bin directory (C:\Users\WDAGUtilityAccount\AppData\Roaming\Python\Scripts) in your `PATH`
-environment variable.
-```
+    Windows: `%APPDATA%\Python\Scripts`
 
-Clone the repo using [Github Desktop](https://desktop.github.com/) <img src="img/github-desktop-logo.png" height="16"/> or the commandline via:
+    Linux/MacOS: `$HOME/.local/bin`
+    
+    For instructions on adding directories to your machine's PATH, check out [this](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/) (Windows) or [this](https://stackoverflow.com/a/19663996) (Linux/MacOS). You'll need to close all instances of your terminals for the PATH changes to take effect. 
+    
+    Confirm poetry was installed correctly by typing the following in your terminal:
+    ```
+    poetry --version
+    ```
 
-```
-git clone https://github.com/spacesys-finch/payload-designer.git
-```
+    Configure poetry to create its virtual environments within the project's directory. This makes it easier to clean your machine when you delete the project. The `.venv` folders can get pretty big.
+    ```
+    poetry config virtualenvs.in-project true
+    ```
 
-From within the cloned repo, run poetry's install command to install all the dependencies in one go:
-```
-poetry install
-```
+1. Clone the repository.
 
-Configure your IDE to use the virtual environment poetry has created at `C:\Users\<USERNAME>\AppData\Local\pypoetry\Cache\virtualenvs` (you can also find it with the command `poetry show -v`). In the case of [VSCode](https://code.visualstudio.com/) <img src="img/vscode-logo.png" height="16"/>, enter the command pallet by going to `View>Command Palette` and search for `Python:Select Interpreter`. Select the appropriate poetry virtual environment for the repo (usually includes a long jumbled name in brackets). Restart VSCode if you do not see it listed. Once the intepreter is changed, restart your terminal by [deleting the old one](https://code.visualstudio.com/docs/editor/integrated-terminal#_managing-terminals) and launching it again.
+    It is recommended that you use [Github Desktop](https://desktop.github.com/) to clone the project repository.
 
-Install the pre-commit script and hooks using:
-```
-pre-commit install --install-hooks
-```
+1. Install project dependencies
+
+    From a terminal within the cloned repository, run poetry's install command:
+    ```
+    poetry install
+    ```
+
+    Then install the project's pre-commit hooks using:
+    ```
+    pre-commit install --install-hooks
+    ```
+    
+    Pre-commit's cache will be stored at `~/.cache/pre-commit` (this folder can grow very large).
+
+1. Configure IDE interpreter
+
+    It is recommended you use [VSCode](https://code.visualstudio.com/) as your integrated development environment (IDE). Configure your IDE to use the virtual environment poetry has created at `C:\Users\<USERNAME>\AppData\Local\pypoetry\Cache\virtualenvs` (you can also find it with the command `poetry show -v`).
+    
+    In the case of VSCode, enter the command pallet by going to `View>Command Palette` and search for `Python:Select Interpreter`. Select the appropriate poetry virtual environment for the repository. Restart VSCode if you do not see it listed. Once the intepreter is changed, restart your terminal by closing the old one and launching it again.
+
+    For Windows Powershell users, you might need to change the PS execution policy to allow the script to run. Run a Powershell terminal as administrator and run the following:
+    ```
+    Set-ExecutionPolicy -ExecutionPolicy Bypass
+    ```
 
 You're now ready to start contributing!
 
-## Adding Packages
+## Adding Packages 📦
 To add a new package to the poetry virtual environment, install it via:
 ```
 poetry add <package>
 ```
 This is poetry's version of `pip install <package>`.
 
-## Testing
-This repo uses [pytest](https://docs.pytest.org/en/6.2.x/) for unit testing. To run all unit tests, call:
-
+## Testing 🧪
+This repo uses [pytest](https://pytest.org/) for unit testing. To run all unit tests, call:
 ```
 pytest -v
 ```
+This is also a good check to make sure your environment is properly set up. If the tests fail to run, check to confirm you followed the setup instructions correctly.
 
-If this command did not work, the IDE did not launch a terminal with the virtual environment loaded. Before launching any commands, enter the environment with:
+You can find an interactive report of test results in `./logs/pytest/pytest-report.html`. 
 
-```
-poetry shell
-```
-
-You can find an interactive report of test results in `./logs/pytest/pytest-report.html`. Individual tests can also be specified as follows:
+Individual tests can also be specified as follows:
 ```
 pytest tests/test_<filename>.py::<function name>
 ```
 
-Groups of tests can be run using markers. Assign a marker decorator to the group of functions you want to test like this:
-
+Groups of tests can be run using markers. Assign a marker decorator to the group of functions you want to test, like this:
 ```
 @pytest.mark.foo
 def my_test_function():
@@ -114,45 +127,32 @@ Or to avoid all tests with a particular marker, call:
 pytest -v -m "not foo"
 ```
 
+Check out the pytest docs for more neat tricks.
 
-## Commits
-### Pre-Commit
-This repo is configured to use [pre-commit](https://pre-commit.com/) hooks. The pre-commit pipeline is as follows:
-
-1. [Isort](https://pycqa.github.io/isort/): Sorts imports, so you don't have to.
-1. [Black](https://black.readthedocs.io/en/stable/): The uncompromising code autoformatter.
-1. [Docformatter](https://github.com/myint/docformatter): A docstring autoformatter.
-1. [Pylint](https://github.com/pycqa/pylint): It's not just a linter that annoys you!
-
-Pre-commit will run the hooks on commit, but when a hook fails, they can be run manually to delint using:
-
+## Pre-Commit ✅
+This project is configured to use [pre-commit](https://pre-commit.com/) hooks. A hook is a script that performs some operation on the repository before every commit. Hooks are used to autoformat and lint code. Pre-commit will not let you push your commit until all hooks pass. When a hook fails, they can be run manually to delint using:
 ```
 pre-commit run --all-files
 ```
 
-### Branches
-To improve the organization of this repository and reduce conflicts, branches will be organized as follow:
+Hooks can be updated using:
+```
+pre-commit autoupdate
+```
+
+## Branches 🌿
+Branches are organized as follow:
+
 1. `main`: the branch containing the most recent working release. All code in this branch should run perfectly without any known errors.
+
 1. `dev`: branched off of `main`; the most updated version of the project with the newest features and bug fixes.
+
 1. `features/<feature-name>`: branched off of `dev`; a feature branch. **Features must be tested thoroughly before being merged into dev**
 
-## Issues
-You can create a new task (issue) as follows:
-1. Navigate to the "Projects" tab
-1. Create a new task in the "To Do" column
-1. Click on the three dots in the top right corner of the card and select "Convert to issue"
-1. \[Optional\] Assign yourself or somebody else to the issue
-1. \[Optional\] Add the issue to a milestone (useful for breaking a large task into smaller tickets)
+## Taking on Tickets 🎫
+Check out the issues tab to see all open tickets.
 
-## Taking on Tickets
-1. Select your issue (either on Projects board or through the "Issues" tab)
-1. Change the status of the issue to "In Progress" (either slide the card to the "In Progress" column in the Projects board, or change the status on the issue's page)
-1. Create a new branch of the form `feature/<feature-name>`, do some ✨ m a g i c ✨, and create a Pull Request (**make sure you assign our Project board to the PR**)
-1. Request a teammate for code review, and link your PR to its respective issue
-1. If all goes well, merge it in!
-
-
-## Upgrading Project Python Version ⬆️
+## Upgrading Python Version ⬆️
 When the project changes python version, it is neccesary to create a new poetry environment with the updated python installation. To do so, proceed as follows:
 
 1. Download and install the required python version from the official website.
@@ -161,7 +161,7 @@ When the project changes python version, it is neccesary to create a new poetry 
     ```
     poetry env use /full/path/to/new/python.exe
     ```
-    You can get this path from your envionment variables. Poetry will then generate a new empty environment assigned to run using the new python version.
+    You can get this path from your environment variables. Poetry will then generate a new empty environment assigned to run using the new python version.
 
 1. Switch to the new empty environment and call:
     ```
