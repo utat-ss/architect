@@ -9,12 +9,13 @@ import numpy as np
 import scipy.constants as sc
 
 # project
+from payload_designer.components.basecomponent import BaseComponent
 from payload_designer.libs import physlib, utillib
 
 LOG = logging.getLogger(__name__)
 
 
-class Slit:
+class Slit(BaseComponent):
     """Entrance slit component.
 
     Args:

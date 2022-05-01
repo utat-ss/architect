@@ -10,12 +10,13 @@ import numpy as np
 import scipy.constants as sc
 
 # project
+from payload_designer.components.basecomponent import BaseComponent
 from payload_designer.libs import utillib
 
 LOG = logging.getLogger(__name__)
 
 
-class Foreoptic:
+class Foreoptic(BaseComponent):
     """Foreoptic component.
 
     Args:
