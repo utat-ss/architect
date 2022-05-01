@@ -10,12 +10,13 @@ import numpy as np
 import scipy.constants as sc
 
 # project
+from payload_designer.components.basecomponent import BaseComponent
 from payload_designer.libs import utillib
 
 LOG = logging.getLogger(__name__)
 
 
-class Sensor:
+class Sensor(BaseComponent):
     """Sensor component model.
 
     Args:
@@ -65,7 +66,7 @@ class Sensor:
         self.sigma_read = sigma_read
         self.size = size
 
-    def get_snr(self, L_target, eta_optics, f_n, lmbda):
+    def get_snr(self, L_target, eta_optics, epsilon, f_n, lmbda):
         """Calculates the signal to noise ratio from the sensor and system
         parameters.
 
@@ -107,6 +108,7 @@ class Sensor:
             * (A_d / f_n ** 2)
             * self.eta_sensor(lmbda)
             * eta_optics
+            * epsilon
             * L_target(lmbda)
             * dt
         )
@@ -117,7 +119,7 @@ class Sensor:
         sigma_dark = i_dark * dt
         LOG.debug(f"Dark noise: {sigma_dark} [e-/px]")
 
-        sigma_quantization = (1 / math.sqrt(12)) * n_well / self.n_bit
+        sigma_quantization = (1 / math.sqrt(12)) * n_well / 2 ** self.n_bit
         LOG.debug(f"Quantization noise: {sigma_quantization} [e-/px]")
 
         noise = np.sqrt(
@@ -142,11 +144,12 @@ class TauSWIR(Sensor):
             self,
             eta_sensor=utillib.LUT(Path("data/sensor_tauswir_quantum_efficiency.csv")),
             p=15,
-            i_dark=28,
+            i_dark=140,
             dt=166.7,
             n_bin=1,
             n_bit=14,
             n_well=19,
             sigma_read=50,
             size=(9.6, 7.68),
+            sigma_read=500,
         )

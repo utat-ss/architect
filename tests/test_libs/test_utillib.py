@@ -38,3 +38,16 @@ def test_orient_tensor():
 
     LOG.debug(f"a_orient shape: {a_orient.shape}, {ans} (ans)")
     assert a_orient.shape == ans
+
+
+@pytest.mark.star
+def test_convert_dark_current_density_to_dark_current():
+    """Test dark current density to dark current conversion function."""
+    ans = 0  # TODO
+    i_dark = 10
+    p = 15
+
+    i_dark_converted = utillib.convert_dark_current_density_to_dark_current(i_dark, p)
+    LOG.info(f"i_dark_converted: {i_dark_converted}, {ans} (ans)")
+
+    assert i_dark_converted == ans

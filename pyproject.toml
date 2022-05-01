@@ -1,28 +1,25 @@
 [tool.poetry]
-name = "payload-designer"
+name = "payload_designer"
 version = "0.1.0"
 description = ""
 authors = ["UTAT"]
 
 [tool.poetry.dependencies]
-docopts = "^0.6.1"
-numpy = "^1.21.5"
-pandas = "^1.3.5"
-plotly = "^5.5.0"
+numpy = ""
+pandas = ""
+plot = {git = "https://github.com/DM1122/plot.git", rev = "main"}
 python = ">=3.10,<3.11"
-scipy = "^1.7.3"
+scipy = ""
+sympy = ""
 
 [tool.poetry.dev-dependencies]
-black = "^21.12b0"
-docformatter = "^1.4"
-isort = "^5.10.1"
+ipykernel = "^6.13.0"
+nbformat = "^5.3.0"
 pre-commit = "^2.16.0"
-pylint = "^2.12.2"
-pylint-runner = "^0.6.0"
+pylint = "^v2.13.5"
 pytest = "^6.2.5"
 pytest-cov = "^3.0.0"
 pytest-html = "^3.1.1"
-mypy = "^0.931"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -48,9 +45,11 @@ recursive = true
 wrap-descriptions = 88
 wrap-summaries = 80
 
-[tool.pylint.messages_control]
+[tool.pylint.master]
+ignore-patterns="^((?!\\.py).)*$"  # ignore files that are not python files
+recursive="yes"
+disable = ["invalid-name","too-many-arguments", "too-many-locals", "arguments-differ", "unnecessary-lambda", "too-many-instance-attributes", "protected-access", "duplicate-code", "too-few-public-methods", "logging-fstring-interpolation", "not-callable", "too-many-statements", "pointless-statement", "not-context-manager","fixme","too-many-branches","too-many-lines","line-too-long","anomalous-backslash-in-string","too-many-function-args"]
 max-line-length = 88
-disable = ["invalid-name","too-many-arguments", "too-many-locals", "arguments-differ", "unnecessary-lambda", "too-many-instance-attributes", "protected-access", "duplicate-code", "too-few-public-methods", "logging-fstring-interpolation", "not-callable", "too-many-statements", "pointless-statement", "not-context-manager","fixme","too-many-branches","too-many-lines","line-too-long"]
 generated-members=["numpy.*","torch.*","pygame.*"] # https://github.com/pytorch/pytorch/issues/701
 
 [tool.coverage.run]
