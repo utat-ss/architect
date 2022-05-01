@@ -622,9 +622,20 @@ class VPHGrism(BaseComponent):
         a_in = np.degrees(a_in)
         a = np.degrees(a)
         # endregion
-        #dictionary region
-        
-        dfd = {"a_in [°]": a_in.flatten(), "d [um]": d.flatten(), "l [nm]": l.flatten(), "v [lines/mm]": v.flatten(), "a [°]": a.flatten(),  "n_1": n_1.flatten(), "n_2": n_2.flatten(), "n_3": n_3.flatten(), "eff_mat": eff_mat.flatten(),"eff": n_p.flatten()}
+        # dictionary region
+
+        dfd = {
+            "a_in [°]": a_in.flatten(),
+            "d [um]": d.flatten(),
+            "l [nm]": l.flatten(),
+            "v [lines/mm]": v.flatten(),
+            "a [°]": a.flatten(),
+            "n_1": n_1.flatten(),
+            "n_2": n_2.flatten(),
+            "n_3": n_3.flatten(),
+            "eff_mat": eff_mat.flatten(),
+            "eff": n_p.flatten(),
+        }
         df = pd.DataFrame(data=dfd)
         LOG.debug(f"dataframe:\n{df.to_string()}")
 
