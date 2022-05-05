@@ -1,3 +1,2 @@
-from .components import Components
-
-__all__ = ["Components"]
+from .component import Component  # isort: skip
+from . import diffractors, lenses, sensors

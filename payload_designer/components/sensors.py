@@ -1,155 +1,135 @@
-"""Sensor components."""
+"""Sensor component classes."""
 
 # stdlib
 import logging
 import math
-from pathlib import Path
 
 # external
+import astropy.constants as const
+import astropy.units as unit
 import numpy as np
-import scipy.constants as sc
 
 # project
-from payload_designer.components.basecomponent import BaseComponent
-from payload_designer.libs import utillib
+from payload_designer import luts
+from payload_designer.components import Component
+from payload_designer.luts import LUT
 
 LOG = logging.getLogger(__name__)
 
 
-class Sensor(BaseComponent):
-    """Sensor component model.
+class Sensor(Component):
+    """Generic sensor component.
 
     Args:
-        M (float, optional): Mass [g]. Defaults to None.
-        V (tuple[float, float, float], optional): Volume envelope in x,y,z [mm]. Defaults to None.
-        dt (float, optional): Integration time [ms]. Defaults to None.
-        eta_sensor (LUT, optional): quantum efficiency LUT object. Defaults to None.
-        i_dark (int, optional): Dark current [ke-/px/s]. Defaults to None.
-        n_bin (int, optional): Number of binning operations performed on image aquisition. Defaults to None.
-        n_bit (int, optional): Sensor bit depth. Defaults to None.
-        n_well (int, optional): Well depth [e-/px]. Defaults to None.
-        p (float, optional): Pixel pitch [µm]. Defaults to None.
-        px_x (int, optional): Pixel count in cross-track direction [px]. Defaults to None.
-        px_y (int, optional): Pixel count in along-track direction [px]. Defaults to None.
-        sigma_read (int, optional): Readout noise [e-/px]. Defaults to None.
-        size (int, int, optional): (width, height) of sensor face [mm]. Defaults to None.
+        dimensions: Dimensions of component bounding box. Elements are ordered as (x, y, z) in the cubesat frame.
+        dt: Integration time.
+        efficiency: Quantum efficiency of the sensor.
+        i_dark: Dark current.
+        mass: Component mass.
+        n_bin: Number of binning operations performed on image aquisition.
+        n_bit: Sensor bit depth.
+        n_px: Pixel count in the (x, y) dimensions in cubesat frame.
+        n_well: Sensor well depth.
+        noise_read: Readout noise.
+        pitch: Pixel pitch. The distance between the centerpoints of adjacent pixels.
 
     """
 
     def __init__(
         self,
-        M=None,
-        V=None,
+        dimensions: tuple = None,
         dt=None,
-        eta_sensor=None,
+        efficiency: LUT = None,
         i_dark=None,
+        mass=None,
         n_bin=None,
         n_bit=None,
+        n_px: tuple = None,
         n_well=None,
-        p=None,
-        px_x=None,
-        px_y=None,
-        sigma_read=None,
-        size=(None, None),
+        noise_read=None,
+        pitch=None,
     ):
-        self.M = M
-        self.V = V
+        super().__init__(dimensions, mass)
         self.dt = dt
-        self.eta_sensor = eta_sensor
+        self.efficiency = efficiency
         self.i_dark = i_dark
         self.n_bin = n_bin
         self.n_bit = n_bit
+        self.n_px = n_px
         self.n_well = n_well
-        self.p = p
-        self.px_x = px_x
-        self.px_y = px_y
-        self.sigma_read = sigma_read
-        self.size = size
+        self.noise_read = noise_read
+        self.pitch = pitch
 
-    def get_snr(self, L_target, eta_optics, epsilon, f_n, lmbda):
-        """Calculates the signal to noise ratio from the sensor and system
-        parameters.
+    def get_size(self) -> tuple:
+        """Get the size of the sensor face in the (x, y) dimensions of the
+        cubesat frame."""
 
-        Args:
-            L_target (LUT): atmospheric radiance LUT object [nm, W/sr/m2/nm].
-            eta_optics (array-like[float]): transmittance of the optical system by wavelength [nm].
-            f_n (float): f-number of optical system.
-            lmbda (array-like[float]): wavelengths at which to evaluate SNR [nm].
+        size = (self.n_px * self.pitch, self.n_px * self.pitch)
 
-        Returns:
-            array-like[float]: SNR by wavelength.
+        return size
+
+    def get_area(self):
+        """Get the area of the sensor face."""
+
+        size = self.get_size()
+
+        area = size[0] * size[1]
+
+        return area
+
+    def get_pixel_area(self):
+        """Get the area of a single detector element (pixel).
+
+        Assumes square pixels.
 
         """
-        assert self.n_bin is not None, "n_bin is not set."
-        assert self.dt is not None, "dt is not set."
-        assert self.eta_sensor is not None, "eta_sensor is not set."
-        assert self.i_dark is not None, "i_dark is not set."
-        assert self.n_bit is not None, "n_bit is not set."
-        assert self.n_well is not None, "n_well is not set."
-        assert self.p is not None, "p is not set."
-        assert self.sigma_read is not None, "sigma_read is not set."
 
-        # region unit conversions
-        L_target.scale(1e-9, 1e9)  # (nm, W/sr/m2/nm) to (m, W/sr/m2/m)
-        dt = self.dt * 1e-3  # ms to s
-        i_dark = self.i_dark * 1e3  # ke-/px/s to e-/px/s
-        lmbda = lmbda * 1e-9  # nm to m
-        n_well = self.n_well * 1e3  # ke- to e-
-        p = self.p * 1e-6  # µm to m
-        self.eta_sensor.scale(1e-9, 1)  # nm to m
-        # endregion
+        pixel_area = self.pitch**2
 
-        # region signal
-        A_d = p**2
+        return pixel_area
 
-        s_target = (
-            (sc.pi / 4)
-            * (lmbda / (sc.h * sc.c))
-            * (A_d / f_n**2)
-            * self.eta_sensor(lmbda)
-            * eta_optics
-            * epsilon
-            * L_target(lmbda)
-            * dt
-        )
-        print(f"Signal: {s_target}")
-        # endregion
+    def get_dark_noise(self):
+        """Get the dark noise of the sensor."""
 
-        # region noise
-        sigma_dark = i_dark * dt
-        LOG.debug(f"Dark noise: {sigma_dark} [e-/px]")
+        dark_noise = self.i_dark * self.dt
 
-        sigma_quantization = (1 / math.sqrt(12)) * n_well / 2**self.n_bit
-        LOG.debug(f"Quantization noise: {sigma_quantization} [e-/px]")
+        return dark_noise
+
+    def get_quantization_noise(self):
+        """Get the quantization noise of the sensor."""
+
+        quant_noise = (1 / math.sqrt(12)) * self.n_well / 2**self.n_bit
+
+        return quant_noise
+
+    def get_noise(self, signal):
+        """Get the net noise of the sensor."""
 
         noise = np.sqrt(
-            s_target
-            + self.n_bin * sigma_dark**2
-            + sigma_quantization**2
-            + self.n_bin * self.sigma_read**2
+            signal
+            + self.n_bin * self.get_dark_noise() ** 2
+            + self.get_quantization_noise() ** 2
+            + self.n_bin * self.noise_read**2
         )
-        LOG.debug(f"Noise: {noise}")
-        # endregion
 
-        snr = s_target / noise
-
-        return snr, s_target, noise
+        return noise
 
 
 class TauSWIR(Sensor):
-    """Tau SWIR sensor class."""
+    """Teledyne FLIR Tau SWIR sensor."""
 
     def __init__(self):
+        ke = 1e3 * unit.electron
         super().__init__(
-            self,
-            eta_sensor=utillib.LUT(Path("data/sensor_tauswir_quantum_efficiency.csv")),
-            p=15,
-            i_dark=140,
-            dt=166.7,
-            n_bin=1,
-            n_bit=14,
-            n_well=19,
-            sigma_read=50,
-            size=(9.6, 7.68),
-            sigma_read=500,
+            dimensions=(38, 38, 36) * unit.mm,
+            dt=166.7 * unit.ms,
+            efficiency=luts.load("sensors/tauswir_quantum_efficiency"),
+            i_dark=140 * (ke / unit.pix / unit.s),
+            mass=81 * unit.g,
+            n_bin=1 * unit.dimensionless_unscaled,
+            n_bit=14 * unit.bit,
+            n_px=(640, 512) * unit.pix,
+            n_well=19 * ke,
+            noise_read=500 * unit.electron,
+            pitch=15 * unit.um,
         )
