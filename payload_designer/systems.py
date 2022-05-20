@@ -154,7 +154,9 @@ class HyperspectralImager(Payload):
             skew_angle=skew_angle,
         )
 
-        spatial_resolution = max(sensor_spatial_resolution, optical_spatial_resolution)
+        spatial_resolution = np.max(
+            sensor_spatial_resolution, optical_spatial_resolution
+        )
 
         return spatial_resolution
 
