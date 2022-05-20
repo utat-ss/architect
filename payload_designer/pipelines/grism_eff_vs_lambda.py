@@ -1,5 +1,5 @@
-"""Calculate grism efficiency for VPH grism from fringe frequency, 
-wavelength, DCG thickness"""
+"""Calculate grism efficiency for VPH grism from fringe frequency, wavelength,
+DCG thickness."""
 
 # stdlib
 import logging
@@ -103,11 +103,9 @@ if __name__ == "__main__":
     n_p = diffractor.get_diffraction_efficiency()
 
     # qualifier
-    Q = ((l*1e-9) ** 2) / (n_g * n_3 * (1/(v*1e3)) ** 2)
+    Q = ((l * 1e-9) ** 2) / (n_g * n_3 * (1 / (v * 1e3)) ** 2)
     if np.any(Q < 10):
-        LOG.warn(
-            f"Q>10 requirement not met, diffraction efficiency formula not valid."
-        )
+        LOG.warn(f"Q>10 requirement not met, diffraction efficiency formula not valid.")
     # endregion
 
     # region plotting
@@ -120,7 +118,7 @@ if __name__ == "__main__":
     }
     df = pd.DataFrame(data=dfd)
     df["n_p_q"] = df.loc[df["Q"] <= 10]["n_p"]
-    
+
     # LOG.debug(df.loc[df["Q"] < 10])
     LOG.debug(f"dataframe:\n{df.to_string()}")
 

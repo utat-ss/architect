@@ -1,5 +1,5 @@
-"""Calculate grism efficiency for VPH grism from a_in, fringe frequency, 
-wavelength, DCG thickness"""
+"""Calculate grism efficiency for VPH grism from a_in, fringe frequency,
+wavelength, DCG thickness."""
 
 # stdlib
 import logging

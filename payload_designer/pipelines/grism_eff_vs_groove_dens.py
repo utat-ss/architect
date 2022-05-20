@@ -1,4 +1,5 @@
-"""Calculate grism efficiency for VPH grism from groove density, wavelength, incidence angle"""
+"""Calculate grism efficiency for VPH grism from groove density, wavelength,
+incidence angle."""
 
 # stdlib
 import logging
@@ -35,7 +36,7 @@ v = np.linspace(start=900, stop=1200, num=5)  # [L/mm]
 
 # constants
 a = 90
-d=2.5
+d = 2.5
 eff_mat = 0.85
 m = 1
 n_1 = 1.0
@@ -102,11 +103,9 @@ if __name__ == "__main__":
     n_p = diffractor.get_diffraction_efficiency()
 
     # qualifier
-    Q = ((l*1e-9) ** 2) / (n_g * n_3 * (1/(v*1e3)) ** 2)
+    Q = ((l * 1e-9) ** 2) / (n_g * n_3 * (1 / (v * 1e3)) ** 2)
     if np.any(Q < 10):
-        LOG.warn(
-            f"Q>10 requirement not met, diffraction efficiency formula not valid."
-        )
+        LOG.warn(f"Q>10 requirement not met, diffraction efficiency formula not valid.")
     # endregion
 
     # region plotting
@@ -119,7 +118,7 @@ if __name__ == "__main__":
     }
     df = pd.DataFrame(data=dfd)
     df["n_p_q"] = df.loc[df["Q"] <= 10]["n_p"]
-    
+
     # LOG.debug(df.loc[df["Q"] < 10])
     LOG.debug(f"dataframe:\n{df.to_string()}")
 

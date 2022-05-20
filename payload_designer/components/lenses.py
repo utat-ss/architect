@@ -19,19 +19,26 @@ class Lens(Component):
 
     Modelled using thin lens (paraxial) approximations.
 
+    Args:
+        index: Index of refraction of the lens.
+
     """
 
     def __init__(
         self,
-        mass=None,
         diameter=None,
-        thickness=None,
-        transmittace: LUT = None,
         focal_length=None,
+        index=None,
+        mass=None,
+        thickness=None,
+        transmittance: LUT = None,
     ):
         super().__init__(mass=mass, dimensions=(diameter, diameter, thickness))
-        self.transmittace = transmittace
         self.focal_length = focal_length
+        self.index = index
+        self.transmittance = transmittance
+        self.diameter = diameter
+        self.thickness = thickness
 
     def get_image_height(self, incident_angle):
         """Get the height of the image formed above or below the optical axis of

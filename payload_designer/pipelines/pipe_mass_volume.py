@@ -122,7 +122,7 @@ if __name__ == "__main__":
     y1 = Vz_tot
     x2 = bfl_focuser
     y2 = Vz_tot
-    
+
     dfd1 = {"x1": x1.flatten(), "y1": y1.flatten}
     df1 = pd.DataFrame(data=dfd1)
     LOG.debug(df1)
@@ -130,16 +130,8 @@ if __name__ == "__main__":
     dfd2 = {"x2": x2.flatten(), "y2": y2.flatten()}
     df2 = pd.DataFrame(data=dfd2)
     LOG.debug(df2)
-    
+
     # both plots are the same because ffl_collimator = bfl_focuser - probably not very useful?
-    plotlib.line(
-        df=df1, 
-        x=x1, 
-        y=y1, 
-        title="Vz vs. FFL Collimator")
-    plotlib.line(
-        df=df2, 
-        x=x2, 
-        y=y2, 
-        title="Vz vs. BFL Focuser")
+    plotlib.line(df=df1, x=x1, y=y1, title="Vz vs. FFL Collimator")
+    plotlib.line(df=df2, x=x2, y=y2, title="Vz vs. BFL Focuser")
     # endregion

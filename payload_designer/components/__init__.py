@@ -1,2 +1,2 @@
 from .component import Component  # isort: skip
-from . import diffractors, lenses, sensors
+from . import diffractors, filters, lenses, masks, sensors

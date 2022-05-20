@@ -198,15 +198,16 @@ class VPHGrism(VPHGrating):
 
     def __init__(
         self,
-        transmittance: LUT,
-        mass,
-        dimensions,
-        fringe_frequency,
-        dcg_thickness,
-        index_dcg_amplitude,
-        apex_angle,
-        index_prism,
-        index_seal,
+        transmittance: LUT = None,
+        mass=None,
+        dimensions=None,
+        fringe_frequency=None,
+        dcg_thickness=None,
+        index_dcg_amplitude=None,
+        apex_angle=None,
+        index_prism=None,
+        index_seal=None,
+        index_dcg=None,
     ):
         super().__init__(
             transmittance=transmittance,
@@ -216,6 +217,7 @@ class VPHGrism(VPHGrating):
             dcg_thickness=dcg_thickness,
             index_dcg_amplitude=index_dcg_amplitude,
             index_seal=index_seal,
+            index_dcg=index_dcg,
         )
         self.index_prism = index_prism
         self.apex_angle = apex_angle
