@@ -87,7 +87,7 @@ class HyperspectralImager(Payload):
 
         return transmittance
 
-    def get_snr(self, radiance: LUT, wavelength):
+    def get_signal_to_noise(self, radiance: LUT, wavelength):
         """Get the signal to noise ratio of the system.
 
         Args:
@@ -112,6 +112,51 @@ class HyperspectralImager(Payload):
         snr = signal / noise
 
         return snr
+
+    def get_iFOV(self):
+        """Get the instantaneous field of view."""
+        iFOV = 2 * np.arctan(self.sensor.pitch / (2 * self.foreoptic.focal_length))
+
+        return iFOV
+
+    def get_sensor_spatial_resolution(self, target_distance, skew_angle):
+        """Get the sensor-limited spatial resolution."""
+
+        iFOV = self.get_iFOV()
+
+        spatial_resolution = target_distance * (
+            np.tan(skew_angle + 1 / 2 * iFOV) - np.tan(skew_angle - 1 / 2 * iFOV)
+        )
+
+        return spatial_resolution
+
+    def get_optical_spatial_resolution(self, wavelength, target_distance, skew_angle):
+        """Get the optically-limited spatial resolution."""
+
+        optical_spatial_resolution = (
+            1.22
+            * (wavelength * target_distance)
+            / (self.foreoptic.diameter * np.cos(skew_angle))
+        )
+
+        return optical_spatial_resolution
+
+    def get_spatial_resolution(self, wavelength, target_distance, skew_angle):
+        """Get the spatial resolution or ground sample distance of the
+        system."""
+
+        sensor_spatial_resolution = self.get_sensor_spatial_resolution(
+            target_distance=target_distance, skew_angle=skew_angle
+        )
+        optical_spatial_resolution = self.get_optical_spatial_resolution(
+            wavelength=wavelength,
+            target_distance=target_distance,
+            skew_angle=skew_angle,
+        )
+
+        spatial_resolution = max(sensor_spatial_resolution, optical_spatial_resolution)
+
+        return spatial_resolution
 
 
 class FINCHEye(HyperspectralImager):
