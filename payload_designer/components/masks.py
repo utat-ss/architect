@@ -12,11 +12,13 @@ from payload_designer.components import Component
 
 LOG = logging.getLogger(__name__)
 
+
 class RectSlit(Component):
     """Rectangular slit component.
-    
+
     Args:
         size: dimensions of slit (width, height) in satelite reference frame.
+
     """
 
     def __init__(self, mass=None, diameter=None, thickness=None, size: tuple = None):
@@ -31,6 +33,3 @@ class RectSlit(Component):
         area = self.size[0] * self.size[1]
 
         return area
-    
-
-

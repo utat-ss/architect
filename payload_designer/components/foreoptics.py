@@ -5,81 +5,35 @@ import logging
 import math
 
 # external
+import astropy.constants as const
+import astropy.units as unit
 import numpy as np
 
 # project
+from payload_designer import luts
 from payload_designer.components import Component
+from payload_designer.luts import LUT
 
 LOG = logging.getLogger(__name__)
 
 
-class Foreoptic(BaseComponent):
-    """Foreoptic component.
-
-    Args:
-        a_in_max (float, optional): maximum angle of incidence in degrees. Defaults to None.
-        b (float, optional): source radiance. Defaults to None.
-        dm_a (float, optional): aperture diameter. Defaults to None.
-        d_i (float, optional): image diameter [mm]. Defaults to None.
-        ds_i (float, optional): image distance. Defaults to None.
-        ds_o (float, optional): object distance. Defaults to None.
-        eta (LUT, optional) transmittace LUT object. Defaults to None.
-        g (float, optional): geometric etendue. Defaults to None.
-        n (float, optional): f-number. Defaults to None.
-        na (float, optional): numerical aperture. Defaults to None.
-        s (float, optional): area of emitting source. Defaults to None.
-        mass (float, optional): mass of component [g]. Defaults to None.
-        V (tuple[float, float, float], optional): Volume envelope in x,y,z [mm]. Defaults to None.
-
-    """
+class Foreoptic(Component):
+    """Foreoptic component."""
 
     def __init__(
         self,
-        a_in_max=None,
-        b=None,
-        dm_a=None,
-        ds_i=None,
-        ds_o=None,
-        eta=None,
-        g=None,
-        n=None,
-        na=None,
-        s=None,
+        diameter=None,
+        focal_length=None,
         mass=None,
-        V=None,
-        d_i=None,
+        length=None,
+        transmittance: LUT = None,
     ):
-        self.a_in_max = a_in_max
-        self.b = b
-        self.dm_a = dm_a
-        self.ds_i = ds_i
-        self.ds_o = ds_o
-        self.eta = eta
-        self.g = g
-        self.n = n
-        self.na = na
-        self.s = s
-        self.mass = mass
-        self.V = V
-        self.d_i = d_i
+        super().__init__(mass=mass, dimensions=(diameter, diameter, length))
 
-    def get_aperture_diameter(self):
-        """Calculate the aperture diamter.
-
-        Returns:
-            float: aperture diameter (mm).
-
-        """
-        assert self.ds_i is not None, "ds_i is not set."
-
-        if self.n is not None:
-            dm_a = np.divide(self.ds_i, self.n)
-        elif self.na is not None:
-            dm_a = 2 * np.multiply(self.ds_i, self.na)
-        else:
-            raise ValueError("n or na must be set.")
-
-        return dm_a
+        self.diameter = diameter
+        self.focal_length = focal_length
+        self.length = length
+        self.transmittance = transmittance
 
     def get_magnification(self):
         """Calculate the magnification of the foreoptics.
