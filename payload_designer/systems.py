@@ -3,6 +3,7 @@ import astropy.constants as const
 import astropy.units as unit
 import numpy as np
 import pandas as pd
+from attr import field
 
 # project
 from payload_designer.components import Component
@@ -113,6 +114,19 @@ class HyperspectralImager(Payload):
 
         return snr
 
+    def get_FOV_vector(self):
+        """Get the field of view vector. A 2-D vector that defines the angular
+        extent that can be imaged by the payload in the along-track and the
+        across-track directions.
+
+        Pre-condition:
+        self.foreoptic != None
+
+        """
+        if self.slit == None:
+            return np.zeros(2)  ## check up on this
+        return 2 * np.arctan(self.slit.size / (2 * self.foreoptic.focal_length))
+
     def get_iFOV(self):
         """Get the instantaneous field of view."""
         iFOV = 2 * np.arctan(self.sensor.pitch / (2 * self.foreoptic.focal_length))
@@ -129,6 +143,23 @@ class HyperspectralImager(Payload):
         )
 
         return spatial_resolution
+
+    def get_swath_vector(self, altitude, skew_angles):
+        """Get the swath vector.
+        Params:
+            altitude - the orbital altitude (scalar, km)
+            skew_angles - the skew angles (2-D vector, degrees)
+            slit_dimens - the slit dimensions in te across and along-track directions (2-D vector, mm)
+            focal_len - focal length of the foreoptic (scalar, mm)
+
+        """
+        FOV = self.get_FOV_vector()
+
+        swath_vector = altitude * (
+            np.tan(skew_angles + FOV / 2) - np.tan(skew_angles - FOV / 2)
+        )
+
+        return swath_vector
 
     def get_optical_spatial_resolution(self, wavelength, target_distance, skew_angle):
         """Get the optically-limited spatial resolution."""
