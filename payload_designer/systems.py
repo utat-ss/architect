@@ -138,7 +138,7 @@ class HyperspectralImager(Payload):
         slit_vector = self.slit.size.reshape((2, 1)).T
 
         # should return a vector that is x by 2
-        return (2 * np.arctan(focal_lengths * slit_vector)).reshape((x, 2))
+        return np.degrees((2 * np.arctan(focal_lengths * slit_vector)).reshape((x, 2)))
 
     def get_iFOV(self):
         """Get the instantaneous field of view."""
@@ -293,26 +293,3 @@ class CubeSat(Satellite):
 class FINCH(CubeSat):
     def __init__(self, payload: FINCHEye, altitude):
         super().__init__(payload=payload, altitude=altitude, U=3)
-
-
-if __name__ == "__main__":
-    from payload_designer import components, systems
-
-    diameter = 100 * unit.mm
-    focal_length = np.arange(start=25, stop=300, step=10) * unit.mm
-    altitude = 600 * unit.km
-    skew_angle = (np.array([0, 0]) * unit.deg).reshape((2, 1))
-    wavelength = 1650 * unit.nm
-    slit_size = (2, 2) * unit.mm
-    slit = components.masks.RectSlit(size=slit_size)
-
-    sensor = components.sensors.TauSWIR()
-    foreoptic = components.foreoptics.Foreoptic(
-        diameter=diameter, focal_length=focal_length
-    )
-    payload = systems.HyperspectralImager(
-        sensor=sensor, foreoptic=foreoptic, slit=slit)
-
-    sw = payload.get_swath_vector(altitude=altitude, skew_angles=skew_angle)
-    print(sw)
-    print(sw.shape)
