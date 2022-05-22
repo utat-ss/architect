@@ -133,11 +133,12 @@ class HyperspectralImager(Payload):
         focal_lengths = (1/self.foreoptic.focal_length).reshape((x, 1))
 
         # now reshape the slit vector so it is 2 x 1
-        x = self.slit.size[0]
-        slit_vector = self.slit.reshape((x, 1)).T
+        slit_vector = np.array(self.slit.size)
+        # transpose it to a 1 x 2 vector
+        slit_vector = self.slit.size.reshape((2, 1)).T
 
-        # should return a vector that is x_dimen of focal lengths by x dimen of slit size
-        return 2 * np.arctan(focal_lengths * slit_vector)
+        # should return a vector that is x by 2
+        return (2 * np.arctan(focal_lengths * slit_vector)).reshape((x, 2))
 
     def get_iFOV(self):
         """Get the instantaneous field of view."""
@@ -164,13 +165,12 @@ class HyperspectralImager(Payload):
             altitude - the orbital altitude (scalar, km)
             skew_angles - the skew angles (2-D vector, degrees)
         """
-        FOV = self.get_FOV_vector()  # this should be returning a 28 x 2 vector (28 because 28 focal lengths, and 2 because slit dimens are 2-d vectors)
+        # x by 2 vector
+        FOV = self.get_FOV_vector()
+        # make sure both the individual FOV vectors and the skew angle vector are the same shape
+        skew_angles = skew_angles.reshape((2,))
 
-        swath_vector = altitude * (
-            np.tan(skew_angles + FOV / 2) - np.tan(skew_angles - FOV / 2)
-        )
-
-        return swath_vector
+        return altitude * (np.tan(skew_angles + 0.5 * FOV) - np.tan(skew_angles - 0.5 * FOV))
 
     def get_optical_spatial_resolution(self, wavelength, target_distance, skew_angle):
         """Get the optically-limited spatial resolution."""
@@ -293,3 +293,26 @@ class CubeSat(Satellite):
 class FINCH(CubeSat):
     def __init__(self, payload: FINCHEye, altitude):
         super().__init__(payload=payload, altitude=altitude, U=3)
+
+
+if __name__ == "__main__":
+    from payload_designer import components, systems
+
+    diameter = 100 * unit.mm
+    focal_length = np.arange(start=25, stop=300, step=10) * unit.mm
+    altitude = 600 * unit.km
+    skew_angle = (np.array([0, 0]) * unit.deg).reshape((2, 1))
+    wavelength = 1650 * unit.nm
+    slit_size = (2, 2) * unit.mm
+    slit = components.masks.RectSlit(size=slit_size)
+
+    sensor = components.sensors.TauSWIR()
+    foreoptic = components.foreoptics.Foreoptic(
+        diameter=diameter, focal_length=focal_length
+    )
+    payload = systems.HyperspectralImager(
+        sensor=sensor, foreoptic=foreoptic, slit=slit)
+
+    sw = payload.get_swath_vector(altitude=altitude, skew_angles=skew_angle)
+    print(sw)
+    print(sw.shape)
