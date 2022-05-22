@@ -30,7 +30,8 @@ class Payload:
                 properties[key] = [value.value, value.unit]
 
             elif type(value) == LUT:
-                properties[key] = [f"LUT ({value.name})", [value.x.unit, value.y.unit]]
+                properties[key] = [f"LUT ({value.name})", [
+                    value.x.unit, value.y.unit]]
 
             else:
                 properties[key] = [value, None]
@@ -115,21 +116,33 @@ class HyperspectralImager(Payload):
         return snr
 
     def get_FOV_vector(self):
-        """Get the field of view vector. A 2-D vector that defines the angular
+        """Get the field of view vector. A vector that defines the angular
         extent that can be imaged by the payload in the along-track and the
         across-track directions.
 
         Pre-condition:
         self.foreoptic != None
+        self.slit != None
 
         """
-        if self.slit == None:
-            return np.zeros(2)  ## check up on this
-        return 2 * np.arctan(self.slit.size / (2 * self.foreoptic.focal_length))
+        if self.slit is None or self.foreoptic is None:
+            return Exception("slit and foreoptic components cannot be NoneType.")
+
+        # first reshape the foreoptic vector so it is x by 1
+        x = self.foreoptic.focal_length.shape[0]
+        focal_lengths = (1/self.foreoptic.focal_length).reshape((x, 1))
+
+        # now reshape the slit vector so it is 2 x 1
+        x = self.slit.size[0]
+        slit_vector = self.slit.reshape((x, 1)).T
+
+        # should return a vector that is x_dimen of focal lengths by x dimen of slit size
+        return 2 * np.arctan(focal_lengths * slit_vector)
 
     def get_iFOV(self):
         """Get the instantaneous field of view."""
-        iFOV = 2 * np.arctan(self.sensor.pitch / (2 * self.foreoptic.focal_length))
+        iFOV = 2 * np.arctan(self.sensor.pitch /
+                             (2 * self.foreoptic.focal_length))
 
         return iFOV
 
@@ -139,7 +152,8 @@ class HyperspectralImager(Payload):
         iFOV = self.get_iFOV()
 
         spatial_resolution = target_distance * (
-            np.tan(skew_angle + 1 / 2 * iFOV) - np.tan(skew_angle - 1 / 2 * iFOV)
+            np.tan(skew_angle + 1 / 2 * iFOV) -
+            np.tan(skew_angle - 1 / 2 * iFOV)
         )
 
         return spatial_resolution
@@ -149,11 +163,8 @@ class HyperspectralImager(Payload):
         Params:
             altitude - the orbital altitude (scalar, km)
             skew_angles - the skew angles (2-D vector, degrees)
-            slit_dimens - the slit dimensions in te across and along-track directions (2-D vector, mm)
-            focal_len - focal length of the foreoptic (scalar, mm)
-
         """
-        FOV = self.get_FOV_vector()
+        FOV = self.get_FOV_vector()  # this should be returning a 28 x 2 vector (28 because 28 focal lengths, and 2 because slit dimens are 2-d vectors)
 
         swath_vector = altitude * (
             np.tan(skew_angles + FOV / 2) - np.tan(skew_angles - FOV / 2)
