@@ -131,7 +131,7 @@ class HyperspectralImager(Payload):
         slit_vector = self.slit.size.reshape((2, 1)).T
 
         # should return a vector that is x by 2
-        return np.degrees((2 * np.arctan(focal_lengths * slit_vector)).reshape((x, 2)))
+        return (2 * np.arctan(focal_lengths * slit_vector)).reshape((x, 2))
 
     def get_iFOV(self):
         """Get the instantaneous field of view."""
