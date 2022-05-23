@@ -159,7 +159,7 @@ class HyperspectralImager(Payload):
             skew_angles: the skew angles.
         """
         # x by 2 vector
-        FOV = self.get_FOV_vector()
+        FOV = self.get_FOV()
         # make sure both the individual FOV vectors and the skew angle vector are the same shape
         skew_angles = skew_angles.reshape((2,))
 
