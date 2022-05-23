@@ -119,13 +119,7 @@ class HyperspectralImager(Payload):
         extent that can be imaged by the payload in the along-track and the
         across-track directions.
 
-        Pre-condition:
-        self.foreoptic != None
-        self.slit != None
-
         """
-        if self.slit is None or self.foreoptic is None:
-            return Exception("slit and foreoptic components cannot be NoneType.")
 
         # first reshape the foreoptic vector so it is x by 1
         x = self.foreoptic.focal_length.shape[0]
