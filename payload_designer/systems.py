@@ -154,9 +154,9 @@ class HyperspectralImager(Payload):
 
     def get_swath_vector(self, altitude, skew_angles):
         """Get the swath vector.
-        Params:
-            altitude - the orbital altitude (scalar, km)
-            skew_angles - the skew angles (2-D vector, degrees)
+        Args:
+            altitude: the orbital altitude.
+            skew_angles: the skew angles.
         """
         # x by 2 vector
         FOV = self.get_FOV_vector()
