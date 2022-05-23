@@ -152,7 +152,7 @@ class HyperspectralImager(Payload):
 
         return spatial_resolution
 
-    def get_swath_vector(self, altitude, skew_angles):
+    def get_swath(self, altitude, skew_angles: np.ndarray[float, float]) -> np.ndarray[float, float]:
         """Get the swath vector.
         Args:
             altitude: the orbital altitude.
