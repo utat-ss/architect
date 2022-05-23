@@ -3,7 +3,6 @@ import astropy.constants as const
 import astropy.units as unit
 import numpy as np
 import pandas as pd
-from attr import field
 
 # project
 from payload_designer.components import Component
