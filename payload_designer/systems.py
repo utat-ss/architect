@@ -114,7 +114,7 @@ class HyperspectralImager(Payload):
 
         return snr
 
-    def get_FOV_vector(self):
+    def get_FOV(self) -> np.ndarray[float, float]:
         """Get the field of view vector. A vector that defines the angular
         extent that can be imaged by the payload in the along-track and the
         across-track directions.
