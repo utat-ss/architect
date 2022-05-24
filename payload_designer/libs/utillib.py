@@ -1,6 +1,7 @@
 """An assortment of utilities and classes for scientific computing."""
 # external
 import numpy as np
+from astropy.units.quantity import Quantity
 
 
 def orient_tensor(a, dim: int, dims: int) -> np.ndarray:
@@ -34,10 +35,13 @@ def orient_and_broadcast(a, dim: int, shape) -> np.ndarray:
 
     """
 
-    a = orient_tensor(a=a, dim=dim, dims=len(shape))
-    a = np.broadcast_to(array=a, shape=shape)
+    a_oriented = orient_tensor(a=a, dim=dim, dims=len(shape))
+    a_broadcasted = np.broadcast_to(array=a_oriented, shape=shape)
 
-    return a
+    if isinstance(a, Quantity):
+        a_broadcasted *= a.unit
+
+    return a_broadcasted
 
 
 def convert_dark_current_density_to_dark_current(i_dark, p):

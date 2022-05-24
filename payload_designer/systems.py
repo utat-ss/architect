@@ -29,8 +29,7 @@ class Payload:
                 properties[key] = [value.value, value.unit]
 
             elif type(value) == LUT:
-                properties[key] = [f"LUT ({value.name})", [
-                    value.x.unit, value.y.unit]]
+                properties[key] = [f"LUT ({value.name})", [value.x.unit, value.y.unit]]
 
             else:
                 properties[key] = [value, None]
@@ -115,28 +114,20 @@ class HyperspectralImager(Payload):
         return snr
 
     def get_FOV(self) -> np.ndarray[float, float]:
-        """Get the field of view vector. A vector that defines the angular
-        extent that can be imaged by the payload in the along-track and the
-        across-track directions.
+        """Get the field of view vector.
+
+        A vector that defines the angular extent that can be imaged by the payload in
+        the along-track and the across-track directions.
 
         """
 
-        # first reshape the foreoptic vector so it is x by 1
-        x = self.foreoptic.focal_length.shape[0]
-        focal_lengths = (1/self.foreoptic.focal_length).reshape((x, 1))
+        fov = 2 * np.arctan(self.slit.size / (2 * self.foreoptic.focal_length))
 
-        # now reshape the slit vector so it is 2 x 1
-        slit_vector = np.array(self.slit.size)
-        # transpose it to a 1 x 2 vector
-        slit_vector = self.slit.size.reshape((2, 1)).T
+        return fov
 
-        # should return a vector that is x by 2
-        return (2 * np.arctan(focal_lengths * slit_vector)).reshape((x, 2))
-
-    def get_iFOV(self):
+    def get_iFOV(self) -> np.ndarray[float, float]:
         """Get the instantaneous field of view."""
-        iFOV = 2 * np.arctan(self.sensor.pitch /
-                             (2 * self.foreoptic.focal_length))
+        iFOV = 2 * np.arctan(self.sensor.pitch / (2 * self.foreoptic.focal_length))
 
         return iFOV
 
@@ -146,24 +137,29 @@ class HyperspectralImager(Payload):
         iFOV = self.get_iFOV()
 
         spatial_resolution = target_distance * (
-            np.tan(skew_angle + 1 / 2 * iFOV) -
-            np.tan(skew_angle - 1 / 2 * iFOV)
+            np.tan(skew_angle + 1 / 2 * iFOV) - np.tan(skew_angle - 1 / 2 * iFOV)
         )
 
         return spatial_resolution
 
-    def get_swath(self, altitude, skew_angles: np.ndarray[float, float]) -> np.ndarray[float, float]:
+    def get_swath(
+        self, altitude, skew_angle: np.ndarray[float, float]
+    ) -> np.ndarray[float, float]:
         """Get the swath vector.
+
         Args:
             altitude: the orbital altitude.
-            skew_angles: the skew angles.
-        """
-        # x by 2 vector
-        FOV = self.get_FOV()
-        # make sure both the individual FOV vectors and the skew angle vector are the same shape
-        skew_angles = skew_angles.reshape((2,))
+            skew_angle: the skew angles in the across and along-track directions.
 
-        return altitude * (np.tan(skew_angles + 0.5 * FOV) - np.tan(skew_angles - 0.5 * FOV))
+        """
+
+        fov = self.get_FOV()
+
+        swath = altitude * (
+            np.tan(skew_angle + 0.5 * fov) - np.tan(skew_angle - 0.5 * fov)
+        )
+
+        return swath
 
     def get_optical_spatial_resolution(self, wavelength, target_distance, skew_angle):
         """Get the optically-limited spatial resolution."""
