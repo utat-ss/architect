@@ -124,14 +124,14 @@ class VPHGrating(SRTGrating):
 
     def __init__(
         self,
-        transmittance: LUT,
-        mass,
-        dimensions,
-        fringe_frequency,
-        index_seal,
-        index_dcg,
-        dcg_thickness,
-        index_dcg_amplitude,
+        transmittance: LUT = None,
+        mass=None,
+        dimensions=None,
+        fringe_frequency=None,
+        index_seal=None,
+        index_dcg=None,
+        dcg_thickness=None,
+        index_dcg_amplitude=None,
     ):
         super().__init__(
             fringe_frequency=fringe_frequency,
