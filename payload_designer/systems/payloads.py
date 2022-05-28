@@ -164,6 +164,25 @@ class HyperspectralImager(Payload):
 
         return spatial_resolution
 
+    def get_spectral_resolution(
+        self, upper_wavelength, lower_wavelength, line_density, optical_beam_diameter
+    ):
+        """Get the sensor-limited spectral resolution."""
+
+        spectral_resolution_sensor = (upper_wavelength - lower_wavelength) / (
+            (1 / self.sensor.n_bin) * self.sensor.n_px[1]
+        )
+
+        N = line_density * optical_beam_diameter
+
+        # ORDER OF DIFFRACTION???
+        R = 1 * N
+
+        # WAVELENGTH
+        spectral_resolution_optical = 1 / R
+
+        return max(spectral_resolution_sensor, spectral_resolution_optical)
+
 
 class FINCHEye(HyperspectralImager):
     def __init__(
