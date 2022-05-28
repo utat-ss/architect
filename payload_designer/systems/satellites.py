@@ -2,6 +2,7 @@
 import astropy.constants as const
 import astropy.units as unit
 import numpy as np
+import pandas as pd
 
 # project
 from payload_designer.systems import System
@@ -11,6 +12,34 @@ from payload_designer.systems.payloads import FINCHEye, Payload
 class Satellite(System):
     def __init__(self, altitude):
         self.altitude = altitude
+
+    def get_attrs_table(self):
+        """Get a table of satellite parameters."""
+
+        orbit_radius = self.get_orbit_radius()
+        orbit_velocity = self.get_orbit_velocity()
+        orbit_angular_velocity = self.get_orbit_angular_velocity()
+        orbit_ground_projected_velocity = self.get_orbit_ground_projected_velocity()
+
+        attributes = {
+            "Altitude": [self.altitude.value, self.altitude.unit],
+            "Orbit Radius": [orbit_radius.value, orbit_radius.unit],
+            "Orbit Velocity": [orbit_velocity.value, orbit_velocity.unit],
+            "Orbit Angular Velocity": [
+                orbit_angular_velocity.value,
+                orbit_angular_velocity.unit,
+            ],
+            "Orbit Ground Projected Velocity": [
+                orbit_ground_projected_velocity.value,
+                orbit_ground_projected_velocity.unit,
+            ],
+        }
+
+        df = pd.DataFrame.from_dict(
+            data=attributes, orient="index", columns=["Value", "Units"]
+        )
+
+        return df
 
     def get_orbit_radius(self):
         """Get the orbital radius."""

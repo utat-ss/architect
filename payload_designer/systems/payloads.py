@@ -47,6 +47,9 @@ class HyperspectralImager(Payload):
     ):
         super().__init__(sensor=sensor, foreoptic=foreoptic, slit=slit, **components)
 
+    def get_specification_tables(self):
+        pass
+
     def get_transmittance(self):
         """Get the net optical transmittance of the system by accounting for the
         transmittance losses of all lens components."""
