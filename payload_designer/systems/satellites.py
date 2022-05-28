@@ -4,10 +4,11 @@ import astropy.units as unit
 import numpy as np
 
 # project
+from payload_designer.systems import System
 from payload_designer.systems.payloads import FINCHEye, Payload
 
 
-class Satellite:
+class Satellite(System):
     def __init__(self, altitude):
         self.altitude = altitude
 
