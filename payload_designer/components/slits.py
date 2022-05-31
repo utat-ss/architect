@@ -6,7 +6,6 @@ import math
 
 # external
 import numpy as np
-import scipy.constants as sc
 
 # project
 from payload_designer.libs import physlib, utillib

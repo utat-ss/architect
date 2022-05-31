@@ -43,9 +43,16 @@ class HyperspectralImager(Payload):
         sensor: Component,
         foreoptic: Component,
         slit: Component,
+        diffractor: Component,
         **components: Component,
     ):
-        super().__init__(sensor=sensor, foreoptic=foreoptic, slit=slit, **components)
+        super().__init__(
+            sensor=sensor,
+            foreoptic=foreoptic,
+            slit=slit,
+            diffractor=diffractor,
+            **components,
+        )
 
     def get_specification_tables(self):
         pass
@@ -165,7 +172,7 @@ class HyperspectralImager(Payload):
         return spatial_resolution
 
     def get_sensor_spectral_resolution(
-        self, upper_wavelength, lower_wavelength, grism_resolvance
+        self, upper_wavelength, lower_wavelength, beam_diameter
     ):
         """Get the sensor-limited spectral resolution."""
 
@@ -176,60 +183,54 @@ class HyperspectralImager(Payload):
         )
 
         sensor_spectral_resolution = (
-            np.ones(grism_resolvance.shape) * sensor_spectral_resolution
+            np.ones(self.diffractor.get_resolvance(beam_diameter=beam_diameter).shape)
+            * sensor_spectral_resolution
         )
 
-        return sensor_spectral_resolution
+        return sensor_spectral_resolution / 10  # For units**
 
-    def get_optical_spectral_resolution(self, target_wavelength, grism_resolvance):
+    def get_optical_spectral_resolution(self, target_wavelength, beam_diameter):
         """Get the optically-limited spectral resolution."""
 
-        # WHICH TARGET WAVELENGTH??
-
-        optical_spectral_resolution = target_wavelength / grism_resolvance
+        optical_spectral_resolution = (
+            target_wavelength
+            / self.diffractor.get_resolvance(beam_diameter=beam_diameter)
+        )
         return optical_spectral_resolution
 
     def get_spectral_resolution(
         self,
         upper_wavelength,
         lower_wavelength,
-        line_density,
-        optical_beam_diameter,
         target_wavelength,
-        grism_resolvance,
+        beam_diameter,
     ):
         """Get the spectral resolution (from the optical and sensor spectral
         resolutions)"""
 
-        spectral_resolution = np.ones(grism_resolvance.shape) * unit.nm
+        spectral_resolution = (
+            np.ones(self.diffractor.get_resolvance(beam_diameter=beam_diameter).shape)
+            * unit.nm
+        )
 
         sensor_spectral_resolution = self.get_sensor_spectral_resolution(
             upper_wavelength=upper_wavelength,
             lower_wavelength=lower_wavelength,
-            grism_resolvance=grism_resolvance,
+            beam_diameter=beam_diameter,
         )
 
         optical_spectral_resolution = self.get_optical_spectral_resolution(
-            target_wavelength, grism_resolvance
+            target_wavelength=target_wavelength, beam_diameter=beam_diameter
         )
 
-        for i in range(grism_resolvance.size):
+        for i in range(
+            self.diffractor.get_resolvance(beam_diameter=beam_diameter).size
+        ):
             spectral_resolution[i] = max(
                 optical_spectral_resolution[i], sensor_spectral_resolution[i]
             )
 
         return spectral_resolution
-
-    def get_diffraction_efficiency(self):
-        x = (np.PI * index_modulation_contrast * grating_thickness) / (
-            wavelength * np.cos(angle_incidence)
-        )
-
-        diffraction_efficiency = (T**2) * (
-            sin(x) ** 2 + 0.5 * np.sin(x * np.cos(2 * angle_incidence)) ** 2
-        )
-
-        return diffraction_effiency
 
 
 class FINCHEye(HyperspectralImager):
