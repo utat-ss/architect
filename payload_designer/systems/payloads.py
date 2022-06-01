@@ -187,7 +187,7 @@ class HyperspectralImager(Payload):
             * sensor_spectral_resolution
         )
 
-        return sensor_spectral_resolution / 10  # For units**
+        return sensor_spectral_resolution
 
     def get_optical_spectral_resolution(self, target_wavelength, beam_diameter):
         """Get the optically-limited spectral resolution."""
