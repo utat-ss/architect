@@ -1,6 +1,5 @@
 
 import astropy.units as unit
-from colorama import Fore
 import numpy as np
 import pandas as pd
 import logging
