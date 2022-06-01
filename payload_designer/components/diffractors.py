@@ -19,7 +19,13 @@ LOG = logging.getLogger(__name__)
 class SRTGrating(Component):
     """Surface-relief transmissive diffraction grating component."""
 
-    def __init__(self, fringe_frequency, transmittance: LUT, mass, dimensions):
+    def __init__(
+        self,
+        fringe_frequency=None,
+        transmittance: LUT = None,
+        mass=None,
+        dimensions=None,
+    ):
         super().__init__(mass=mass, dimensions=dimensions)
         self.fringe_frequency = fringe_frequency
         self.transmittance = transmittance
@@ -44,10 +50,10 @@ class SRTGrating(Component):
         """Get the number of fringes that are illuminated by an incident
         collimated beam of light."""
 
-        if beam_diameter > self.dimensions[0] or beam_diameter > self.dimensions[1]:
-            raise ValueError(
-                "Beam diameter cannot be greater than the size of the grating."
-            )
+        #  if beam_diameter > self.dimensions[0] or beam_diameter > self.dimensions[1]:
+        #   raise ValueError(
+        #       "Beam diameter cannot be greater than the size of the grating."
+        #  )
 
         fringe_count = beam_diameter * self.fringe_frequency
 
