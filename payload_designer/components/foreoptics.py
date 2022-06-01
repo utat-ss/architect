@@ -144,3 +144,14 @@ class Foreoptic(Component):
         a_i = math.pi * (self.d_i / 2) ** 2
 
         return a_i
+
+
+class Chromar(Foreoptic):
+    def __init__(self):
+        super().__init__(
+            diameter=80 * unit.mm,
+            focal_length=100 * unit.mm,
+            mass=250 * unit.g,
+            length=100 * unit.mm,
+            transmittance=None,
+        )

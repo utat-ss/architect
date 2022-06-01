@@ -40,12 +40,14 @@ class Payload(System):
 class HyperspectralImager(Payload):
     def __init__(
         self,
-        sensor: Component,
-        foreoptic: Component,
-        slit: Component,
-        diffractor: Component,
+        spatial_resolution=None,
+        sensor: Component = None,
+        foreoptic: Component = None,
+        slit: Component = None,
+        diffractor: Component = None,
         **components: Component,
     ):
+        self.spatial_resolution = spatial_resolution
         super().__init__(
             sensor=sensor,
             foreoptic=foreoptic,
@@ -107,11 +109,14 @@ class HyperspectralImager(Payload):
 
     def get_iFOV(self) -> np.ndarray[float, float]:
         """Get the instantaneous field of view."""
+        assert self.sensor is not None, "A sensor component must be specified."
+        assert self.foreoptic is not None, "A foreoptic component must be specified."
+
         iFOV = 2 * np.arctan(self.sensor.pitch / (2 * self.foreoptic.focal_length))
 
         return iFOV
 
-    def get_sensor_spatial_resolution(self, target_distance, skew_angle):
+    def get_sensor_spatial_resolution(self, target_distance, skew_angle=0):
         """Get the sensor-limited spatial resolution."""
 
         iFOV = self.get_iFOV()
@@ -141,8 +146,9 @@ class HyperspectralImager(Payload):
 
         return swath
 
-    def get_optical_spatial_resolution(self, wavelength, target_distance, skew_angle):
+    def get_optical_spatial_resolution(self, wavelength, target_distance, skew_angle=0):
         """Get the optically-limited spatial resolution."""
+        assert self.foreoptic is not None, "A foreoptic component must be specified."
 
         optical_spatial_resolution = (
             1.22
@@ -152,20 +158,22 @@ class HyperspectralImager(Payload):
 
         return optical_spatial_resolution
 
-    def get_spatial_resolution(self, wavelength, target_distance, skew_angle):
-        """Get the spatial resolution or ground sample distance of the
-        system."""
+    def get_spatial_resolution(self, wavelength, target_distance, skew_angle=0):
+        """Get the spatial resolution of the system."""
+        if self.spatial_resolution is not None:
+            return self.spatial_resolution
 
         sensor_spatial_resolution = self.get_sensor_spatial_resolution(
             target_distance=target_distance, skew_angle=skew_angle
         )
+
         optical_spatial_resolution = self.get_optical_spatial_resolution(
             wavelength=wavelength,
             target_distance=target_distance,
             skew_angle=skew_angle,
         )
 
-        spatial_resolution = np.max(
+        spatial_resolution = np.maximum(
             sensor_spatial_resolution, optical_spatial_resolution
         )
 
@@ -231,6 +239,19 @@ class HyperspectralImager(Payload):
             )
 
         return spectral_resolution
+
+    def get_pointing_accuracy_constraint(
+        self, wavelength, target_distance, tolerance=0.5
+    ):
+        """Get the pointing accuracy constraint."""
+
+        spatial_resolution = self.get_spatial_resolution(
+            wavelength=wavelength, target_distance=target_distance
+        )
+
+        constraint_angle = np.arctan((tolerance * spatial_resolution) / target_distance)
+
+        return constraint_angle
 
 
 class FINCHEye(HyperspectralImager):
