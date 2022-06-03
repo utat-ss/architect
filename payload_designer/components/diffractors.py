@@ -49,11 +49,7 @@ class SRTGrating(Component):
     def get_illuminated_fringe_count(self, beam_diameter):
         """Get the number of fringes that are illuminated by an incident
         collimated beam of light."""
-
-        #  if beam_diameter > self.dimensions[0] or beam_diameter > self.dimensions[1]:
-        #   raise ValueError(
-        #       "Beam diameter cannot be greater than the size of the grating."
-        #  )
+        assert self.fringe_frequency is not None, "Fringe frequency must be specified."
 
         fringe_count = beam_diameter * self.fringe_frequency
 
@@ -62,9 +58,9 @@ class SRTGrating(Component):
     def get_resolvance(self, beam_diameter, order=1):
         """Get the resolving power of the grating."""
 
-        R = order * self.get_illuminated_fringe_count(beam_diameter)
+        resolvance = order * self.get_illuminated_fringe_count(beam_diameter)
 
-        return R
+        return resolvance
 
     def get_dispersion(self, wavelength, incident_angle, order=1):
         """Get the angular dispersion of the grating."""

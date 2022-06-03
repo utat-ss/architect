@@ -179,31 +179,25 @@ class HyperspectralImager(Payload):
 
         return spatial_resolution
 
-    def get_sensor_spectral_resolution(
-        self, upper_wavelength, lower_wavelength, beam_diameter
-    ):
+    def get_sensor_spectral_resolution(self, upper_wavelength, lower_wavelength):
         """Get the sensor-limited spectral resolution."""
-
-        self.sensor.n_bin = self.sensor.n_bin * unit.pix
+        assert self.sensor is not None, "A sensor component must be specified."
 
         sensor_spectral_resolution = (upper_wavelength - lower_wavelength) / (
             (1 / self.sensor.n_bin) * self.sensor.n_px[1]
-        )
-
-        sensor_spectral_resolution = (
-            np.ones(self.diffractor.get_resolvance(beam_diameter=beam_diameter).shape)
-            * sensor_spectral_resolution
         )
 
         return sensor_spectral_resolution
 
     def get_optical_spectral_resolution(self, target_wavelength, beam_diameter):
         """Get the optically-limited spectral resolution."""
+        assert self.diffractor is not None, "A diffractor component must be specified."
 
         optical_spectral_resolution = (
             target_wavelength
             / self.diffractor.get_resolvance(beam_diameter=beam_diameter)
         )
+
         return optical_spectral_resolution
 
     def get_spectral_resolution(
@@ -216,27 +210,20 @@ class HyperspectralImager(Payload):
         """Get the spectral resolution (from the optical and sensor spectral
         resolutions)"""
 
-        spectral_resolution = (
-            np.ones(self.diffractor.get_resolvance(beam_diameter=beam_diameter).shape)
-            * unit.nm
-        )
-
         sensor_spectral_resolution = self.get_sensor_spectral_resolution(
             upper_wavelength=upper_wavelength,
             lower_wavelength=lower_wavelength,
-            beam_diameter=beam_diameter,
         )
 
         optical_spectral_resolution = self.get_optical_spectral_resolution(
             target_wavelength=target_wavelength, beam_diameter=beam_diameter
         )
 
-        for i in range(
-            self.diffractor.get_resolvance(beam_diameter=beam_diameter).size
-        ):
-            spectral_resolution[i] = max(
-                optical_spectral_resolution[i], sensor_spectral_resolution[i]
-            )
+        print("Optical spectral resolution: ", optical_spectral_resolution)
+        print("Sensor spectral resolution: ", sensor_spectral_resolution)
+        spectral_resolution = np.maximum(
+            optical_spectral_resolution, sensor_spectral_resolution * unit.pix
+        )
 
         return spectral_resolution
 
