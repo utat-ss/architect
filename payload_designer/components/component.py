@@ -25,7 +25,8 @@ class Component(Artifact):
 
     def get_volume(self):
         """Get the volume of the component from its bounding box."""
-
+        assert self.dimensions is not None, "A dimensions component must be specified."
+        
         volume = self.dimensions[0] * self.dimensions[1] * self.dimensions[2]
 
         return volume
