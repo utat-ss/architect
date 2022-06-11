@@ -35,6 +35,9 @@ class LUT:
         self.name = name
 
     def get_table(self):
+        assert self.x is not None, "x must be specified."
+        assert self.y is not None, "y must be specified."
+        
         data = {f"X [{self.x.unit}]": self.x.value, f"Y [{self.y.unit}]": self.y.value}
 
         df = pd.DataFrame.from_dict(data)
@@ -42,10 +45,12 @@ class LUT:
         return df
 
     def __str__(self):
+        assert self.name is not None, "Name must be specified."
         df = self.get_table()
         return f"LUT ({self.name})\n{df.to_string(index=False)}"
 
     def _repr_html_(self):
+        assert self.name is not None, "Name must be specified."
         df = self.get_table()
         return f"LUT ({self.name})\n{df.to_html(index=False)}"
 
@@ -59,6 +64,8 @@ class LUT:
             array-like: The interpolated y values.
 
         """
+        assert self.x is not None, "x must be specified."
+        assert self.y is not None, "y must be specified."
         return np.interp(x=x, xp=self.x, fp=self.y)
 
 
