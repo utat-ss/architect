@@ -15,7 +15,8 @@ class Satellite(System):
 
     def get_attrs_table(self):
         """Get a table of satellite parameters."""
-
+        assert self.altitude is not None, "An altitude component must be specified."
+        
         orbit_radius = self.get_orbit_radius()
         orbit_velocity = self.get_orbit_velocity()
         orbit_angular_velocity = self.get_orbit_angular_velocity()
@@ -43,7 +44,8 @@ class Satellite(System):
 
     def get_orbit_radius(self):
         """Get the orbital radius."""
-
+        assert self.altitude is not None, "An altitude component must be specified."
+        
         R_orbit = const.R_earth + self.altitude
 
         return R_orbit
