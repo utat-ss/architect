@@ -27,15 +27,16 @@ class DichroicBandFilter(Lens):
         super().__init__(
             diameter=diameter,
             focal_length=None,
-            index=index,
-            mass=mass,
-            thickness=thickness,
-            transmittance=transmittance,
+            index=None,
+            mass=None,
+            thickness=None,
+            transmittance=None,
         ),
 
     def get_phase_shift(self, wavelength, angle_in, index_in=1):
         """Get the phase shift of the filter."""
-
+        assert self.index is not None, "Index must be specified."
+        
         wavelength_shifted = wavelength * np.sqrt(
             1 - ((index_in, self.index) * np.sin(angle_in) ** 2)
         )
@@ -44,6 +45,7 @@ class DichroicBandFilter(Lens):
 
     def get_reflectance(self, index_in=1):
         """Get the reflectance of the filter."""
+        assert self.index is not None, "Index must be specified."
 
         reflectance = ((self.index - index_in) / (self.index + index_in)) ** 2
 
