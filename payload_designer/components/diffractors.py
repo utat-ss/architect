@@ -2,16 +2,25 @@
 
 # stdlib
 import logging
-import math
 
 # external
 import numpy as np
-import pandas as pd
 
 # project
 from payload_designer.components import Component
 from payload_designer.libs.physlib import snell
 from payload_designer.luts import LUT
+
+# import math
+
+# import pandas as pd
+
+
+# import math
+# from re import M
+
+# import pandas as pd
+
 
 LOG = logging.getLogger(__name__)
 
@@ -89,6 +98,7 @@ class SRTGrating(Component):
         return resolution
 
     def get_anamorphic_amplification(self, incident_angle, wavelength, order=1):
+        """Get the anamorphic amplification of the grating."""
 
         emergent_angle = self.get_emergent_angle(
             incident_angle=incident_angle, wavelength=wavelength, order=order
@@ -185,6 +195,7 @@ class VPHGrating(SRTGrating):
         return mu_s
 
     def get_efficiency_bandwidth(self, wavelength, order=1):
+        """Calculates the efficiency bandwidth."""
         a_2b = np.arcsin((order * wavelength) / (2 * self.index_dcg * wavelength))
         lmda_eff = (wavelength * wavelength) / (self.dcg_thickness * np.tan(a_2b))
 
@@ -225,10 +236,10 @@ class VPHGrism(VPHGrating):
         self.apex_angle = apex_angle
 
     def get_emergent_angle(
-        self, angle_in, wavelength, index_in=1, index_out=1, order=1
+        self, incident_angle, wavelength, n_initial=1, n_final=1, order=1
     ):
-        angle_1 = angle_in + self.apex_angle
-        angle_2 = snell(angle=angle_1, n_1=index_in, n_2=self.index_prism)
+        angle_1 = incident_angle + self.apex_angle
+        angle_2 = snell(angle=angle_1, n_1=n_initial, n_2=self.index_prism)
         angle_3 = self.apex_angle - angle_2
         angle_4 = snell(angle=angle_3, n_1=self.index_prism, n_2=self.index_seal)
         angle_5 = angle_4
@@ -238,16 +249,17 @@ class VPHGrism(VPHGrating):
         angle_7 = angle_6
         angle_8 = snell(angle=angle_7, n_1=self.index_seal, n_2=self.index_prism)
         angle_9 = angle_8 - self.apex_angle
-        angle_10 = snell(angle=angle_9, n_1=self.index_prism, n_2=index_out)
+        angle_10 = snell(angle=angle_9, n_1=self.index_prism, n_2=n_final)
         angle_out = angle_10 + self.apex_angle
 
         return angle_out
 
-    def get_undeviated_wavelength(self, angle_in, order=1, index_in=1, index_out=1):
+    def get_undeviated_wavelength(self, angle_in, order=1, index_in=1):
+        """Calculates the undeviated wavelength."""
         angle_1 = angle_in + self.apex_angle
         angle_2 = snell(angle=angle_1, n_1=index_in, n_2=self.index_prism)
         angle_3 = self.apex_angle - angle_2
-        angle_4 = snell(angle=angle_3, n_1=self.self.index_prism, n_2=self.index_seal)
+        angle_4 = snell(angle=angle_3, n_1=self.index_prism, n_2=self.index_seal)
         angle_5 = angle_4
         l_g = 2 * (np.sin(angle_5) / (order * self.fringe_frequency))
 
@@ -255,23 +267,73 @@ class VPHGrism(VPHGrating):
 
     def get_transmittance_theoretical(self):
         return NotImplementedError
-        angle_1 = a_in + a
-        angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=n_1, n_2=n_2)
-        angle_3 = a - angle_2
-        angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=n_2, n_2=n_3)
-        angle_5 = angle_4
-        L = 1 / v  # nm/lines
+        # angle_1 = a_in + a
+        # angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=n_1, n_2=n_2)
+        # angle_3 = a - angle_2
+        # angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=n_2, n_2=n_3)
+        # angle_5 = angle_4
+        # L = 1 / v  # nm/lines
 
-        # diffraction efficiency
-        n_p = (np.sin((math.pi * n_g * d) / (l * np.cos(angle_5))) ** 2) + (
-            (1 / 2)
-            * (
-                np.sin(
-                    ((math.pi * n_g * d) * np.cos(2 * angle_5)) / (l * np.cos(angle_5))
-                )
-            )
-            ** 2
-        )  # angle_5 being close to bragg angle = more efficiency
-        n_p = n_p * eff_mat * eff_mat
+        # # diffraction efficiency
+        # n_p = (np.sin((math.pi * n_g * d) / (l * np.cos(angle_5))) ** 2) + (
+        #     (1 / 2)
+        #     * (
+        #         np.sin(
+        #             ((math.pi * n_g * d) * np.cos(2 * angle_5)) / (l * np.cos(angle_5))
+        #         )
+        #     )
+        #     ** 2
+        # )  # angle_5 being close to bragg angle = more efficiency
+        # n_p = n_p * eff_mat * eff_mat
 
-        return n_p
+        # return n_p
+
+
+def get_efficiency(
+    fringe_density,
+    n_grism,
+    n_grism_semiamp,
+    grism_thickness,
+    grism_length,
+    incident_angle,
+    order=1,
+    n_air=1,
+):
+    """Calculates the efficiency for the VPH Grism under the Bragg Condition.
+
+    Parameters
+    ----------
+    fringe_density : float
+        The number of fringes per unit length of the grism.
+    n_grism : float
+        The refractive index of the grism.
+    n_grism_semiamp : float
+        Semiamplitude (half of peak-to-peak amplitude) of variation
+        of n_grism inside grating volume.
+    grism_thickness : float
+        The thickness of the grism.
+    grism_length : float
+        The length of the grism.
+    incident_angle : float
+        The angle of incidence of the light on the grism.
+    order : int, optional
+        The order of the grating. The default is 1.
+    n_air : float, optional
+        The refractive index of the air. The default is 1.
+
+    Returns
+    -------
+    float
+        The efficiency of the grism.
+
+    """
+    sin_arg_num = order * np.pi * n_grism_semiamp * grism_thickness
+    fringe_spacing = grism_length**2 / fringe_density
+    sin_arg_den = (
+        2
+        * fringe_spacing
+        * n_grism
+        * np.sin(2 * np.arcsin(n_air / n_grism * np.sin(incident_angle)))
+    )
+    efficiency = (np.sin(sin_arg_num / sin_arg_den)) ** 2
+    return efficiency
