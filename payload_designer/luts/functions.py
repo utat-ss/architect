@@ -35,9 +35,6 @@ class LUT:
         self.name = name
 
     def get_table(self):
-        assert self.x is not None, "x must be specified."
-        assert self.y is not None, "y must be specified."
-        
         data = {f"X [{self.x.unit}]": self.x.value, f"Y [{self.y.unit}]": self.y.value}
 
         df = pd.DataFrame.from_dict(data)
