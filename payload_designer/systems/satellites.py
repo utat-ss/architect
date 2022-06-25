@@ -43,7 +43,7 @@ class Satellite(System):
 
     def get_orbit_radius(self):
         """Get the orbital radius."""
-        assert self.altitude is not None, "An altitude component must be specified."
+        assert self.altitude is not None, "Altitude must be specified."
         
         R_orbit = const.R_earth + self.altitude
 
