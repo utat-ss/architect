@@ -46,7 +46,6 @@ class LUT:
         return f"LUT ({self.name})\n{df.to_string(index=False)}"
 
     def _repr_html_(self):
-        assert self.name is not None, "Name must be specified."
         df = self.get_table()
         return f"LUT ({self.name})\n{df.to_html(index=False)}"
 
