@@ -27,10 +27,10 @@ class DichroicBandFilter(Lens):
         super().__init__(
             diameter=diameter,
             focal_length=None,
-            index=None,
-            mass=None,
-            thickness=None,
-            transmittance=None,
+            index=index,
+            mass=mass,
+            thickness=thickness,
+            transmittance=transmittance,
         ),
 
     def get_phase_shift(self, wavelength, angle_in, index_in=1):
