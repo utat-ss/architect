@@ -63,8 +63,6 @@ class LUT:
             array-like: The interpolated y values.
 
         """
-        assert self.x is not None, "x must be specified."
-        assert self.y is not None, "y must be specified."
         return np.interp(x=x, xp=self.x, fp=self.y)
 
 
