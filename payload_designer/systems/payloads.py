@@ -239,6 +239,18 @@ class HyperspectralImager(Payload):
         constraint_angle = np.arctan((tolerance * spatial_resolution) / target_distance)
 
         return constraint_angle
+    
+    def get_image_height(self, wavelength):
+        """Get height on sensor that given wavelength hits"""
+
+        angle_of_incidence = diffractors.VPHGrism.get_emergent_angle(self, 0, wavelength, index_in=1, index_out=1, order=1)
+        
+        if wavelength >= 1300: 
+            image_height = 19 - lenses.Lens.get_image_height(self, angle_of_incidence)
+        else:
+            image_height = 19 + lenses.Lens.get_image_height(self, angle_of_incidence)
+
+        return image_height 
 
 
 class FINCHEye(HyperspectralImager):
