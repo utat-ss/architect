@@ -251,7 +251,7 @@ class HyperspectralImager(Payload):
     def get_image_height(self, wavelength):
         """Get height on sensor that given wavelength hits"""
 
-        incident_angle = self.get_incident_angle()
+        incident_angle = self.get_incident_angle(self, wavelength)
         
         if incident_angle >= 0: 
             image_height = 19 + lenses.Lens.get_image_height(self, angle_of_incidence)
