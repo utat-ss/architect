@@ -253,11 +253,8 @@ class HyperspectralImager(Payload):
 
         incident_angle = self.get_incident_angle(self, wavelength)
         
-        if incident_angle >= 0: 
-            image_height = 19 + lenses.Lens.get_image_height(self, angle_of_incidence)
-        else:
-            incident_angle = 19 - lenses.Lens.get_image_height(self, angle_of_incidence)
-
+        image_height = 19 + lenses.Lens.get_image_height(self, incident_angle)
+ 
         return image_height 
 
 
