@@ -240,15 +240,23 @@ class HyperspectralImager(Payload):
 
         return constraint_angle
     
+    def get_incident_angle(self, wavelength):
+        """Get incident angle of grism light hitting lens"""
+        
+        emergent_angle = diffractors.VPHGrism.get_emergent_angle(self, 0, wavelength, index_in=1, index_out=1, order=1)
+        incident_angle = diffractors.VPHGrism.apex_angle - emergent_angle - 90
+        
+        return incident_angle
+    
     def get_image_height(self, wavelength):
         """Get height on sensor that given wavelength hits"""
 
-        angle_of_incidence = diffractors.VPHGrism.get_emergent_angle(self, 0, wavelength, index_in=1, index_out=1, order=1)
+        incident_angle = self.get_incident_angle()
         
-        if wavelength >= 1300: 
+        if incident_angle >= 0: 
             image_height = 19 + lenses.Lens.get_image_height(self, angle_of_incidence)
         else:
-            image_height = 19 - lenses.Lens.get_image_height(self, angle_of_incidence)
+            incident_angle = 19 - lenses.Lens.get_image_height(self, angle_of_incidence)
 
         return image_height 
 
