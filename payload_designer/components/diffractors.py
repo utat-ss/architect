@@ -289,51 +289,32 @@ class VPHGrism(VPHGrating):
         # return n_p
 
 
-def get_efficiency(
-    fringe_density,
-    n_grism,
-    n_grism_semiamp,
-    grism_thickness,
-    grism_length,
-    incident_angle,
-    order=1,
-    n_air=1,
-):
-    """Calculates the efficiency for the VPH Grism under the Bragg Condition.
+    def get_efficiency(self, incident_angle, order=1, n_air=1):
+        """Calculates the efficiency as functon of fringe frequency for the VPH
+        Grism under the Bragg Condition.
 
-    Parameters
-    ----------
-    fringe_density : float
-        The number of fringes per unit length of the grism.
-    n_grism : float
-        The refractive index of the grism.
-    n_grism_semiamp : float
-        Semiamplitude (half of peak-to-peak amplitude) of variation
-        of n_grism inside grating volume.
-    grism_thickness : float
-        The thickness of the grism.
-    grism_length : float
-        The length of the grism.
-    incident_angle : float
-        The angle of incidence of the light on the grism.
-    order : int, optional
-        The order of the grating. The default is 1.
-    n_air : float, optional
-        The refractive index of the air. The default is 1.
+        Parameters
+        ----------
+        incident_angle : float
+            The angle of incidence of the light on the grism on the dcg layer
+        order : int, optional
+            The order of the grating. The default is 1.
+        n_air : float, optional
+            The refractive index of the air. The default is 1.
 
-    Returns
-    -------
-    float
-        The efficiency of the grism.
+        Returns
+        -------
+        float
+            The efficiency of the grism.
 
-    """
-    sin_arg_num = order * np.pi * n_grism_semiamp * grism_thickness
-    fringe_spacing = grism_length**2 / fringe_density
-    sin_arg_den = (
-        2
-        * fringe_spacing
-        * n_grism
-        * np.sin(2 * np.arcsin(n_air / n_grism * np.sin(incident_angle)))
-    )
-    efficiency = (np.sin(sin_arg_num / sin_arg_den)) ** 2
-    return efficiency
+        """
+        sin_arg_num = order * np.pi * self.index_dcg_amplitude/2 * self.dcg_thickness
+        fringe_spacing = 1 / self.fringe_frequency
+        sin_arg_den = (
+            2
+            * fringe_spacing
+            * self.index_dcg
+            * np.sin(2 * np.arcsin(n_air / self.index_dcg * np.sin(incident_angle)))
+        )
+        efficiency = (np.sin(sin_arg_num / sin_arg_den)) ** 2
+        return efficiency
