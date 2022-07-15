@@ -77,6 +77,9 @@ class HyperspectralImager(Payload):
             wavelength: Wavelength(s) at which to evaluate SNR.
 
         """
+        assert self.sensor is not None, "A sensor component must be specified." 
+        assert self.foreoptic is not None, "A foreoptic component must be specified."
+        assert self.slit is not None, "A slit component must be specified."
 
         signal = (
             (const.pi / 4)
@@ -97,12 +100,14 @@ class HyperspectralImager(Payload):
 
     def get_FOV(self) -> np.ndarray[float, float]:
         """Get the field of view vector.
-
+        
         A vector that defines the angular extent that can be imaged by the payload in
         the along-track and the across-track directions.
 
         """
-
+        assert self.slit is not None, "A slit component must be specified."
+        assert self.foreoptic is not None, "A foreoptic component must be specified."
+        
         fov = 2 * np.arctan(self.slit.size / (2 * self.foreoptic.focal_length))
 
         return fov
