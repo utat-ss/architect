@@ -11,17 +11,6 @@ from payload_designer.components import Component
 from payload_designer.libs.physlib import snell
 from payload_designer.luts import LUT
 
-# import math
-
-# import pandas as pd
-
-
-# import math
-# from re import M
-
-# import pandas as pd
-
-
 LOG = logging.getLogger(__name__)
 
 
