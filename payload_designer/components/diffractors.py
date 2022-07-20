@@ -276,27 +276,6 @@ class VPHGrism(VPHGrating):
 
     def get_transmittance_theoretical(self):
         return NotImplementedError
-        # angle_1 = a_in + a
-        # angle_2 = physlib.snell_angle_2(angle_1=angle_1, n_1=n_1, n_2=n_2)
-        # angle_3 = a - angle_2
-        # angle_4 = physlib.snell_angle_2(angle_1=angle_3, n_1=n_2, n_2=n_3)
-        # angle_5 = angle_4
-        # L = 1 / v  # nm/lines
-
-        # # diffraction efficiency
-        # n_p = (np.sin((math.pi * n_g * d) / (l * np.cos(angle_5))) ** 2) + (
-        #     (1 / 2)
-        #     * (
-        #         np.sin(
-        #             ((math.pi * n_g * d) * np.cos(2 * angle_5)) / (l * np.cos(angle_5))
-        #         )
-        #     )
-        #     ** 2
-        # )  # angle_5 being close to bragg angle = more efficiency
-        # n_p = n_p * eff_mat * eff_mat
-
-        # return n_p
-
 
     def get_efficiency(self, incident_angle, order=1, n_air=1):
         """Calculates the efficiency as functon of fringe frequency for the VPH
