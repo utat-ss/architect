@@ -278,8 +278,8 @@ class VPHGrism(VPHGrating):
         return NotImplementedError
 
     def get_efficiency(self, incident_angle, order=1, n_air=1):
-        """Calculates the efficiency as functon of fringe frequency for the VPH
-        Grism under the Bragg Condition.
+        """Calculates the efficiency as a function of fringe frequency for 
+        the VPH Grism under the Bragg Condition.
 
         Args:
             incident_angle : The angle of incidence of the light on the
