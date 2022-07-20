@@ -281,18 +281,13 @@ class VPHGrism(VPHGrating):
         """Calculates the efficiency as functon of fringe frequency for the VPH
         Grism under the Bragg Condition.
 
-        Parameters
-        ----------
-        incident_angle : float
-            The angle of incidence of the light on the grism on the dcg layer
-        order : int, optional
-            The order of the grating. The default is 1.
-        n_air : float, optional
-            The refractive index of the air. The default is 1.
+        Args:
+            incident_angle : The angle of incidence of the light on the
+                grism on the dcg layer
+            order : The order of the grating. The default is 1.
+            n_air : The refractive index of the air. The default is 1.
 
-        Returns
-        -------
-        float
+        Returns:
             The efficiency of the grism.
 
         """
