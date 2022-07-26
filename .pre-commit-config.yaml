@@ -1,24 +1,24 @@
-# repos:
-# - repo: https://github.com/pycqa/isort
-#   rev: 5.10.1
-#   hooks:
-#   - id: isort
+repos:
+- repo: https://github.com/pycqa/isort
+  rev: 5.10.1
+  hooks:
+  - id: isort
 
-# - repo: https://github.com/psf/black
-#   rev: 22.3.0
-#   hooks:
-#   - id: black
+- repo: https://github.com/psf/black
+  rev: 22.3.0
+  hooks:
+  - id: black
 
-# - repo: https://github.com/asottile/pyupgrade
-#   rev: v2.32.0
-#   hooks:
-#   - id: pyupgrade
+- repo: https://github.com/asottile/pyupgrade
+  rev: v2.32.0
+  hooks:
+  - id: pyupgrade
 
-# - repo: https://github.com/myint/docformatter
-#   rev: v1.4
-#   hooks:
-#   - id: docformatter
-#     args: [--blank, --in-place, --recursive, --wrap-descriptions=88, --wrap-summaries=80] # does not yet support toml config
+- repo: https://github.com/myint/docformatter
+  rev: v1.4
+  hooks:
+  - id: docformatter
+    args: [--blank, --in-place, --recursive, --wrap-descriptions=88, --wrap-summaries=80] # does not yet support toml config
 
 
 - repo: https://github.com/nbQA-dev/nbQA
