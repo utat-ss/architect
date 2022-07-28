@@ -239,23 +239,28 @@ class HyperspectralImager(Payload):
         constraint_angle = np.arctan((tolerance * spatial_resolution) / target_distance)
 
         return constraint_angle
-    
-    def get_incident_angle(self, wavelength):
-        """Get incident angle of grism light hitting lens"""
-        
-        emergent_angle = diffractors.VPHGrism.get_emergent_angle(self, 0, wavelength, index_in=1, index_out=1, order=1)
-        incident_angle = diffractors.VPHGrism.apex_angle - emergent_angle - 90
-        
-        return incident_angle
-    
-    def get_image_height(self, wavelength):
-        """Get height on sensor that given wavelength hits"""
 
-        incident_angle = self.get_incident_angle(self, wavelength)
-        
-        image_height = 19 + lenses.Lens.get_image_height(self, incident_angle)
- 
-        return image_height 
+    def get_incident_angle(self, wavelength):
+        """Get incident angle of grism light hitting lens."""
+
+        emergent_angle = components.diffractors.VPHGrism.get_emergent_angle(
+            angle_in=0, wavelength=wavelength, index_in=1, index_out=1, order=1
+        )
+        incident_angle = (
+            components.diffractors.VPHGrism.apex_angle - emergent_angle - 90
+        )
+
+        return incident_angle
+
+    def get_image_height(self, wavelength):
+        """Get height on sensor that given wavelength hits."""
+
+        incident_angle = self.get_incident_angle(wavelength=wavelength)
+        image_height = 19 + components.lenses.Lens.get_image_height(
+            incident_angle=incident_angle
+        )
+
+        return image_height
 
 
 class FINCHEye(HyperspectralImager):
