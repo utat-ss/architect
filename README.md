@@ -10,13 +10,10 @@
 
 <img src="img/payload-designer-logo.png" height="64">
 
-# Payload Designer
-A design tool for the FINCH Eye payload. Payload Designer enables a unified analysis of the entire payload and all of its components. See the latest version of the [softtware design description](https://www.overleaf.com/read/fpngsrxvqccy) here. 
+# Architect
+A systems engineering tool developed to support the design of the FINCH Eye CubeSat built by the [University of Toronto Aerospace Team](https://www.utat.ca/space-systems):milky_way:. Architect enables tradeoff analyses of complex systems and components through mathematical modelling.
 
-Built by the [University of Toronto Aerospace Team](https://www.utat.ca/space-systems) :milky_way:.
-
-<img src="img/utat-logo.png" height="64">
-
+<img src="img/utat-logo.png" height="32">
 
 # Contribution
 Instructions for contributing to this project are shown here.
@@ -99,35 +96,9 @@ This is poetry's version of `pip install <package>`.
 ## Testing 🧪
 This repo uses [pytest](https://pytest.org/) for unit testing. To run all unit tests, call:
 ```
-pytest -v
+pytest
 ```
 This is also a good check to make sure your environment is properly set up. If the tests fail to run, check to confirm you followed the setup instructions correctly.
-
-You can find an interactive report of test results in `./logs/pytest/pytest-report.html`. 
-
-Individual tests can also be specified as follows:
-```
-pytest tests/test_<filename>.py::<function name>
-```
-
-Groups of tests can be run using markers. Assign a marker decorator to the group of functions you want to test, like this:
-```
-@pytest.mark.foo
-def my_test_function():
-    # some test
-```
-
-To use the custom marker `foo`, it must be added to the list of custom pytest markers in `pyproject.toml>[tool.pytest.ini_options]>markers`. The tests marked with `foo` can then be run by calling:
-```
-pytest -v -m foo
-```
-
-Or to avoid all tests with a particular marker, call:
-```
-pytest -v -m "not foo"
-```
-
-Check out the pytest docs for more neat tricks.
 
 ## Pre-Commit ✅
 This project is configured to use [pre-commit](https://pre-commit.com/) hooks. A hook is a script that performs some operation on the repository before every commit. Hooks are used to autoformat and lint code. Pre-commit will not let you push your commit until all hooks pass. When a hook fails, they can be run manually to delint using:
@@ -147,7 +118,7 @@ Branches are organized as follow:
 
 1. `dev`: branched off of `main`; the most updated version of the project with the newest features and bug fixes.
 
-1. `features/<feature-name>`: branched off of `dev`; a feature branch. **Features must be tested thoroughly before being merged into dev**
+1. `<feature>`: branched off of `dev`; a feature branch. Features must be tested thoroughly before being merged into dev.
 
 ## Taking on Tickets 🎫
 Check out the issues tab to see all open tickets.
