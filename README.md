@@ -8,12 +8,12 @@
 [![codecov](https://codecov.io/gh/spacesys-finch/payload-designer/branch/main/graph/badge.svg?token=E2N1A55HGR)](https://codecov.io/gh/spacesys-finch/payload-designer)
 
 
-<img src="img/payload-designer-logo.png" height="64">
+<img src="img/payload-designer-logo.png" height="128">
 
 # Architect
-A systems engineering tool developed to support the design of the FINCH Eye CubeSat built by the [University of Toronto Aerospace Team](https://www.utat.ca/space-systems):milky_way:. Architect enables tradeoff analyses of complex systems and components through mathematical modelling.
+A systems engineering tool developed to support the design of the FINCH Eye CubeSat built by the [University of Toronto Aerospace Team](https://www.utat.ca/space-systems):milky_way:. Architect enables tradeoff analyses of complex systems and components through mathematical modelling. It supports efficient visualization of high-dimensional parameter spaces.
 
-<img src="img/utat-logo.png" height="32">
+<img src="img/utat-logo.png" height="64">
 
 # Contribution
 Instructions for contributing to this project are shown here.
