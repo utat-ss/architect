@@ -6,7 +6,7 @@ import astropy.units as unit
 import numpy as np
 
 # project
-from payload_designer import components, systems
+from payload_designer import components
 from payload_designer.systems.payloads import HyperspectralImager
 
 LOG = logging.getLogger(__name__)

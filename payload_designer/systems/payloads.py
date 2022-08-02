@@ -121,16 +121,12 @@ class HyperspectralImager(Payload):
 
         return iFOV
 
-    def get_sensor_spatial_resolution(self, target_distance, skew_angle=0):
+    def get_sensor_spatial_resolution(self, target_distance):
         """Get the sensor-limited spatial resolution."""
 
-        iFOV = self.get_iFOV()
+        spatial_resolution = target_distance * self.sensor.pitch / self.foreoptic.focal_length
 
-        spatial_resolution = target_distance * (
-            np.tan(skew_angle + 1 / 2 * iFOV) - np.tan(skew_angle - 1 / 2 * iFOV)
-        )
-
-        return spatial_resolution
+        return spatial_resolution.decompose()
 
     def get_swath(
         self, altitude, skew_angle: np.ndarray[float, float]
@@ -152,7 +148,7 @@ class HyperspectralImager(Payload):
         return swath
 
     def get_optical_spatial_resolution(self, wavelength, target_distance, skew_angle=0):
-        """Get the optically-limited spatial resolution."""
+        """Get the optically-limited spatial resolution. Aka GRD (ground-resolved distance)"""
         assert self.foreoptic is not None, "A foreoptic component must be specified."
 
         optical_spatial_resolution = (
@@ -169,8 +165,7 @@ class HyperspectralImager(Payload):
             return self.spatial_resolution
 
         sensor_spatial_resolution = self.get_sensor_spatial_resolution(
-            target_distance=target_distance, skew_angle=skew_angle
-        )
+            target_distance=target_distance)
 
         optical_spatial_resolution = self.get_optical_spatial_resolution(
             wavelength=wavelength,
