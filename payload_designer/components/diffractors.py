@@ -4,6 +4,7 @@
 import logging
 
 # external
+import astropy.units as unit
 import numpy as np
 
 # project
@@ -299,5 +300,5 @@ class VPHGrism(VPHGrating):
             * self.index_dcg
             * np.sin(2 * np.arcsin(n_air / self.index_dcg * np.sin(incident_angle)))
         )
-        efficiency = (np.sin(sin_arg_num / sin_arg_den)) ** 2
+        efficiency = (np.sin(sin_arg_num * unit.radian / sin_arg_den)) ** 2
         return efficiency
