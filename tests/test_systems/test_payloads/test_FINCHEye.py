@@ -14,7 +14,7 @@ LOG = logging.getLogger(__name__)
 def test_get_mapped_height_sensor():
     """Test the optically-limited spatial resolution method."""
     # region params
-    wavelength = 900 * unit.nm
+    wavelength = 1300
 
     # endregion
 
@@ -40,3 +40,5 @@ def test_get_mapped_height_sensor():
     sensor_height = payload.get_mapped_height_sensor(wavelength=wavelength)
     LOG.info(f"Sensor Height: {sensor_height}")
     # endregion
+
+    assert sensor_height == 0
