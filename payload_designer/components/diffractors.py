@@ -41,7 +41,7 @@ class SRTGrating(Component):
         """
 
         emergent_angle = np.arcsin(
-            np.sin(incident_angle) - order * self.fringe_frequency * wavelength
+            np.sin(incident_angle) + order * self.fringe_frequency * wavelength
         )
 
         return emergent_angle
@@ -189,6 +189,7 @@ class VPHGrating(SRTGrating):
         lmda_eff = (wavelength * wavelength) / (self.dcg_thickness * np.tan(a_2b))
 
         return lmda_eff
+
 
 
 class VPHGrism(VPHGrating):

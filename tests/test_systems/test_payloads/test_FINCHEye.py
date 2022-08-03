@@ -15,7 +15,7 @@ LOG = logging.getLogger(__name__)
 
 @pytest.mark.star
 def test_get_mapped_height_sensor():
-    """Test the optically-limited spatial resolution method."""
+    """Test the method that maps wavelength onto sensor."""
     # region params
     wavelength = 1300
 
