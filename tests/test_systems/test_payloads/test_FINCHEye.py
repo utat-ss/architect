@@ -4,6 +4,7 @@ import logging
 # external
 import astropy.units as unit
 import numpy as np
+import pytest
 
 # project
 from payload_designer import components, systems
