@@ -35,6 +35,3 @@ repos:
     entry: poetry run pylint
     language: system
     types: [python]
-
-
-

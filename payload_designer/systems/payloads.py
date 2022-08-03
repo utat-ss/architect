@@ -240,6 +240,7 @@ class HyperspectralImager(Payload):
 
         return constraint_angle
 
+    
 
 class FINCHEye(HyperspectralImager):
     def __init__(
