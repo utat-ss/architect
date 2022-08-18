@@ -29,7 +29,8 @@ class RectSlit(Component):
 
     def get_clear_area(self):
         """Get the clear aperture slit area."""
-
+        assert self.size is not None, "Size must be specified."
+        
         area = self.size[0] * self.size[1]
 
         return area

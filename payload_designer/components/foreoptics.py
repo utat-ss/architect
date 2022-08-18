@@ -136,3 +136,27 @@ class Foreoptic(Component):
         f = np.multiply(self.b, self.g)
 
         return f
+
+    def get_image_area(self):
+        """Calculate the image area.
+
+        Returns:
+            float: image area [mm^2].
+
+        """
+        assert self.d_i is not None, "d_i is not set."
+
+        a_i = math.pi * (self.d_i / 2) ** 2
+
+        return a_i
+
+
+class Chromar(Foreoptic):
+    def __init__(self):
+        super().__init__(
+            diameter=80 * unit.mm,
+            focal_length=100 * unit.mm,
+            mass=250 * unit.g,
+            length=100 * unit.mm,
+            transmittance=None,
+        )

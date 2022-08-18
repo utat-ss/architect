@@ -3,6 +3,7 @@
 import logging
 
 # external
+import astropy.units as unit
 import numpy as np
 import pytest
 
@@ -118,3 +119,22 @@ def test_get_diffraction_efficiency():
     diffraction_efficiency = grism.get_diffraction_efficiency()
     LOG.info(f"Diffraction Efficiency: {diffraction_efficiency}°")
     assert diffraction_efficiency == pytest.approx(0.5185951)
+
+def test_get_efficiency():
+    incident_angle = 60
+    d = 2.5 * unit.mm
+    n_2 = 1.52 * unit.dimensionless_unscaled
+    n_g = 0.1 * unit.dimensionless_unscaled
+    incident_angle = 60 * unit.rad
+
+    fringe_frequency = np.arange(start=10, stop=1200, step=10) * 1 / unit.mm
+
+    diffractor = diffractors.VPHGrism(
+        index_dcg_amplitude=n_g,
+        index_dcg=n_2,
+        dcg_thickness=d,
+        fringe_frequency=fringe_frequency,
+    )
+
+    efficiency = diffractor.get_efficiency(incident_angle=incident_angle)
+    LOG.info(f"Diffraction Efficiency: {efficiency}°")
