@@ -1,3 +1,6 @@
+# stdlib
+import math
+
 # external
 import astropy.constants as const
 import astropy.units as unit
@@ -40,9 +43,9 @@ class Payload(System):
 class HyperspectralImager(Payload):
     def __init__(
         self,
-        sensor: Component,
-        foreoptic: Component,
-        slit: Component,
+        sensor: Component = None,
+        foreoptic: Component = None,
+        slit: Component = None,
         **components: Component,
     ):
         super().__init__(sensor=sensor, foreoptic=foreoptic, slit=slit, **components)
@@ -60,6 +63,19 @@ class HyperspectralImager(Payload):
 
         return transmittance
 
+    def get_ratio_cropped_light_through_slit(self):
+        """Get the ratio of the light passing through slit to the image of the
+        foreoptic."""
+        assert (
+            self.foreoptic.image_diameter is not None
+        ), "Foreoptic image diameter must be set."
+
+        effective_width = min(self.slit.size[0], self.foreoptic.image_diameter)
+        effective_slit_area = effective_width * self.slit.size[1]
+        ratio = effective_slit_area / self.foreoptic.get_image_area()
+
+        return ratio
+
     def get_signal_to_noise(self, radiance: LUT, wavelength):
         """Get the signal to noise ratio of the system.
 
@@ -69,22 +85,61 @@ class HyperspectralImager(Payload):
 
         """
 
-        signal = (
-            (const.pi / 4)
-            * (wavelength / (const.h * const.c))
-            * (self.sensor.get_pixel_area() / self.foreoptic.f_number**2)
-            * self.sensor.efficiency(wavelength)
-            * self.get_transmittance()
-            * self.slit.get_aperture_area()
-            * radiance(wavelength)
-            * self.sensor.dt
-        )
+        # print("wavelength", wavelength)
+        # print("ratio", self.get_ratio_cropped_light_through_slit())
+        # print("pixel area", self.sensor.get_pixel_area())
+        # print("f num", self.foreoptic.get_f_number())
+        # print("QE", self.sensor.efficiency(wavelength).decompose() * unit.electron)
+        # print("efficiency", self.sensor.efficiency(wavelength))
+        # print("transmittance", self.get_transmittance())
+        # print("area", self.slit.get_area())
+        # print("radiance", radiance(wavelength))
+        # print("sensor dt", self.sensor.dt)
+        # print("n bin", self.sensor.n_bin)
+        # print("dark noise", self.sensor.get_dark_noise())
+        # print("quantization noise", self.sensor.get_quantization_noise())
+        # print("noise read", self.sensor.noise_read)
 
-        noise = self.sensor.get_noise(signal)
+        signal1 = (
+            (wavelength / (const.h * const.c))
+            * radiance(wavelength)
+            * (math.pi / 4)
+            * self.sensor.dt
+        )  # [sr-1 m-3]
+        signal2 = self.sensor.get_pixel_area() / (
+            ((self.foreoptic.get_f_number()).decompose()) ** 2 * 1 / unit.sr
+        )  # [m2 sr]
+        signal3 = (
+            (self.sensor.efficiency(wavelength)).decompose()
+            * unit.electron
+            * self.get_transmittance()
+        )  # [electrons]
+        signal4 = (
+            self.get_ratio_cropped_light_through_slit() * 800 * 10 ** (-9) * unit.meter
+        )  # [dimensionless]
+
+        signal = signal1 * signal2 * signal3 * signal4
+
+        print("signal", signal.decompose())
+
+        print("shot noise sqr", signal.decompose() * unit.electron)
+        print(
+            "dark noise sqr",
+            self.sensor.n_bin * (self.sensor.get_dark_noise() * unit.pix) ** 2,
+        )
+        print("quantization noise sqr", self.sensor.get_quantization_noise() ** 2)
+        print("read noise sqr", self.sensor.n_bin * self.sensor.noise_read**2)
+
+        noise = np.sqrt(
+            (signal * unit.electron)
+            + self.sensor.n_bin * (self.sensor.get_dark_noise() * unit.pix) ** 2
+            + self.sensor.get_quantization_noise() ** 2
+            + self.sensor.n_bin * self.sensor.noise_read**2
+        )
 
         snr = signal / noise
 
-        return snr
+        return snr.decompose()
 
     def get_FOV(self) -> np.ndarray[float, float]:
         """Get the field of view vector.

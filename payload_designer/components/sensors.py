@@ -98,21 +98,12 @@ class Sensor(Component):
     def get_quantization_noise(self):
         """Get the quantization noise of the sensor."""
 
-        quant_noise = (1 / math.sqrt(12)) * self.n_well / 2**self.n_bit
+        # print("n well", self.n_well)
+        # print("n bit", self.n_bit)
+
+        quant_noise = (1 / math.sqrt(12)) * self.n_well / 2**self.n_bit.value
 
         return quant_noise
-
-    def get_noise(self, signal):
-        """Get the net noise of the sensor."""
-
-        noise = np.sqrt(
-            signal
-            + self.n_bin * self.get_dark_noise() ** 2
-            + self.get_quantization_noise() ** 2
-            + self.n_bin * self.noise_read**2
-        )
-
-        return noise
 
 
 class TauSWIR(Sensor):

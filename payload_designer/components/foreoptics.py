@@ -23,6 +23,7 @@ class Foreoptic(Component):
     def __init__(
         self,
         diameter=None,
+        image_diameter=None,
         focal_length=None,
         mass=None,
         length=None,
@@ -31,9 +32,18 @@ class Foreoptic(Component):
         super().__init__(mass=mass, dimensions=(diameter, diameter, length))
 
         self.diameter = diameter
+        self.image_diameter = image_diameter
         self.focal_length = focal_length
         self.length = length
         self.transmittance = transmittance
+
+    def get_image_area(self):
+        """Calculate the image area from the image diameter."""
+        assert self.image_diameter is not None, "image_diameter is not set."
+
+        area = np.pi * (self.image_diameter / 2) ** 2
+
+        return area
 
     def get_magnification(self):
         """Calculate the magnification of the foreoptics.
@@ -56,12 +66,7 @@ class Foreoptic(Component):
             float: f/# (unitless).
 
         """
-        if self.na is not None:
-            n = np.divide(1, 2 * self.na)
-        elif self.ds_i is not None and self.dm_a is not None:
-            n = np.divide(self.ds_i, self.dm_a)
-        else:
-            raise ValueError("ds_i and dm_a or na must be set.")
+        n = self.focal_length / self.diameter
 
         return n
 
@@ -131,16 +136,3 @@ class Foreoptic(Component):
         f = np.multiply(self.b, self.g)
 
         return f
-
-    def get_image_area(self):
-        """Calculate the image area.
-
-        Returns:
-            float: image area [mm^2].
-
-        """
-        assert self.d_i is not None, "d_i is not set."
-
-        a_i = math.pi * (self.d_i / 2) ** 2
-
-        return a_i
