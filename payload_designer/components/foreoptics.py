@@ -144,9 +144,9 @@ class Foreoptic(Component):
             float: image area [mm^2].
 
         """
-        assert self.d_i is not None, "d_i is not set."
+        assert self.image_diameter is not None, "image_diameter is not set."
 
-        a_i = math.pi * (self.d_i / 2) ** 2
+        a_i = math.pi * (self.image_diameter / 2) ** 2
 
         return a_i
 

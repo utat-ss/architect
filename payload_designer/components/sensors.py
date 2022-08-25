@@ -65,7 +65,7 @@ class Sensor(Component):
         cubesat frame."""
         assert self.n_px is not None, "n_px must be specified."
         assert self.pitch is not None, "Pitch must be specified."
-        
+
         size = (self.n_px * self.pitch, self.n_px * self.pitch)
 
         return size
@@ -95,7 +95,7 @@ class Sensor(Component):
         """Get the dark noise of the sensor."""
         assert self.i_dark is not None, "i_dark must be specified."
         assert self.dt is not None, "dt amplitude must be specified."
-        
+
         dark_noise = self.i_dark * self.dt
 
         return dark_noise
@@ -108,8 +108,8 @@ class Sensor(Component):
 
         assert self.n_well is not None, "n_well must be specified."
         assert self.n_bit is not None, "n_bit must be specified."
-        
-        quant_noise = (1 / math.sqrt(12)) * self.n_well / 2**self.n_bit
+
+        quant_noise = (1 / math.sqrt(12)) * self.n_well / 2**self.n_bit.value
 
         return quant_noise
 
@@ -117,7 +117,7 @@ class Sensor(Component):
         """Get the net noise of the sensor."""
         assert self.n_bin is not None, "n_bin must be specified."
         assert self.noise_read is not None, "noise_read must be specified."
-        
+
         noise = np.sqrt(
             signal
             + self.n_bin * self.get_dark_noise() ** 2

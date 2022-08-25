@@ -93,7 +93,7 @@ class HyperspectralImager(Payload):
             wavelength: Wavelength(s) at which to evaluate SNR.
 
         """
-        assert self.sensor is not None, "A sensor component must be specified." 
+        assert self.sensor is not None, "A sensor component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."
         assert self.slit is not None, "A slit component must be specified."
 
@@ -125,10 +125,12 @@ class HyperspectralImager(Payload):
             (self.sensor.efficiency(wavelength)).decompose()
             * unit.electron
             * self.get_transmittance()
-        )  # [electrons]
+        )  # [electron]
         signal4 = (
-            self.get_ratio_cropped_light_through_slit() * 800 * 10 ** (-9) * unit.meter
-        )  # [dimensionless]
+            self.get_ratio_cropped_light_through_slit()
+            * (800 * 10 ** (-9))
+            * unit.meter
+        )  # [dimensionless * m]
 
         signal = signal1 * signal2 * signal3 * signal4
 
@@ -139,8 +141,8 @@ class HyperspectralImager(Payload):
             "dark noise sqr",
             self.sensor.n_bin * (self.sensor.get_dark_noise() * unit.pix) ** 2,
         )
-        print("quantization noise sqr", self.sensor.get_quantization_noise() ** 2)
-        print("read noise sqr", self.sensor.n_bin * self.sensor.noise_read**2)
+        print("quantization noise sqr", (self.sensor.get_quantization_noise()) ** 2)
+        print("read noise sqr", self.sensor.n_bin * (self.sensor.noise_read) ** 2)
 
         noise = np.sqrt(
             (signal * unit.electron)
@@ -155,14 +157,14 @@ class HyperspectralImager(Payload):
 
     def get_FOV(self) -> np.ndarray[float, float]:
         """Get the field of view vector.
-        
+
         A vector that defines the angular extent that can be imaged by the payload in
         the along-track and the across-track directions.
 
         """
         assert self.slit is not None, "A slit component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."
-        
+
         fov = 2 * np.arctan(self.slit.size / (2 * self.foreoptic.focal_length))
 
         return fov
@@ -179,7 +181,9 @@ class HyperspectralImager(Payload):
     def get_sensor_spatial_resolution(self, target_distance):
         """Get the sensor-limited spatial resolution."""
 
-        spatial_resolution = target_distance * self.sensor.pitch / self.foreoptic.focal_length
+        spatial_resolution = (
+            target_distance * self.sensor.pitch / self.foreoptic.focal_length
+        )
 
         return spatial_resolution.decompose()
 
@@ -203,7 +207,11 @@ class HyperspectralImager(Payload):
         return swath
 
     def get_optical_spatial_resolution(self, wavelength, target_distance, skew_angle=0):
-        """Get the optically-limited spatial resolution. Aka GRD (ground-resolved distance)"""
+        """Get the optically-limited spatial resolution.
+
+        Aka GRD (ground-resolved distance)
+
+        """
         assert self.foreoptic is not None, "A foreoptic component must be specified."
 
         optical_spatial_resolution = (
@@ -220,7 +228,8 @@ class HyperspectralImager(Payload):
             return self.spatial_resolution
 
         sensor_spatial_resolution = self.get_sensor_spatial_resolution(
-            target_distance=target_distance)
+            target_distance=target_distance
+        )
 
         optical_spatial_resolution = self.get_optical_spatial_resolution(
             wavelength=wavelength,
@@ -295,7 +304,6 @@ class HyperspectralImager(Payload):
 
         return constraint_angle
 
-    
 
 class FINCHEye(HyperspectralImager):
     def __init__(
