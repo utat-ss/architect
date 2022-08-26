@@ -120,6 +120,7 @@ def test_get_diffraction_efficiency():
     LOG.info(f"Diffraction Efficiency: {diffraction_efficiency}°")
     assert diffraction_efficiency == pytest.approx(0.5185951)
 
+
 def test_get_efficiency():
     incident_angle = 60
     d = 2.5 * unit.mm

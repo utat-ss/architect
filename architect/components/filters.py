@@ -36,7 +36,7 @@ class DichroicBandFilter(Lens):
     def get_phase_shift(self, wavelength, angle_in, index_in=1):
         """Get the phase shift of the filter."""
         assert self.index is not None, "Index must be specified."
-        
+
         wavelength_shifted = wavelength * np.sqrt(
             1 - ((index_in, self.index) * np.sin(angle_in) ** 2)
         )

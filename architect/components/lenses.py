@@ -44,7 +44,7 @@ class Lens(Component):
         """Get the height of the image formed above or below the optical axis of
         the lens for an incoming beam of collimated light."""
         assert self.focal_length is not None, "Focal length must be specified."
-        
+
         image_height = self.focal_length * np.tan(incident_angle)
 
         return image_height
@@ -52,7 +52,7 @@ class Lens(Component):
     def get_volume(self):
         """Get the volume of the lens."""
         assert self.diameter is not None, "Diameter must be specified."
-        
+
         volume = const.pi * (self.diameter / 2) ** 2 * self.thickness
 
         return volume

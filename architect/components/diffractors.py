@@ -5,8 +5,8 @@ import logging
 
 # external
 import astropy.units as unit
-from astropy.units import Quantity
 import numpy as np
+from astropy.units import Quantity
 
 # project
 from architect.components import Component
@@ -16,36 +16,39 @@ from architect.luts import LUT
 LOG = logging.getLogger(__name__)
 
 
-class SRTGrating(Component):
-    """Surface-relief transmissive diffraction grating component."""
+class TransmissiveDiffractor(Component):
+    """Transmissive diffraction grating component."""
 
     def __init__(
         self,
-        fringe_frequency: Quantity[1/unit.m] = None,
+        fringe_frequency: Quantity[1 / unit.m] = None,
         efficiency: LUT = None,
         mass: Quantity[unit.kg] = None,
-        dimensions: tuple[Quantity[unit.m],Quantity[unit.m],Quantity[unit.m]] = None,
+        dimensions: tuple[Quantity[unit.m], Quantity[unit.m], Quantity[unit.m]] = None,
     ):
         super().__init__(mass=mass, dimensions=dimensions)
         self.fringe_frequency = fringe_frequency
         self.efficiency = efficiency
 
-    def get_emergent_angle(self, incident_angle, wavelength, order=1):
+    def get_diffraction_angle(
+        self,
+        wavelength: Quantity[unit.nm],
+        incident_angle: Quantity[unit.degree] = 0,
+        order=1,
+    ):
         """Get the angle of the diffracted ray at the specified wavelengh.
 
-        Args:
-            incident_angle: Angle of collimated light incident on grating.
-            wavelength: Wavelength of incident light.
-            order: Diffraction order.
+        Ref:
+            https://www.notion.so/utat-ss/Diffraction-Angle-f78265975fec44e08460cf11e70774c9
 
         """
         assert self.fringe_frequency is not None, "Fringe frequency must be specified."
-        
-        emergent_angle = np.arcsin(
-            np.sin(incident_angle) + order * self.fringe_frequency * wavelength
+
+        diffraction_angle = np.arcsin(
+            self.fringe_frequency * order * wavelength + np.sin(incident_angle)
         )
 
-        return emergent_angle
+        return diffraction_angle.to(unit.degree)
 
     def get_illuminated_fringe_count(self, beam_diameter):
         """Get the number of fringes that are illuminated by an incident
@@ -66,7 +69,7 @@ class SRTGrating(Component):
     def get_dispersion(self, wavelength, incident_angle, order=1):
         """Get the angular dispersion of the grating."""
 
-        emergent_angle = self.get_emergent_angle(
+        emergent_angle = self.get_diffraction_angle(
             incident_angle=incident_angle, wavelength=wavelength, order=order
         )
 
@@ -92,7 +95,7 @@ class SRTGrating(Component):
     def get_anamorphic_amplification(self, incident_angle, wavelength, order=1):
         """Get the anamorphic amplification of the grating."""
 
-        emergent_angle = self.get_emergent_angle(
+        emergent_angle = self.get_diffraction_angle(
             incident_angle=incident_angle, wavelength=wavelength, order=order
         )
 
@@ -115,7 +118,7 @@ class SRTGrating(Component):
         return emergent_beam_width
 
 
-class VPHGrating(SRTGrating):
+class VPHGrating(TransmissiveDiffractor):
     """Volume-phase holographic grating component. Model assumes fringes are
     unslanted relative to the grating normal.
 
@@ -148,13 +151,13 @@ class VPHGrating(SRTGrating):
         self.dcg_thickness = dcg_thickness
         self.index_dcg_amplitude = index_dcg_amplitude
 
-    def get_emergent_angle(
+    def get_diffraction_angle(
         self, incident_angle, wavelength, n_initial=1, n_final=1, order=1
     ):
         assert self.index_seal is not None, "Index Seal must be specified."
         assert self.fringe_frequency is not None, "Fringe frequency must be specified."
         assert self.index_dcg is not None, "Index DCG must be specified."
-        
+
         angle_1 = snell(angle=incident_angle, n_1=n_initial, n_2=self.index_seal)
         angle_2 = np.arscin(
             (order * wavelength * self.fringe_frequency / self.index_dcg)
@@ -167,9 +170,11 @@ class VPHGrating(SRTGrating):
     def get_transmittance_theoretical(self, wavelength, order=1):
         """Calculates the Kogelnik efficiency for unpolarized light."""
         assert self.index_dcg is not None, "Index DCG must be specified."
-        assert self.index_dcg_amplitude is not None, "Index DCG amplitude must be specified."
+        assert (
+            self.index_dcg_amplitude is not None
+        ), "Index DCG amplitude must be specified."
         assert self.dcg_thickness is not None, "DCG thickness must be specified."
-        
+
         a_2b = np.arcsin((order * wavelength) / (2 * self.index_dcg * wavelength))
         mu_s = (
             np.sin(
@@ -196,12 +201,11 @@ class VPHGrating(SRTGrating):
         """Calculates the efficiency bandwidth."""
         assert self.index_dcg is not None, "Index DCG must be specified."
         assert self.dcg_thickness is not None, "DCG thickness must be specified."
-        
+
         a_2b = np.arcsin((order * wavelength) / (2 * self.index_dcg * wavelength))
         lmda_eff = (wavelength * wavelength) / (self.dcg_thickness * np.tan(a_2b))
 
         return lmda_eff
-
 
 
 class VPHGrism(VPHGrating):
@@ -237,14 +241,14 @@ class VPHGrism(VPHGrating):
         self.index_prism = index_prism
         self.apex_angle = apex_angle
 
-    def get_emergent_angle(
+    def get_diffraction_angle(
         self, incident_angle, wavelength, n_initial=1, n_final=1, order=1
     ):
         assert self.apex_angle is not None, "Apex angle must be specified."
         assert self.index_prism is not None, "Index prism amplitude must be specified."
         assert self.fringe_frequency is not None, "Fringe frequency must be specified."
         assert self.index_seal is not None, "Index seal must be specified."
-        
+
         angle_1 = angle_in + self.apex_angle
         angle_2 = snell(angle=angle_1, n_1=index_in, n_2=self.index_prism)
         angle_3 = self.apex_angle - angle_2
@@ -260,14 +264,14 @@ class VPHGrism(VPHGrating):
         angle_out = angle_10 + self.apex_angle
 
         return angle_out
-        
+
     def get_undeviated_wavelength(self, angle_in, order=1, index_in=1, index_out=1):
         """Calculates the undeviated wavelength."""
         assert self.apex_angle is not None, "Apex angle must be specified."
         assert self.index_prism is not None, "Index prism amplitude must be specified."
         assert self.fringe_frequency is not None, "Fringe frequency must be specified."
         assert self.index_seal is not None, "Index seal must be specified."
-        
+
         angle_1 = angle_in + self.apex_angle
         angle_2 = snell(angle=angle_1, n_1=index_in, n_2=self.index_prism)
         angle_3 = self.apex_angle - angle_2
@@ -281,8 +285,8 @@ class VPHGrism(VPHGrating):
         return NotImplementedError
 
     def get_efficiency(self, incident_angle, order=1, n_air=1):
-        """Calculates the efficiency as a function of fringe frequency for 
-        the VPH Grism under the Bragg Condition.
+        """Calculates the efficiency as a function of fringe frequency for the
+        VPH Grism under the Bragg Condition.
 
         Args:
             incident_angle : The angle of incidence of the light on the
@@ -294,7 +298,7 @@ class VPHGrism(VPHGrating):
             The efficiency of the grism.
 
         """
-        sin_arg_num = order * np.pi * self.index_dcg_amplitude/2 * self.dcg_thickness
+        sin_arg_num = order * np.pi * self.index_dcg_amplitude / 2 * self.dcg_thickness
         fringe_spacing = 1 / self.fringe_frequency
         sin_arg_den = (
             2

@@ -26,7 +26,9 @@ def test_get_mapped_height_sensor():
     slit = components.masks.RectSlit()
     collimator = components.lenses.Lens()
     bandfilter = components.filters.DichroicBandFilter()
-    grism = components.diffractors.VPHGrism(apex_angle=45, index_prism=1, index_seal=1, fringe_frequency=600)
+    grism = components.diffractors.VPHGrism(
+        apex_angle=45, index_prism=1, index_seal=1, fringe_frequency=600
+    )
     focuser = components.lenses.Lens(focal_length=12)
 
     payload = systems.payloads.FINCHEye(
@@ -36,7 +38,7 @@ def test_get_mapped_height_sensor():
         bandfilter=bandfilter,
         grism=grism,
         focuser=focuser,
-        )
+    )
     # endregion
 
     # region pipeline

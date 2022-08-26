@@ -4,11 +4,21 @@
 
 	// List of extensions which should be recommended for users of this workspace.
 	"recommendations": [
-		"maptz.regionfolder","formulahendry.code-runner",
-		"ryanluker.vscode-coverage-gutters","zh9528.file-size", "eamodio.gitlens",
-		"ms-vscode.live-server", "bierner.markdown-emoji", "ms-python.python", 
-		"ms-python.pylint", "mechatroner.rainbow-csv", "mutantdino.resourcemonitor",
-		"minhthai.vscode-todo-parser", "ms-toolsai.jupyter", "ms-toolsai.jupyter-renderers"
+		"bierner.markdown-emoji",
+		"eamodio.gitlens",
+		"formulahendry.code-runner",
+		"maptz.regionfolder",
+		"mechatroner.rainbow-csv",
+		"minhthai.vscode-todo-parser",
+		"ms-python.pylint",
+		"ms-python.python", 
+		"ms-python.vscode-pylance", 
+		"ms-toolsai.jupyter",
+		"ms-toolsai.jupyter-renderers",
+		"ms-vscode.live-server",
+		"mutantdino.resourcemonitor",
+		"ryanluker.vscode-coverage-gutters",
+		"zh9528.file-size",
 	],
 	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
 	"unwantedRecommendations": [

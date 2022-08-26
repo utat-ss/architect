@@ -4,33 +4,32 @@
 import logging
 
 # external
-import pytest
 import astropy.units as unit
 import numpy as np
-from architect.libs import utillib
-from architect import luts
+import pytest
 
 # project
-from architect import components
-from architect.systems.payloads import HyperspectralImager
-from architect.components.masks import RectSlit
+from architect import components, luts
 from architect.components.foreoptics import Foreoptic
+from architect.components.masks import RectSlit
 from architect.components.sensors import TauSWIR
+from architect.libs import utillib
+from architect.systems.payloads import HyperspectralImager
 
 LOG = logging.getLogger(__name__)
+
 
 @pytest.mark.star
 def test_ratio_cropped_light_through_slit():
     """Test that the ratio of cropped light through the slit is correct."""
-    
-    slit = RectSlit(size=(20,1)*unit.mm)
-    foreoptic = Foreoptic(image_diameter=20*unit.mm)
+
+    slit = RectSlit(size=(20, 1) * unit.mm)
+    foreoptic = Foreoptic(image_diameter=20 * unit.mm)
     payload = HyperspectralImager(slit=slit, foreoptic=foreoptic)
-    
+
     ratio = payload.get_ratio_cropped_light_through_slit()
 
     LOG.info(f"Ratio: {ratio}")
-
 
 
 def test_get_signal_to_noise():
@@ -60,6 +59,7 @@ def test_get_f_number_units():
     result_simplified = result.decompose() * unit.sr
 
     LOG.debug(f"F number: {result_simplified}")
+
 
 def test_get_optical_spatial_resolution():
     """Test the optically-limited spatial resolution method."""
@@ -136,7 +136,9 @@ def test_get_optical_spectral_resolution():
     foreoptic = Foreoptic(diameter=diameter, focal_length=focal_length)
     slit = components.masks.RectSlit(size=slit_size)
 
-    sr_grating = components.diffractors.SRTGrating(fringe_frequency=fringe_frequency)
+    sr_grating = components.diffractors.TransmissiveDiffractor(
+        fringe_frequency=fringe_frequency
+    )
 
     HP = HyperspectralImager(
         sensor=sensor, foreoptic=foreoptic, slit=slit, diffractor=sr_grating
@@ -165,7 +167,9 @@ def test_get_sensor_spectral_resolution():
     foreoptic = Foreoptic(diameter=diameter, focal_length=focal_length)
     slit = components.masks.RectSlit(size=slit_size)
 
-    sr_grating = components.diffractors.SRTGrating(fringe_frequency=fringe_frequency)
+    sr_grating = components.diffractors.TransmissiveDiffractor(
+        fringe_frequency=fringe_frequency
+    )
 
     HP = HyperspectralImager(
         sensor=sensor, foreoptic=foreoptic, slit=slit, diffractor=sr_grating
@@ -197,7 +201,9 @@ def test_get_spectral_resolution():
     foreoptic = Foreoptic(diameter=diameter, focal_length=focal_length)
     slit = components.masks.RectSlit(size=slit_size)
 
-    sr_grating = components.diffractors.SRTGrating(fringe_frequency=fringe_frequency)
+    sr_grating = components.diffractors.TransmissiveDiffractor(
+        fringe_frequency=fringe_frequency
+    )
 
     HP = HyperspectralImager(
         sensor=sensor, foreoptic=foreoptic, slit=slit, diffractor=sr_grating

@@ -73,7 +73,8 @@ class HyperspectralImager(Payload):
         return transmittance
 
     def get_ratio_cropped_light_through_slit(self):
-        """Get the ratio of the light area passing through the slit to the area of the image of the foreoptic."""
+        """Get the ratio of the light area passing through the slit to the area
+        of the image of the foreoptic."""
         assert (
             self.foreoptic.image_diameter is not None
         ), "Foreoptic image diameter must be set."
@@ -327,7 +328,9 @@ class FINCHEye(HyperspectralImager):
     def get_mapped_height_sensor(self, wavelength):
         """Get height on sensor that given wavelength hits."""
 
-        incident_angle = self.grism.get_emergent_angle(incident_angle = 0, wavelength=wavelength, order=1)
+        incident_angle = self.grism.get_emergent_angle(
+            incident_angle=0, wavelength=wavelength, order=1
+        )
         image_height = self.focuser.get_image_height(incident_angle=incident_angle)
 
         return image_height
