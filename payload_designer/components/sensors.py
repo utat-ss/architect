@@ -102,10 +102,6 @@ class Sensor(Component):
 
     def get_quantization_noise(self):
         """Get the quantization noise of the sensor."""
-
-        # print("n well", self.n_well)
-        # print("n bit", self.n_bit)
-
         assert self.n_well is not None, "n_well must be specified."
         assert self.n_bit is not None, "n_bit must be specified."
 

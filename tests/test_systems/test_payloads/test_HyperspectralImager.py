@@ -53,6 +53,7 @@ def test_get_signal_to_noise():
 
 
 def test_get_f_number_units():
+    """Test that the f-number has units of steradian."""
     foreoptic = Foreoptic(focal_length=100 * unit.mm, diameter=10 * unit.cm)
 
     result = foreoptic.get_f_number()

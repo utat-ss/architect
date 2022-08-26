@@ -73,8 +73,7 @@ class HyperspectralImager(Payload):
         return transmittance
 
     def get_ratio_cropped_light_through_slit(self):
-        """Get the ratio of the light passing through slit to the image of the
-        foreoptic."""
+        """Get the ratio of the light area passing through the slit to the area of the image of the foreoptic."""
         assert (
             self.foreoptic.image_diameter is not None
         ), "Foreoptic image diameter must be set."
@@ -96,21 +95,6 @@ class HyperspectralImager(Payload):
         assert self.sensor is not None, "A sensor component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."
         assert self.slit is not None, "A slit component must be specified."
-
-        # print("wavelength", wavelength)
-        # print("ratio", self.get_ratio_cropped_light_through_slit())
-        # print("pixel area", self.sensor.get_pixel_area())
-        # print("f num", self.foreoptic.get_f_number())
-        # print("QE", self.sensor.efficiency(wavelength).decompose() * unit.electron)
-        # print("efficiency", self.sensor.efficiency(wavelength))
-        # print("transmittance", self.get_transmittance())
-        # print("area", self.slit.get_area())
-        # print("radiance", radiance(wavelength))
-        # print("sensor dt", self.sensor.dt)
-        # print("n bin", self.sensor.n_bin)
-        # print("dark noise", self.sensor.get_dark_noise())
-        # print("quantization noise", self.sensor.get_quantization_noise())
-        # print("noise read", self.sensor.noise_read)
 
         signal1 = (
             (wavelength / (const.h * const.c))

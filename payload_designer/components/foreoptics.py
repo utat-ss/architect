@@ -137,19 +137,6 @@ class Foreoptic(Component):
 
         return f
 
-    def get_image_area(self):
-        """Calculate the image area.
-
-        Returns:
-            float: image area [mm^2].
-
-        """
-        assert self.image_diameter is not None, "image_diameter is not set."
-
-        a_i = math.pi * (self.image_diameter / 2) ** 2
-
-        return a_i
-
 
 class Chromar(Foreoptic):
     def __init__(self):
