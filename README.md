@@ -84,6 +84,11 @@ This section will take you through the procedure to take your development enviro
     Set-ExecutionPolicy -ExecutionPolicy Bypass
     ```
 
+    Install the recomended extensions by opening the command pallet using `CMD + shift + P`.
+
+    Type `Show Reccomended Extensions` and install the extensions listed.
+
+
 You're now ready to start contributing!
 
 ## Adding Packages 📦
