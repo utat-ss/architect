@@ -276,3 +276,11 @@ class FINCHEye(HyperspectralImager):
         dimensions = (dim_x, dim_y, dim_z)
 
         return dimensions
+
+    def get_mapped_height_sensor(self, wavelength):
+        """Get height on sensor that given wavelength hits."""
+
+        incident_angle = self.grism.get_emergent_angle(incident_angle = 0, wavelength=wavelength, order=1)
+        image_height = self.focuser.get_image_height(incident_angle=incident_angle)
+
+        return image_height
