@@ -7,15 +7,15 @@ import logging
 import pytest
 import astropy.units as unit
 import numpy as np
-from payload_designer.libs import utillib
-from payload_designer import luts
+from architect.libs import utillib
+from architect import luts
 
 # project
-from payload_designer import components
-from payload_designer.systems.payloads import HyperspectralImager
-from payload_designer.components.masks import RectSlit
-from payload_designer.components.foreoptics import Foreoptic
-from payload_designer.components.sensors import TauSWIR
+from architect import components
+from architect.systems.payloads import HyperspectralImager
+from architect.components.masks import RectSlit
+from architect.components.foreoptics import Foreoptic
+from architect.components.sensors import TauSWIR
 
 LOG = logging.getLogger(__name__)
 

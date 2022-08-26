@@ -6,7 +6,7 @@ import logging
 import pytest
 
 # project
-from payload_designer.components import lenses
+from architect.components import lenses
 
 LOG = logging.getLogger(__name__)
 

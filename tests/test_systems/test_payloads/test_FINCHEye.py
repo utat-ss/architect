@@ -7,8 +7,8 @@ import numpy as np
 import pytest
 
 # project
-from payload_designer import components, systems
-from payload_designer.systems.payloads import HyperspectralImager
+from architect import components, systems
+from architect.systems.payloads import HyperspectralImager
 
 LOG = logging.getLogger(__name__)
 

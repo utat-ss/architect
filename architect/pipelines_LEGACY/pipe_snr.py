@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 # project
-from payload_designer.components import (
+from architect.components import (
     diffractors,
     filters,
     foreoptics,
@@ -18,7 +18,7 @@ from payload_designer.components import (
     sensors,
     slits,
 )
-from payload_designer.libs import plotlib, utillib
+from architect.libs import plotlib, utillib
 
 # region path config
 filename = Path(__file__).stem

@@ -10,9 +10,9 @@ import astropy.units as unit
 import numpy as np
 
 # project
-from payload_designer import luts
-from payload_designer.components import Component
-from payload_designer.luts import LUT
+from architect import luts
+from architect.components import Component
+from architect.luts import LUT
 
 LOG = logging.getLogger(__name__)
 

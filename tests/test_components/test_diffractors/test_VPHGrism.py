@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 # project
-from payload_designer.components import diffractors
+from architect.components import diffractors
 
 LOG = logging.getLogger(__name__)
 

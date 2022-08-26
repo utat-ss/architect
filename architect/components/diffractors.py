@@ -5,12 +5,13 @@ import logging
 
 # external
 import astropy.units as unit
+from astropy.units import Quantity
 import numpy as np
 
 # project
-from payload_designer.components import Component
-from payload_designer.libs.physlib import snell
-from payload_designer.luts import LUT
+from architect.components import Component
+from architect.libs.physlib import snell
+from architect.luts import LUT
 
 LOG = logging.getLogger(__name__)
 
@@ -20,14 +21,14 @@ class SRTGrating(Component):
 
     def __init__(
         self,
-        fringe_frequency=None,
-        transmittance: LUT = None,
-        mass=None,
-        dimensions=None,
+        fringe_frequency: Quantity[1/unit.m] = None,
+        efficiency: LUT = None,
+        mass: Quantity[unit.kg] = None,
+        dimensions: tuple[Quantity[unit.m],Quantity[unit.m],Quantity[unit.m]] = None,
     ):
         super().__init__(mass=mass, dimensions=dimensions)
         self.fringe_frequency = fringe_frequency
-        self.transmittance = transmittance
+        self.efficiency = efficiency
 
     def get_emergent_angle(self, incident_angle, wavelength, order=1):
         """Get the angle of the diffracted ray at the specified wavelengh.

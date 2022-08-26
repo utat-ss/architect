@@ -8,11 +8,11 @@ import numpy as np
 import pandas as pd
 
 # project
-from payload_designer import components
-from payload_designer.components import Component
-from payload_designer.components.lenses import Lens
-from payload_designer.luts import LUT
-from payload_designer.systems import System
+from architect import components
+from architect.components import Component
+from architect.components.lenses import Lens
+from architect.luts import LUT
+from architect.systems import System
 
 
 class Payload(System):

@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 
 # project
-from payload_designer.systems import System
-from payload_designer.systems.payloads import FINCHEye, Payload
+from architect.systems import System
+from architect.systems.payloads import FINCHEye, Payload
 
 
 class Satellite(System):

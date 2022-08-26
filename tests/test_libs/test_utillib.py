@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 
 # project
-from payload_designer.libs import utillib
+from architect.libs import utillib
 
 LOG = logging.getLogger(__name__)
 

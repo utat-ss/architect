@@ -8,7 +8,7 @@ import math
 import numpy as np
 
 # project
-from payload_designer.libs import physlib, utillib
+from architect.libs import physlib, utillib
 
 LOG = logging.getLogger(__name__)
 

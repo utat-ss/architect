@@ -1,5 +1,4 @@
-"""Calculate resolution for VPH grism from wavelength, fringe frequency, beam
-width."""
+"""Calculate image height for thin lens from focal length and incident angle."""
 
 # stdlib
 import logging
@@ -10,8 +9,8 @@ from pathlib import Path
 import numpy as np
 
 # project
-from payload_designer.components import diffractors
-from payload_designer.libs import plotlib
+from architect.components import lenses
+from architect.libs import plotlib
 
 # region path config
 filename = Path(__file__).stem
@@ -26,20 +25,20 @@ LOG = logging.getLogger(__name__)
 # endregion
 
 # region parameter config
-lmbda = 1600  # [nm]
-v = np.linspace(start=300, stop=1200, num=100)  # [L/mm]
-w = 10  # [mm]
+a_in = np.linspace(start=0, stop=10, num=100)  # [°]
+f = np.linspace(start=1, stop=30, num=100)  # [mm]
+
 # endregion
 
 if __name__ == "__main__":
     # region component instantiation
-    diffractor = diffractors.VPHGrism(m=1, l=lmbda, v=v, w=w)
+    lens = lenses.ThinLens(f=f, a_in=a_in)
     # endregion
 
     # region pipeline
-    res = diffractor.get_resolution()
+    h = lens.get_image_height()
     # endregion
 
     # region plots
-    plotlib.line(x=v, y=res)
+    plotlib.surface(x=a_in, y=f, z=h)
     # endregion

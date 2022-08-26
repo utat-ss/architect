@@ -8,7 +8,7 @@ import math
 import numpy as np
 
 # project
-from payload_designer.components import Component
+from architect.components import Component
 
 LOG = logging.getLogger(__name__)
 

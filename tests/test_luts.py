@@ -8,7 +8,7 @@ import astropy.units as unit
 import numpy as np
 
 # project
-from payload_designer import luts
+from architect import luts
 
 LOG = logging.getLogger(__name__)
 

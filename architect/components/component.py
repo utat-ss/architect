@@ -5,7 +5,7 @@ import astropy.units as unit
 import pandas as pd
 
 # project
-from payload_designer import Artifact
+from architect import Artifact
 
 
 class Component(Artifact):

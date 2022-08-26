@@ -7,7 +7,7 @@ from astropy.units import Quantity
 from numpy import ndarray
 
 # project
-from payload_designer.luts import LUT
+from architect.luts import LUT
 
 
 class Artifact:

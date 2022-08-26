@@ -11,7 +11,7 @@ import pandas as pd
 from black import diff
 
 # project
-from payload_designer.components import (
+from architect.components import (
     diffractors,
     filters,
     foreoptics,
@@ -19,7 +19,7 @@ from payload_designer.components import (
     sensors,
     slits,
 )
-from payload_designer.libs import plotlib, utillib
+from architect.libs import plotlib, utillib
 
 LOG = logging.getLogger(__name__)
 

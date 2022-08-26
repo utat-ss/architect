@@ -10,8 +10,8 @@ import numpy as np
 import pandas as pd
 
 # project
-from payload_designer.components import lenses, sensors
-from payload_designer.libs import plotlib, utillib
+from architect.components import lenses, sensors
+from architect.libs import plotlib, utillib
 
 # region path config
 filename = Path(__file__).stem

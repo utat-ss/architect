@@ -12,8 +12,8 @@ import numpy as np
 import pandas as pd
 
 # project
-from payload_designer.components import diffractors
-from payload_designer.libs import plotlib, utillib
+from architect.components import diffractors
+from architect.libs import plotlib, utillib
 
 # region path config
 filename = Path(__file__).stem

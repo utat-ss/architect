@@ -7,8 +7,8 @@ import logging
 import numpy as np
 
 # project
-from payload_designer.components.lenses import Lens
-from payload_designer.luts import LUT
+from architect.components.lenses import Lens
+from architect.luts import LUT
 
 LOG = logging.getLogger(__name__)
 

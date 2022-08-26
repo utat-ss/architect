@@ -1,5 +1,5 @@
-"""Calculate grism efficiency for VPH grism from a_in, fringe frequency,
-wavelength."""
+"""Calculate grism efficiency for VPH grism from groove density, wavelength,
+incidence angle."""
 
 # stdlib
 import logging
@@ -11,8 +11,8 @@ import numpy as np
 import pandas as pd
 
 # project
-from payload_designer.components import diffractors
-from payload_designer.libs import plotlib, utillib
+from architect.components import diffractors
+from architect.libs import plotlib, utillib
 
 # region path config
 filename = Path(__file__).stem
@@ -30,7 +30,7 @@ LOG = logging.getLogger(__name__)
 
 # region parameter config
 # parameter
-a_in = np.linspace(start=0, stop=5, num=20)
+a_in = np.linspace(start=0, stop=5, num=5)
 l = np.linspace(start=1400, stop=1800, num=5)  # [nm]
 v = np.linspace(start=900, stop=1200, num=5)  # [L/mm]
 
@@ -124,10 +124,10 @@ if __name__ == "__main__":
 
     plotlib.line(
         df=df,
-        x="a_in [°]",
+        x="v [lines/mm]",
         y=["n_p", "n_p_q"],
         fc="l [nm]",
-        fr="v [lines/mm]",
-        title="Grism Efficiency vs Angle of Incidence, Wavelength, and Groove Density",
+        fr="a_in [°]",
+        title="Grism Efficiency vs Groove Density, Wavelength, and Angle of Incidence",
     )
     # endregion

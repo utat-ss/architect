@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 # project
-from payload_designer.components import filters
+from architect.components import filters
 
 LOG = logging.getLogger(__name__)
 

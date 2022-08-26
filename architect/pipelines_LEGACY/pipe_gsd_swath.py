@@ -16,7 +16,7 @@ import pandas as pd
 
 # project
 # from payload_designer.components import sensors
-from payload_designer.libs import plotlib
+from architect.libs import plotlib
 
 # region path config
 filename = Path(__file__).stem

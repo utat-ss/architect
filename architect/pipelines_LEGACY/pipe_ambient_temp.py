@@ -1,6 +1,6 @@
 """Calculate the net operating temperature across all components."""
 # project
-from payload_designer.components.components import Components
+from architect.components.components import Components
 
 
 def get_components():
