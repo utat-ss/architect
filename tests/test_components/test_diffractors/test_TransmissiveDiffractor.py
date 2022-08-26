@@ -1,10 +1,13 @@
-"""Tests for SRTGrating component."""
+"""Tests for transmissive diffractor component."""
 # stdlib
 import logging
 
+# external
+import astropy.units as unit
+
 # project
 from architect.components.diffractors import TransmissiveDiffractor
-import astropy.units as unit
+
 
 LOG = logging.getLogger(__name__)
 
