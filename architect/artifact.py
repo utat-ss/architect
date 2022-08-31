@@ -1,7 +1,6 @@
 """Artifact class."""
 
 # external
-import astropy.constants as const
 import pandas as pd
 from astropy.units import Quantity
 from numpy import ndarray
@@ -17,6 +16,16 @@ class Artifact:
     architectures.
 
     """
+
+    def __str__(self):
+        df = self.get_attrs_table()
+
+        return f"{type(self).__name__} \n{df.to_string()}"
+
+    def _repr_html_(self):
+        df = self.get_attrs_table()
+
+        return f"{type(self).__name__} \n{df.to_html()}"
 
     def get_attrs_table(self):
         """Get a table of artifact attributes."""
@@ -52,16 +61,7 @@ class Artifact:
 
         return df
 
-    def __str__(self):
-        df = self.get_attrs_table()
-
-        return f"{type(self).__name__} \n{df.to_string()}"
-
-    def _repr_html_(self):
-        df = self.get_attrs_table()
-
-        return f"{type(self).__name__} \n{df.to_html()}"
-
     def to_latex(self):
+        """Generate a LaTeX table of artifact attributes."""
         df_latex = self.get_attrs_table().to_latex()
         return df_latex
