@@ -1,4 +1,4 @@
-"""Tests for the artfact class."""
+"""Tests for the Artifact class."""
 
 # stdlib
 import logging

@@ -1,15 +1,11 @@
 """Base component class."""
 
-# external
-import astropy.units as unit
-import pandas as pd
-
 # project
 from architect import Artifact
 
 
 class Component(Artifact):
-    """A base class for components.
+    """A base class for physical components.
 
     Captures the shared properties of all components.
 
