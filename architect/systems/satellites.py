@@ -11,36 +11,11 @@ from architect.systems.payloads import FINCHEye, Payload
 
 
 class Satellite(System):
+    """Base class for satellite systems."""
+
     def __init__(self, altitude: Quantity[unit.m] = None):
+        super().__init__()
         self.altitude = altitude
-
-    def get_attrs_table(self):
-        """Get a table of satellite parameters."""
-
-        orbit_radius = self.get_orbit_radius()
-        orbit_velocity = self.get_orbit_velocity()
-        orbit_angular_velocity = self.get_orbit_angular_velocity()
-        orbit_ground_projected_velocity = self.get_orbit_ground_projected_velocity()
-
-        attributes = {
-            "Altitude": [self.altitude.value, self.altitude.unit],
-            "Orbit Radius": [orbit_radius.value, orbit_radius.unit],
-            "Orbit Velocity": [orbit_velocity.value, orbit_velocity.unit],
-            "Orbit Angular Velocity": [
-                orbit_angular_velocity.value,
-                orbit_angular_velocity.unit,
-            ],
-            "Orbit Ground Projected Velocity": [
-                orbit_ground_projected_velocity.value,
-                orbit_ground_projected_velocity.unit,
-            ],
-        }
-
-        df = pd.DataFrame.from_dict(
-            data=attributes, orient="index", columns=["Value", "Units"]
-        )
-
-        return df
 
     def get_orbit_radius(self):
         """Get the orbital radius.
@@ -72,7 +47,7 @@ class Satellite(System):
         """
         w_orbit = self.get_orbit_velocity() / self.get_orbit_radius() * unit.rad
 
-        return w_orbit.to(unit.deg / unit.s)
+        return w_orbit
 
     def get_orbit_ground_projected_velocity(self):
         """Get the orbital ground projected velocity.
@@ -80,28 +55,35 @@ class Satellite(System):
         Ref: https://www.notion.so/utat-ss/Ground-Projected-Orbital-Velocity-4248ebec57634a42beebf619b0db1793
 
         """
-        v_ground = self.get_orbit_angular_velocity() * const.R_earth
+        v_ground = (self.get_orbit_angular_velocity() / unit.rad) * const.R_earth
 
         return v_ground
 
 
 class CubeSat(Satellite):
-    def __init__(self, payload: Payload, altitude, U):
-        super().__init__(altitude=altitude)
-        self.U = U
-        self.payload = payload
+    """Miniaturized satellite based on a form factor consisting of 10cm
+    cubes."""
 
-    def get_dimensions(self):
-        return (10 * unit.cm, 10 * unit.cm, self.U * (10 * unit.cm))
+    def __init__(self, altitude: Quantity[unit.m] = None, units: int = None):
+        super().__init__(altitude=altitude)
+        self.units = units
 
     def get_volume(self):
-        dims = self.get_dimensions()
+        """Get the volume of the CubeSat from its units (U's)."""
+        assert self.units is not None, "CubeSat U's must be specified."
 
-        volume = dims[0] * dims[1] * dims[2]
+        volume = (100 * unit.mm) ** 3 * self.units
 
         return volume
 
 
 class FINCH(CubeSat):
-    def __init__(self, payload: FINCHEye, altitude):
-        super().__init__(payload=payload, altitude=altitude, U=3)
+    """FINCH satellite system."""
+
+    def __init__(self, payload: FINCHEye = None, altitude: Quantity[unit.m] = None):
+        super().__init__(altitude=altitude, units=3)
+        self.payload = payload
+
+    def get_dimensions(self):
+        """Get the bounding box dimensions of the CubeSat."""
+        return (100 * unit.mm, 100 * unit.mm, self.units * (100 * unit.mm))

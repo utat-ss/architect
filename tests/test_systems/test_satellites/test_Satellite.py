@@ -1,10 +1,20 @@
 """Satellite class tests."""
-from architect.systems.satellites import Satellite
-import astropy.units as unit
+# stdlib
 import logging
+
+# external
+import astropy.units as unit
+
+# project
+from architect.systems.satellites import Satellite
 
 LOG = logging.getLogger(__name__)
 
+
+def test_init():
+    """Test initialization."""
+    satellite = Satellite()
+    LOG.info(satellite)
 
 
 def test_get_orbit_radius():
@@ -12,24 +22,39 @@ def test_get_orbit_radius():
 
     satellite = Satellite(altitude=500 * unit.km)
 
-    radius = satellite.get_orbit_radius()
+    result = satellite.get_orbit_radius()
+    LOG.info(result)
 
-    LOG.info(f"Orbit radius: {radius}")
+    assert result.unit == unit.m
+
 
 def test_get_orbit_velocity():
     """Test get_orbit_velocity method."""
 
     satellite = Satellite(altitude=500 * unit.km)
+    result = satellite.get_orbit_velocity()
+    LOG.info(result)
 
-    radius = satellite.get_orbit_velocity()
+    assert result.unit == unit.m / unit.s
 
-    LOG.info(f"Orbit velocity: {radius}")
 
 def test_get_orbit_angular_velocity():
     """Test get_orbit_angular_velocity method."""
 
     satellite = Satellite(altitude=500 * unit.km)
 
-    radius = satellite.get_orbit_angular_velocity()
+    result = satellite.get_orbit_angular_velocity()
+    LOG.info(result)
 
-    LOG.info(f"Orbit angular velocity: {radius}")
+    assert result.unit == unit.rad / unit.s
+
+
+def test_get_orbit_ground_projected_velocity():
+    """Test get_orbit_ground_projected_velocity method."""
+
+    satellite = Satellite(altitude=500 * unit.km)
+
+    result = satellite.get_orbit_ground_projected_velocity()
+    LOG.info(result)
+
+    assert result.unit == unit.m / unit.s
