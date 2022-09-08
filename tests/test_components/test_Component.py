@@ -5,24 +5,24 @@ import logging
 
 # project
 from architect.components import Component
+import astropy.units as unit
 
 LOG = logging.getLogger(__name__)
 
 
 def test_init():
-    """Test the init method."""
+    """Test init method."""
     component = Component()
 
     LOG.info(component)
 
 
 def test_get_volume():
-    """Test the get volume method."""
-    ans = 7
-    component = Component(dimensions=(1, 2, 3))
+    """Test get_volume method."""
+    
+    component = Component(dimensions=(1 * unit.m, 2 * unit.m, 3 * unit.m))
+    
+    result = component.get_volume()
+    LOG.info(result)
 
-    volume = component.get_volume()
-
-    LOG.info(component)
-    LOG.info(f"Expected: {ans}\tResult: {volume}")
-    assert volume == ans
+    assert result == 6 * unit.m**3
