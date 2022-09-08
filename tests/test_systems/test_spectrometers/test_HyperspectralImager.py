@@ -14,7 +14,7 @@ from architect.components.foreoptics import Foreoptic
 from architect.components.masks import RectSlit
 from architect.components.sensors import TauSWIR
 from architect.libs import utillib
-from architect.systems.payloads import HyperspectralImager
+from architect.systems.spectrometers import HyperspectralImager
 
 LOG = logging.getLogger(__name__)
 

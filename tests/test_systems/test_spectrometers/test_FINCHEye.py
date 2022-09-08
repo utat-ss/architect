@@ -8,7 +8,7 @@ import pytest
 
 # project
 from architect import components, systems
-from architect.systems.payloads import HyperspectralImager
+from architect.systems.spectrometers import HyperspectralImager
 
 LOG = logging.getLogger(__name__)
 

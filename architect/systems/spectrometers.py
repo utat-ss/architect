@@ -5,7 +5,6 @@ import math
 import astropy.constants as const
 import astropy.units as unit
 import numpy as np
-import pandas as pd
 
 # project
 from architect import components
@@ -15,32 +14,14 @@ from architect.luts import LUT
 from architect.systems import System
 
 
-class Payload(System):
-    def __init__(self, **components: Component):
+class HyperspectralImager(System):
+    """A hyperspectral imager class.
 
-        for name, component in components.items():
-            setattr(self, name, component)
+    A hyperspectral imager captures light and diffracts it into a spectrum which is then
+    imaged.
 
-        self.components = list(components.values())
+    """
 
-    def get_mass(self):
-        """Get the mass of the system."""
-        mass = 0
-        for component in self.components:
-            mass += component.mass
-
-        return mass
-
-    def get_volume(self):
-        """Get the net volume of the system."""
-        volume = 0
-        for component in self.components:
-            volume += component.get_volume()
-
-        return volume
-
-
-class HyperspectralImager(Payload):
     def __init__(
         self,
         spatial_resolution=None,
@@ -289,8 +270,9 @@ class HyperspectralImager(Payload):
 
         return constraint_angle
 
-
 class FINCHEye(HyperspectralImager):
+    """A compact hyperspectral imaging payload."""
+
     def __init__(
         self,
         foreoptic: Component,

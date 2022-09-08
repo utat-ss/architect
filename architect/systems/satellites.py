@@ -2,12 +2,11 @@
 import astropy.constants as const
 import astropy.units as unit
 import numpy as np
-import pandas as pd
 from astropy.units import Quantity
 
 # project
 from architect.systems import System
-from architect.systems.payloads import FINCHEye, Payload
+from architect.systems.spectrometers import FINCHEye
 
 
 class Satellite(System):

@@ -13,6 +13,7 @@ def test_init():
     satellite = FINCH()
     LOG.info(satellite)
 
+
 def test_get_dimensions():
     """Test get_dimensions() method."""
     satellite = FINCH()

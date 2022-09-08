@@ -1,6 +1,8 @@
 """Satellite class tests."""
 # stdlib
 import logging
+
+# external
 import astropy.units as unit
 
 # project
@@ -14,6 +16,7 @@ def test_init():
     satellite = CubeSat()
     LOG.info(satellite)
 
+
 def test_get_volume():
     """Test get_dimensions() method."""
     satellite = CubeSat(units=3)
@@ -21,4 +24,4 @@ def test_get_volume():
     result = satellite.get_volume()
     LOG.info(result)
 
-    assert result.decompose().unit == unit.m ** 3
+    assert result.decompose().unit == unit.m**3
