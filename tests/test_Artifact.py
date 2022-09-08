@@ -3,7 +3,7 @@
 # stdlib
 import logging
 
-# external
+# project
 from architect import Artifact
 
 LOG = logging.getLogger(__name__)

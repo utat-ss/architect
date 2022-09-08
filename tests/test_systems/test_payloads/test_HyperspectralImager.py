@@ -19,7 +19,6 @@ from architect.systems.payloads import HyperspectralImager
 LOG = logging.getLogger(__name__)
 
 
-@pytest.mark.star
 def test_ratio_cropped_light_through_slit():
     """Test that the ratio of cropped light through the slit is correct."""
 

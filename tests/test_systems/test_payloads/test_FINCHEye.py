@@ -13,7 +13,6 @@ from architect.systems.payloads import HyperspectralImager
 LOG = logging.getLogger(__name__)
 
 
-@pytest.mark.star
 def test_get_mapped_height_sensor():
     """Test the method that maps wavelength onto sensor."""
     # region params

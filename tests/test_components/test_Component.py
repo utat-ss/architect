@@ -3,7 +3,7 @@
 # stdlib
 import logging
 
-# external
+# project
 from architect.components import Component
 
 LOG = logging.getLogger(__name__)
@@ -26,4 +26,3 @@ def test_get_volume():
     LOG.info(component)
     LOG.info(f"Expected: {ans}\tResult: {volume}")
     assert volume == ans
-    

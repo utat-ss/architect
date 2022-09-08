@@ -3,6 +3,7 @@ import astropy.constants as const
 import astropy.units as unit
 import numpy as np
 import pandas as pd
+from astropy.units import Quantity
 
 # project
 from architect.systems import System
@@ -10,7 +11,7 @@ from architect.systems.payloads import FINCHEye, Payload
 
 
 class Satellite(System):
-    def __init__(self, altitude):
+    def __init__(self, altitude: Quantity[unit.m] = None):
         self.altitude = altitude
 
     def get_attrs_table(self):
@@ -42,7 +43,11 @@ class Satellite(System):
         return df
 
     def get_orbit_radius(self):
-        """Get the orbital radius."""
+        """Get the orbital radius.
+
+        Ref: https://www.notion.so/utat-ss/Orbital-Radius-b07adc4a1a7543b2bceebf4fbeb61098
+
+        """
         assert self.altitude is not None, "Altitude must be specified."
 
         R_orbit = const.R_earth + self.altitude
@@ -50,22 +55,29 @@ class Satellite(System):
         return R_orbit
 
     def get_orbit_velocity(self):
-        """Get the orbital velocity."""
+        """Get the orbital velocity.
+
+        Ref: https://www.notion.so/utat-ss/Orbital-Velocity-1cf0834326664872a1682db4bcd3a610
+
+        """
         v_orbit = np.sqrt(const.G * const.M_earth / self.get_orbit_radius())
 
         return v_orbit
 
     def get_orbit_angular_velocity(self):
-        """Get the orbital angular velocity."""
-        w_orbit = self.get_orbit_velocity() / self.get_orbit_radius()
+        """Get the orbital angular velocity.
 
-        return w_orbit
+        Ref: https://www.notion.so/utat-ss/Orbital-Angular-Velocity-40aba4f9348b4c01a0ae0ecd1ac17d8f
+
+        """
+        w_orbit = self.get_orbit_velocity() / self.get_orbit_radius() * unit.rad
+
+        return w_orbit.to(unit.deg / unit.s)
 
     def get_orbit_ground_projected_velocity(self):
         """Get the orbital ground projected velocity.
 
-        This is effectively the velocity of the satellite's shadow on the ground if the
-        sun were directly above it.
+        Ref: https://www.notion.so/utat-ss/Ground-Projected-Orbital-Velocity-4248ebec57634a42beebf619b0db1793
 
         """
         v_ground = self.get_orbit_angular_velocity() * const.R_earth
