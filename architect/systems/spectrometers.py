@@ -24,29 +24,25 @@ class HyperspectralImager(System):
 
     def __init__(
         self,
-        spatial_resolution=None,
-        sensor: Component = None,
-        foreoptic: Component = None,
+        foreoptic: Lens = None,
         slit: Component = None,
         diffractor: Component = None,
+        sensor: Component = None,
         **components: Component,
     ):
-        self.spatial_resolution = spatial_resolution
         super().__init__(
-            sensor=sensor,
             foreoptic=foreoptic,
             slit=slit,
             diffractor=diffractor,
+            sensor=sensor,
             **components,
         )
-
-    def get_specification_tables(self):
-        pass
 
     def get_transmittance(self):
         """Get the net optical transmittance of the system by accounting for the
         transmittance losses of all lens components."""
-        transmittance = 1
+
+        transmittance = 100 * unit.percent
         for component in self.components:
             if isinstance(component, Lens):
                 transmittance *= component.transmittance
@@ -121,7 +117,7 @@ class HyperspectralImager(System):
 
         return snr.decompose()
 
-    def get_FOV(self) -> np.ndarray[float, float]:
+    def get_FOV(self):
         """Get the field of view vector.
 
         A vector that defines the angular extent that can be imaged by the payload in
@@ -135,7 +131,7 @@ class HyperspectralImager(System):
 
         return fov
 
-    def get_iFOV(self) -> np.ndarray[float, float]:
+    def get_iFOV(self):
         """Get the instantaneous field of view."""
         assert self.sensor is not None, "A sensor component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."

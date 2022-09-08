@@ -2,22 +2,19 @@
 
 # stdlib
 import logging
-import math
 
 # external
-import astropy.constants as const
 import astropy.units as unit
 import numpy as np
 
 # project
-from architect import luts
-from architect.components import Component
+from architect.components.lenses import Lens
 from architect.luts import LUT
 
 LOG = logging.getLogger(__name__)
 
 
-class Foreoptic(Component):
+class Foreoptic(Lens):
     """Foreoptic component."""
 
     def __init__(
@@ -29,13 +26,8 @@ class Foreoptic(Component):
         length=None,
         transmittance: LUT = None,
     ):
-        super().__init__(mass=mass, dimensions=(diameter, diameter, length))
-
-        self.diameter = diameter
+        super().__init__(diameter=diameter, focal_length=focal_length, mass=mass, thickness=length, transmittance=transmittance)
         self.image_diameter = image_diameter
-        self.focal_length = focal_length
-        self.length = length
-        self.transmittance = transmittance
 
     def get_image_area(self):
         """Calculate the image area from the image diameter."""
@@ -139,6 +131,7 @@ class Foreoptic(Component):
 
 
 class Chromar(Foreoptic):
+    """Chromar foreoptic component."""
     def __init__(self):
         super().__init__(
             diameter=80 * unit.mm,

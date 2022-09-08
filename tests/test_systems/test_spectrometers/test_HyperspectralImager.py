@@ -6,18 +6,32 @@ import logging
 # external
 import astropy.units as unit
 import numpy as np
-import pytest
 
 # project
 from architect import components, luts
 from architect.components.foreoptics import Foreoptic
 from architect.components.masks import RectSlit
 from architect.components.sensors import TauSWIR
-from architect.libs import utillib
 from architect.systems.spectrometers import HyperspectralImager
 
 LOG = logging.getLogger(__name__)
 
+
+def test_init():
+    """Test the init method."""
+
+    spectrometer = HyperspectralImager()
+    LOG.info(spectrometer)
+
+def test_get_transmittance():
+    """Test get_transmittance method."""
+
+    spectrometer = HyperspectralImager(foreoptic=Foreoptic())
+
+    result = spectrometer.get_transmittance()
+    LOG.info(result)
+
+    assert result.unit == unit.percent
 
 def test_ratio_cropped_light_through_slit():
     """Test that the ratio of cropped light through the slit is correct."""
