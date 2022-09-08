@@ -266,6 +266,7 @@ class HyperspectralImager(System):
 
         return constraint_angle
 
+
 class FINCHEye(HyperspectralImager):
     """A compact hyperspectral imaging payload."""
 

@@ -23,6 +23,7 @@ def test_init():
     spectrometer = HyperspectralImager()
     LOG.info(spectrometer)
 
+
 def test_get_transmittance():
     """Test get_transmittance method."""
 
@@ -32,6 +33,7 @@ def test_get_transmittance():
     LOG.info(result)
 
     assert result.unit == unit.percent
+
 
 def test_ratio_cropped_light_through_slit():
     """Test that the ratio of cropped light through the slit is correct."""
