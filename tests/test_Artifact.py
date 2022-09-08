@@ -10,7 +10,7 @@ LOG = logging.getLogger(__name__)
 
 
 def test_get_attrs_table():
-    """Test the get_attrs_table method."""
+    """Test get_attrs_table method."""
     artifact = Artifact()
 
     artifact.some_property = "some_value"
@@ -21,7 +21,7 @@ def test_get_attrs_table():
 
 
 def test_to_latex():
-    """Test the get_attrs_table method."""
+    """Test to_latex method."""
     artifact = Artifact()
 
     artifact.some_property = "some_value"
