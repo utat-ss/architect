@@ -2,10 +2,6 @@
 
 # stdlib
 import logging
-import math
-
-# external
-import numpy as np
 
 # project
 from architect.components import Component
@@ -14,12 +10,7 @@ LOG = logging.getLogger(__name__)
 
 
 class RectSlit(Component):
-    """Rectangular slit component.
-
-    Args:
-        size: dimensions of slit (width, height) in satelite reference frame.
-
-    """
+    """Rectangular slit component."""
 
     def __init__(self, mass=None, diameter=None, thickness=None, size: tuple = None):
         super().__init__(mass=mass, dimensions=(diameter, diameter, thickness))

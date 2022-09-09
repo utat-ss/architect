@@ -3,9 +3,11 @@
 # stdlib
 import logging
 
+# external
+import astropy.units as unit
+
 # project
 from architect.components import Component
-import astropy.units as unit
 
 LOG = logging.getLogger(__name__)
 
@@ -19,9 +21,9 @@ def test_init():
 
 def test_get_volume():
     """Test get_volume method."""
-    
+
     component = Component(dimensions=(1 * unit.m, 2 * unit.m, 3 * unit.m))
-    
+
     result = component.get_volume()
     LOG.info(result)
 

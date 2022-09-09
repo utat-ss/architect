@@ -5,7 +5,6 @@ import logging
 import math
 
 # external
-import astropy.constants as const
 import astropy.units as unit
 import numpy as np
 
@@ -18,7 +17,7 @@ LOG = logging.getLogger(__name__)
 
 
 class Sensor(Component):
-    """Generic sensor component.
+    """Generic focal plane array sensor component.
 
     Args:
         dimensions: Dimensions of component bounding box. Elements are ordered as (x, y, z) in the cubesat frame.
@@ -60,22 +59,21 @@ class Sensor(Component):
         self.noise_read = noise_read
         self.pitch = pitch
 
-    def get_size(self) -> tuple:
-        """Get the size of the sensor face in the (x, y) dimensions of the
-        cubesat frame."""
+    def get_shape(self) -> tuple:
+        """Get the dimensions of the sensor face."""
         assert self.n_px is not None, "n_px must be specified."
         assert self.pitch is not None, "Pitch must be specified."
 
-        size = (self.n_px * self.pitch, self.n_px * self.pitch)
+        size = (self.n_px[0] * self.pitch, self.n_px[1] * self.pitch)
 
         return size
 
     def get_area(self):
         """Get the area of the sensor face."""
 
-        size = self.get_size()
+        shape = self.get_shape()
 
-        area = size[0] * size[1]
+        area = shape[0] * shape[1]
 
         return area
 
@@ -125,7 +123,11 @@ class Sensor(Component):
 
 
 class TauSWIR(Sensor):
-    """Teledyne FLIR Tau SWIR sensor."""
+    """Teledyne FLIR Tau SWIR sensor.
+
+    Ref: https://www.notion.so/utat-ss/FLIR-Tau-SWIR-407ea145ffea4d188c777f3b17a9be2b
+
+    """
 
     def __init__(self):
         ke = 1e3 * unit.electron
