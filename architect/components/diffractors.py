@@ -22,13 +22,13 @@ class TransmissiveDiffractor(Component):
     def __init__(
         self,
         fringe_frequency: Quantity[1 / unit.m] = None,
-        efficiency: LUT = None,
+        transmittance: LUT = None,
         mass: Quantity[unit.kg] = None,
         dimensions: tuple[Quantity[unit.m], Quantity[unit.m], Quantity[unit.m]] = None,
     ):
         super().__init__(mass=mass, dimensions=dimensions)
         self.fringe_frequency = fringe_frequency
-        self.efficiency = efficiency
+        self.transmittance = transmittance
 
     def get_diffraction_angle(
         self,
@@ -249,8 +249,8 @@ class VPHGrism(VPHGrating):
         assert self.fringe_frequency is not None, "Fringe frequency must be specified."
         assert self.index_seal is not None, "Index seal must be specified."
 
-        angle_1 = angle_in + self.apex_angle
-        angle_2 = snell(angle=angle_1, n_1=index_in, n_2=self.index_prism)
+        angle_1 = incident_angle + self.apex_angle
+        angle_2 = snell(angle=angle_1, n_1=n_initial, n_2=self.index_prism)
         angle_3 = self.apex_angle - angle_2
         angle_4 = snell(angle=angle_3, n_1=self.index_prism, n_2=self.index_seal)
         angle_5 = angle_4

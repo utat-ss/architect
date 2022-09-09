@@ -8,32 +8,34 @@ import numpy as np
 import pytest
 
 # project
-from architect.components import diffractors
+from architect.components.diffractors import VPHGrism
 
 LOG = logging.getLogger(__name__)
 
 
+def test_init():
+    """Test init method."""
+
+    grism = VPHGrism()
+    LOG.info(grism)
+
+
 def test_get_angle_out():
-    """Test VPHGrism.get_angle_out()."""
+    """Test get_angle_out method."""
 
-    # region parameter definiton
-    l = np.linspace(start=1600, stop=1700, num=100)
-    v = np.linspace(start=300, stop=6000, num=100)
-    # region
-
-    grism = diffractors.VPHGrism(
-        a_in=0, n_1=1.0, n_2=1.52, n_3=1.3, m=1, a=45, v=v, l=l
+    grism = VPHGrism(
+        apex_angle=15 * unit.deg,
+        index_prism=1.0,
+        fringe_frequency=600 * (1 / unit.mm),
+        index_seal=1.0,
     )
 
-    angle_out = grism.get_angle_out()
+    result = grism.get_diffraction_angle(
+        incident_angle=0 * unit.deg, wavelength=1600 * unit.nm
+    )
+    LOG.info(result)
 
-    LOG.info(f"Angle out: {angle_out}°")
-
-    # fig = px.scatter(x=v, y=angle_out)
-    # fig.show()
-
-    # fig = px.scatter(x=l, y=angle_out)
-    # fig.show()
+    assert result.unit == unit.rad
 
 
 def test_get_undeviated_wavelength():
