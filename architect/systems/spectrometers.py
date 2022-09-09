@@ -7,9 +7,9 @@ import astropy.units as unit
 import numpy as np
 
 # project
-from architect import components
 from architect.components import Component
 from architect.components.lenses import Lens
+from architect.components.sensors import TauSWIR
 from architect.luts import LUT
 from architect.systems import System
 
@@ -272,22 +272,23 @@ class FINCHEye(HyperspectralImager):
 
     def __init__(
         self,
-        foreoptic: Component,
-        slit: Component,
-        collimator: Component,
-        bandfilter: Component,
-        grism: Component,
-        focuser: Component,
+        foreoptic: Component = None,
+        slit: Component = None,
+        collimator: Component = None,
+        bandfilter: Component = None,
+        grism: Component = None,
+        focuser: Component = None,
     ):
         super().__init__(
             foreoptic=foreoptic,
             slit=slit,
             collimator=collimator,
             bandfilter=bandfilter,
-            grism=grism,
+            diffractor=grism,
             focuser=focuser,
-            sensor=components.sensors.TauSWIR(),
+            sensor=TauSWIR(),
         )
+        self.grism = grism
 
     def get_dimensions(self):
         """Get the dimensions of the net bounding box of the system.
@@ -296,18 +297,36 @@ class FINCHEye(HyperspectralImager):
 
         """
 
-        dim_x = max(component.dimension[0] for component in self.components)
-        dim_y = max(component.dimension[1] for component in self.components)
-        dim_z = sum(component.dimension[2] for component in self.components)
+        dim_x = max(
+            component.dimensions[0]
+            for component in self.components
+            if component is not None
+        )
+        dim_y = max(
+            component.dimensions[1]
+            for component in self.components
+            if component is not None
+        )
+        dim_z = sum(
+            component.dimensions[2]
+            for component in self.components
+            if component is not None
+        )
 
         dimensions = (dim_x, dim_y, dim_z)
 
         return dimensions
 
-    def get_mapped_height_sensor(self, wavelength):
-        """Get height on sensor that given wavelength hits."""
+    def get_sensor_wavelength_mapping(self, wavelength):
+        """Get height on sensor that given wavelength hits.
 
-        incident_angle = self.grism.get_emergent_angle(
+        Ref: https://www.notion.so/utat-ss/Sensor-Wavelength-Mapping-d700d47e877a43e097ab6095eb3da62d
+
+        """
+        assert self.grism is not None, "A grism component must be set."
+        assert self.focuser is not None, "A focuser component must be set."
+
+        incident_angle = self.grism.get_diffraction_angle(
             incident_angle=0, wavelength=wavelength, order=1
         )
         image_height = self.focuser.get_image_height(incident_angle=incident_angle)
