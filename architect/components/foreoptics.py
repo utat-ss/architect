@@ -24,7 +24,7 @@ class Foreoptic(Lens):
         focal_length=None,
         mass=None,
         length=None,
-        transmittance: LUT = None,
+        transmittance: int | LUT = None,
     ):
         super().__init__(
             diameter=diameter,
@@ -34,6 +34,14 @@ class Foreoptic(Lens):
             transmittance=transmittance,
         )
         self.image_diameter = image_diameter
+
+    def get_diameter(self):
+        """Get the diameter."""
+
+        if self.diameter is not None:
+            return self.diameter
+        else:
+            raise ValueError("Diameter is not set.")
 
     def get_image_area(self):
         """Calculate the image area from the image diameter."""

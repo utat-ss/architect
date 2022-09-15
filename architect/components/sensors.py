@@ -59,6 +59,20 @@ class Sensor(Component):
         self.noise_read = noise_read
         self.pitch = pitch
 
+    def get_pitch(self):
+        """Get the pixel pitch."""
+        if self.pitch is not None:
+            return self.pitch
+        else:
+            raise ValueError("Pixel pitch not set.")
+
+    def get_n_bin(self):
+        """Get the number of binning operations."""
+        if self.pitch is not None:
+            return self.pitch
+        else:
+            raise ValueError("Pixel pitch not set.")
+
     def get_shape(self) -> tuple:
         """Get the dimensions of the sensor face."""
         assert self.n_px is not None, "n_px must be specified."

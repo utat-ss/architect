@@ -45,7 +45,11 @@ class HyperspectralImager(System):
         transmittance = 100 * unit.percent
         for component in self.components:
             if isinstance(component, Lens):
-                transmittance *= component.transmittance
+                transmittance *= (
+                    component.transmittance
+                    if component.transmittance is not None
+                    else 1
+                )
 
         return transmittance
 
@@ -65,9 +69,7 @@ class HyperspectralImager(System):
     def get_signal_to_noise(self, radiance: LUT, wavelength):
         """Get the signal to noise ratio of the system.
 
-        Args:
-            radiance: Atmospheric radiance incident on the system by wavelength.
-            wavelength: Wavelength(s) at which to evaluate SNR.
+        Ref: https://www.notion.so/utat-ss/Signal-to-Noise-6a3a5b8b744d41ada40410d5251cc8ac
 
         """
         assert self.sensor is not None, "A sensor component must be specified."
@@ -115,7 +117,7 @@ class HyperspectralImager(System):
 
         snr = signal / noise
 
-        return snr.decompose()
+        return snr
 
     def get_FOV(self):
         """Get the field of view vector.
@@ -142,12 +144,16 @@ class HyperspectralImager(System):
 
     def get_sensor_spatial_resolution(self, target_distance):
         """Get the sensor-limited spatial resolution."""
+        assert self.sensor is not None, "A sensor component must be specified."
+        assert self.foreoptic is not None, "A foreoptic component must be specified."
 
         spatial_resolution = (
-            target_distance * self.sensor.pitch / self.foreoptic.focal_length
+            target_distance
+            * self.sensor.get_pitch()
+            / self.foreoptic.get_focal_length()
         )
 
-        return spatial_resolution.decompose()
+        return spatial_resolution
 
     def get_swath(
         self, altitude, skew_angle: np.ndarray[float, float]
@@ -179,15 +185,17 @@ class HyperspectralImager(System):
         optical_spatial_resolution = (
             1.22
             * (wavelength * target_distance)
-            / (self.foreoptic.diameter * np.cos(skew_angle))
+            / (self.foreoptic.get_diameter() * np.cos(skew_angle))
         )
 
         return optical_spatial_resolution
 
     def get_spatial_resolution(self, wavelength, target_distance, skew_angle=0):
-        """Get the spatial resolution of the system."""
-        if self.spatial_resolution is not None:
-            return self.spatial_resolution
+        """Get the spatial resolution of the system.
+
+        Ref: https://www.notion.so/utat-ss/Absolute-Spatial-Resolution-bd475362664e46578b113ff3bfb51e76
+
+        """
 
         sensor_spatial_resolution = self.get_sensor_spatial_resolution(
             target_distance=target_distance
@@ -210,7 +218,7 @@ class HyperspectralImager(System):
         assert self.sensor is not None, "A sensor component must be specified."
 
         sensor_spectral_resolution = (upper_wavelength - lower_wavelength) / (
-            (1 / self.sensor.n_bin) * self.sensor.n_px[1]
+            (1 / self.sensor.get_n_bin()) * self.sensor.get_n_px()[1]
         )
 
         return sensor_spectral_resolution
@@ -228,13 +236,17 @@ class HyperspectralImager(System):
 
     def get_spectral_resolution(
         self,
-        upper_wavelength,
         lower_wavelength,
+        upper_wavelength,
         target_wavelength,
         beam_diameter,
     ):
         """Get the spectral resolution (from the optical and sensor spectral
-        resolutions)"""
+        resolutions)
+
+        Ref: https://www.notion.so/utat-ss/Absolute-Spectral-Resolution-214e60ee8ad144c0b0b2af577a383f9d
+
+        """
 
         sensor_spectral_resolution = self.get_sensor_spectral_resolution(
             upper_wavelength=upper_wavelength,
@@ -245,8 +257,6 @@ class HyperspectralImager(System):
             target_wavelength=target_wavelength, beam_diameter=beam_diameter
         )
 
-        print("Optical spectral resolution: ", optical_spectral_resolution)
-        print("Sensor spectral resolution: ", sensor_spectral_resolution)
         spectral_resolution = np.maximum(
             optical_spectral_resolution, sensor_spectral_resolution * unit.pix
         )

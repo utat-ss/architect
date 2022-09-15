@@ -12,4 +12,4 @@ LOG = logging.getLogger(__name__)
 
 
 def test_get_angle_out():
-    pass
+    raise ValueError

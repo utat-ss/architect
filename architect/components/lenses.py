@@ -31,7 +31,7 @@ class Lens(Component):
         index=None,
         mass=None,
         thickness=None,
-        transmittance: LUT = None,
+        transmittance: int | LUT = None,
     ):
         super().__init__(mass=mass, dimensions=(diameter, diameter, thickness))
         self.focal_length = focal_length
@@ -52,3 +52,10 @@ class Lens(Component):
         image_height = self.focal_length * np.tan(incident_angle)
 
         return image_height
+
+    def get_focal_length(self):
+        """Get the focal length."""
+        if self.focal_length is not None:
+            return self.focal_length
+        else:
+            raise ValueError("Focal length not set.")
