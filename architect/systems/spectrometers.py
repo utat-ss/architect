@@ -55,13 +55,16 @@ class HyperspectralImager(System):
 
     def get_ratio_cropped_light_through_slit(self):
         """Get the ratio of the light area passing through the slit to the area
-        of the image of the foreoptic."""
-        assert (
-            self.foreoptic.image_diameter is not None
-        ), "Foreoptic image diameter must be set."
+        of the image of the foreoptic.
 
-        effective_width = min(self.slit.size[0], self.foreoptic.image_diameter)
-        effective_slit_area = effective_width * self.slit.size[1]
+        Ref: https://www.notion.so/utat-ss/Ratio-of-Cropped-Light-through-Slit-d49a933b72fe40738c3ebeecd5b37491
+
+        """
+        assert self.foreoptic is not None, "Foreoptic must be set"
+        assert self.slit is not None, "Slit must be set"
+
+        effective_width = min(self.slit.get_size()[0], self.foreoptic.image_diameter)
+        effective_slit_area = effective_width * self.slit.get_size()[1]
         ratio = effective_slit_area / self.foreoptic.get_image_area()
 
         return ratio
@@ -129,7 +132,7 @@ class HyperspectralImager(System):
         assert self.slit is not None, "A slit component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."
 
-        fov = 2 * np.arctan(self.slit.size / (2 * self.foreoptic.focal_length))
+        fov = 2 * np.arctan(self.slit.get_size() / (2 * self.foreoptic.focal_length))
 
         return fov
 

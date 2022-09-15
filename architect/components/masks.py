@@ -25,3 +25,10 @@ class RectSlit(Component):
         area = self.size[0] * self.size[1]
 
         return area
+
+    def get_size(self):
+        """Get the size of the slit."""
+        if self.size:
+            return self.size
+        else:
+            raise ValueError("Size must be set")

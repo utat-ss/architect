@@ -35,9 +35,15 @@ def test_get_transmittance():
     assert result.unit == unit.percent
 
 
-def test_ratio_cropped_light_through_slit():
-    """Test that the ratio of cropped light through the slit is correct."""
-    raise ValueError
+def test_get_ratio_cropped_light_through_slit():
+    """Test get_ratio_cropped_light_through_slit."""
+    hyperspec = HyperspectralImager(
+        foreoptic=Foreoptic(), slit=RectSlit(size=[4, 5] * unit.mm)
+    )
+    result = hyperspec.get_ratio_cropped_light_through_slit()
+    LOG.info(result)
+
+    assert result.decompose().unit == unit.dimensionless_unscaled
 
 
 def test_get_signal_to_noise():
