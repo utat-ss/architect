@@ -59,8 +59,15 @@ def test_get_signal_to_noise():
 
 
 def test_get_optical_spatial_resolution():
-    """Test the optically-limited spatial resolution method."""
-    raise ValueError
+    """Test get_optical_spatial_resolution."""
+
+    system = HyperspectralImager(foreoptic=Foreoptic(diameter=100 * unit.mm))
+    result = system.get_optical_spatial_resolution(
+        wavelength=400 * unit.nm, target_distance=1 * unit.km
+    )
+    LOG.info(result)
+
+    assert result.decompose().unit == unit.m
 
 
 def test_get_sensor_spatial_resolution():

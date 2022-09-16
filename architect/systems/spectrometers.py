@@ -177,7 +177,7 @@ class HyperspectralImager(System):
     def get_optical_spatial_resolution(self, wavelength, target_distance, skew_angle=0):
         """Get the optically-limited spatial resolution.
 
-        Aka GRD (ground-resolved distance)
+        Ref: https://www.notion.so/utat-ss/Optically-Limited-Spatial-Resolution-3216b483a563420fa1f5bd0e74e2fe8e
 
         """
         assert self.foreoptic is not None, "A foreoptic component must be specified."
