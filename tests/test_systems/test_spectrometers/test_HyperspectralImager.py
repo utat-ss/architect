@@ -9,6 +9,7 @@ import numpy as np
 
 # project
 from architect import components, luts
+from architect.components.diffractors import TransmissiveDiffractor
 from architect.components.foreoptics import Foreoptic
 from architect.components.masks import RectSlit
 from architect.components.sensors import Sensor
@@ -71,8 +72,16 @@ def test_get_optical_spatial_resolution():
 
 
 def test_get_sensor_spatial_resolution():
-    """Test the sensor-limited spatial resolution method."""
-    raise ValueError
+    """Test get_sensor_spatial_resolution."""
+
+    system = HyperspectralImager(
+        sensor=Sensor(pitch=10 * unit.um),
+        foreoptic=Foreoptic(focal_length=100 * unit.mm),
+    )
+    result = system.get_sensor_spatial_resolution(target_distance=1 * unit.km)
+    LOG.info(result.decompose())
+
+    assert result.decompose().unit == unit.m
 
 
 def test_get_spatial_resolution():
@@ -93,13 +102,35 @@ def test_get_spatial_resolution():
 
 
 def test_get_optical_spectral_resolution():
-    """Test get_optical_spectral_resolution function."""
-    raise ValueError
+    """Test get_optical_spectral_resolution."""
+
+    system = HyperspectralImager(
+        diffractor=TransmissiveDiffractor(fringe_frequency=600 * 1 / unit.mm)
+    )
+    result = system.get_optical_spectral_resolution(
+        target_wavelength=1300 * unit.nm, beam_diameter=25 * unit.mm
+    )
+    LOG.info(result.decompose())
+
+    assert result.decompose().unit == unit.m
 
 
 def test_get_sensor_spectral_resolution():
-    """Test of get_optical_spectral_resolution."""
-    raise ValueError
+    """Test get_sensor_spectral_resolution."""
+
+    system = HyperspectralImager(
+        sensor=Sensor(
+            n_px=(640, 512) * (unit.pix) / (unit.pix),
+            n_bin=1 * unit.dimensionless_unscaled,
+        ),
+        pitch=10 * unit.um,
+    )
+    result = system.get_sensor_spectral_resolution(
+        lower_wavelength=900 * unit.nm, upper_wavelength=1700 * unit.nm
+    )
+    LOG.info(result.decompose())
+
+    assert result.decompose().unit == unit.m
 
 
 def test_get_spectral_resolution():

@@ -159,7 +159,7 @@ class VPHGrating(TransmissiveDiffractor):
         assert self.index_dcg is not None, "Index DCG must be specified."
 
         angle_1 = snell(angle=incident_angle, n_1=n_initial, n_2=self.index_seal)
-        angle_2 = np.arscin(
+        angle_2 = np.arcsin(
             (order * wavelength * self.fringe_frequency / self.index_dcg)
             - np.sin(angle_1)
         )
