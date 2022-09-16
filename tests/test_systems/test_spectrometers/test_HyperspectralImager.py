@@ -41,19 +41,26 @@ def test_ratio_cropped_light_through_slit():
 
 
 def test_get_signal_to_noise():
-    """Test get_signal_to_noise method."""
+    """Test get_signal_to_noise."""
 
-    wavelength = np.arange(start=900, stop=1700, step=100) * unit.nm
-    sensor = Sensor()
-    foreoptic = Foreoptic(
-        focal_length=100 * unit.mm, diameter=10 * unit.cm, image_diameter=20 * unit.mm
+    system = HyperspectralImager(
+        sensor=Sensor(
+            integration_time=10 * unit.ms,
+            pitch=10 * unit.um,
+            efficiency=luts.load("sensors/tauswir_quantum_efficiency"),
+            i_dark=10000 * (unit.electron / unit.pix / unit.s),
+        ),
+        foreoptic=Foreoptic(
+            focal_length=100 * unit.mm,
+            diameter=50 * unit.mm,
+            image_diameter=25 * unit.mm,
+        ),
+        slit=RectSlit(size=[1, 15] * unit.mm),
     )
-    slit = RectSlit(size=(1 * unit.mm, 20 * unit.mm))
-    radiance = luts.load("atmosphere/radiance_min")
-    payload = HyperspectralImager(sensor=sensor, foreoptic=foreoptic, slit=slit)
 
-    result = payload.get_signal_to_noise(radiance=radiance, wavelength=wavelength)
-    LOG.info(result)
+    result = system.get_signal_to_noise(
+        radiance=luts.load("atmosphere/radiance_min"), wavelength=400 * unit.nm
+    )
 
     assert result.decompose().unit == unit.dimensionless_unscaled
 

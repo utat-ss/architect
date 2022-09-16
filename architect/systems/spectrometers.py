@@ -1,4 +1,5 @@
 # stdlib
+import logging
 import math
 
 # external
@@ -9,9 +10,11 @@ import numpy as np
 # project
 from architect.components import Component
 from architect.components.lenses import Lens
-from architect.components.sensors import TauSWIR
+from architect.components.sensors import Sensor, TauSWIR
 from architect.luts import LUT
 from architect.systems import System
+
+LOG = logging.getLogger(__name__)
 
 
 class HyperspectralImager(System):
@@ -27,7 +30,7 @@ class HyperspectralImager(System):
         foreoptic: Lens = None,
         slit: Component = None,
         diffractor: Component = None,
-        sensor: Component = None,
+        sensor: Sensor = None,
         **components: Component,
     ):
         super().__init__(
@@ -56,12 +59,10 @@ class HyperspectralImager(System):
     def get_ratio_cropped_light_through_slit(self):
         """Get the ratio of the light area passing through the slit to the area
         of the image of the foreoptic."""
-        assert (
-            self.foreoptic.image_diameter is not None
-        ), "Foreoptic image diameter must be set."
-
-        effective_width = min(self.slit.size[0], self.foreoptic.image_diameter)
-        effective_slit_area = effective_width * self.slit.size[1]
+        effective_width = min(
+            self.slit.get_size()[0], self.foreoptic.get_image_diameter()
+        )
+        effective_slit_area = effective_width * self.slit.get_size()[1]
         ratio = effective_slit_area / self.foreoptic.get_image_area()
 
         return ratio
@@ -72,6 +73,17 @@ class HyperspectralImager(System):
         Ref: https://www.notion.so/utat-ss/Signal-to-Noise-6a3a5b8b744d41ada40410d5251cc8ac
 
         """
+
+        snr = signal / self.get_noise()
+
+        return snr
+
+    def get_signal(wavelength):
+        """Get the signal.
+
+        Ref: https://www.notion.so/utat-ss/Signal-1819461a3a2b4fdeab8b9c26133ff8e2
+
+        """
         assert self.sensor is not None, "A sensor component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."
         assert self.slit is not None, "A slit component must be specified."
@@ -80,44 +92,45 @@ class HyperspectralImager(System):
             (wavelength / (const.h * const.c))
             * radiance(wavelength)
             * (math.pi / 4)
-            * self.sensor.dt
+            * self.sensor.get_integration_time()
         )  # [sr-1 m-3]
+        assert signal1.unit == unit.sr**-1 * unit.m**-3
         signal2 = self.sensor.get_pixel_area() / (
             ((self.foreoptic.get_f_number()).decompose()) ** 2 * 1 / unit.sr
         )  # [m2 sr]
+        assert signal2.unit == unit.m**2 * unit.sr
         signal3 = (
-            (self.sensor.efficiency(wavelength)).decompose()
+            (self.sensor.get_efficiency(wavelength)).decompose()
             * unit.electron
             * self.get_transmittance()
         )  # [electron]
+        assert signal3.unit == unit.electron
         signal4 = (
             self.get_ratio_cropped_light_through_slit()
             * (800 * 10 ** (-9))
             * unit.meter
         )  # [dimensionless * m]
+        assert signal4.unit == unit.m
 
         signal = signal1 * signal2 * signal3 * signal4
+        LOG.info(f"Signal: {signal.decompose()}")
 
-        print("signal", signal.decompose())
+        return signal
 
-        print("shot noise sqr", signal.decompose() * unit.electron)
-        print(
-            "dark noise sqr",
-            self.sensor.n_bin * (self.sensor.get_dark_noise() * unit.pix) ** 2,
-        )
-        print("quantization noise sqr", (self.sensor.get_quantization_noise()) ** 2)
-        print("read noise sqr", self.sensor.n_bin * (self.sensor.noise_read) ** 2)
+    def get_noise(self):
+        """Get the noise.
 
+        Ref: https://www.notion.so/utat-ss/Noise-21ff532ac4334fbeab4aabf6372c9848
+
+        """
         noise = np.sqrt(
-            (signal * unit.electron)
-            + self.sensor.n_bin * (self.sensor.get_dark_noise() * unit.pix) ** 2
+            (signal.decompose() * unit.electron)
+            + self.sensor.get_n_bin() * (self.sensor.get_dark_noise() * unit.pix) ** 2
             + self.sensor.get_quantization_noise() ** 2
-            + self.sensor.n_bin * self.sensor.noise_read**2
+            + self.sensor.get_n_bin() * self.sensor.get_noise_read() ** 2
         )
 
-        snr = signal / noise
-
-        return snr
+        return noise
 
     def get_FOV(self):
         """Get the field of view vector.
