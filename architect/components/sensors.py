@@ -66,12 +66,19 @@ class Sensor(Component):
         else:
             raise ValueError("Pixel pitch not set.")
 
+    def get_n_px(self):
+        """Get the pixel count."""
+        if self.n_px is not None:
+            return self.n_px
+        else:
+            raise ValueError("Pixel count not set.")
+
     def get_n_bin(self):
         """Get the number of binning operations."""
-        if self.pitch is not None:
-            return self.pitch
+        if self.n_bin is not None:
+            return self.n_bin
         else:
-            raise ValueError("Pixel pitch not set.")
+            raise ValueError("Number of binning operations not set.")
 
     def get_shape(self) -> tuple:
         """Get the dimensions of the sensor face."""
