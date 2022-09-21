@@ -22,7 +22,7 @@ def test_init():
     LOG.info(grating)
 
 
-def test_get_angle_out():
+def test_get_diffraction_angle():
     """Test get_diffraction_angle."""
 
     grating = VPHGrating(

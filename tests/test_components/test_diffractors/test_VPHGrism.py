@@ -20,8 +20,8 @@ def test_init():
     LOG.info(grism)
 
 
-def test_get_angle_out():
-    """Test get_angle_out method."""
+def test_get_diffraction_angle():
+    """Test get_diffraction_angle method."""
 
     grism = VPHGrism(
         apex_angle=15 * unit.deg,

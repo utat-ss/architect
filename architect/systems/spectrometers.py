@@ -214,7 +214,11 @@ class HyperspectralImager(System):
         return spatial_resolution
 
     def get_sensor_spectral_resolution(self, upper_wavelength, lower_wavelength):
-        """Get the sensor-limited spectral resolution."""
+        """Get the sensor-limited spectral resolution.
+
+        Ref: https://www.notion.so/utat-ss/Sensor-Limited-Spectral-Resolution-5071f076997f4b59851f73127822fb23
+
+        """
         assert self.sensor is not None, "A sensor component must be specified."
 
         sensor_spectral_resolution = (upper_wavelength - lower_wavelength) / (
@@ -224,7 +228,11 @@ class HyperspectralImager(System):
         return sensor_spectral_resolution
 
     def get_optical_spectral_resolution(self, target_wavelength, beam_diameter):
-        """Get the optically-limited spectral resolution."""
+        """Get the optically-limited spectral resolution.
+
+        Ref: https://www.notion.so/utat-ss/Optically-Limited-Spectral-Resolution-97de793cf58b477584bf363937d2e3e4
+
+        """
         assert self.diffractor is not None, "A diffractor component must be specified."
 
         optical_spectral_resolution = (

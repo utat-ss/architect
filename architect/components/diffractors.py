@@ -48,11 +48,15 @@ class TransmissiveDiffractor(Component):
             self.fringe_frequency * order * wavelength + np.sin(incident_angle)
         )
 
-        return diffraction_angle.to(unit.degree)
+        return diffraction_angle
 
     def get_illuminated_fringe_count(self, beam_diameter):
         """Get the number of fringes that are illuminated by an incident
-        collimated beam of light."""
+        collimated beam of light.
+
+        Ref: https://www.notion.so/utat-ss/Illuminated-Fringe-Count-fcd5e6becc3d4f16a0a18ea4915993ee
+
+        """
         assert self.fringe_frequency is not None, "Fringe frequency must be specified."
 
         fringe_count = beam_diameter * self.fringe_frequency
@@ -60,7 +64,11 @@ class TransmissiveDiffractor(Component):
         return fringe_count
 
     def get_resolvance(self, beam_diameter, order=1):
-        """Get the resolving power of the grating."""
+        """Get the resolving power of the grating.
+
+        Ref: https://www.notion.so/utat-ss/Resolvance-575d019bb1e74a47925d665e70541bfb
+
+        """
 
         resolvance = order * self.get_illuminated_fringe_count(beam_diameter)
 
@@ -154,6 +162,11 @@ class VPHGrating(TransmissiveDiffractor):
     def get_diffraction_angle(
         self, incident_angle, wavelength, n_initial=1, n_final=1, order=1
     ):
+        """Get the angle of the diffracted ray at the specified wavelengh.
+
+        Ref: https://www.notion.so/utat-ss/VPH-Grating-Diffraction-Angle-8f217730dc484d9eae440581e5bd1527
+
+        """
         assert self.index_seal is not None, "Index Seal must be specified."
         assert self.fringe_frequency is not None, "Fringe frequency must be specified."
         assert self.index_dcg is not None, "Index DCG must be specified."
