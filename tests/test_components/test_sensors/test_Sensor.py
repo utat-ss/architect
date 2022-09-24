@@ -6,8 +6,8 @@ import logging
 import astropy.units as unit
 
 # project
-from architect.components.sensors import Sensor
 from architect import luts
+from architect.components.sensors import Sensor
 
 LOG = logging.getLogger(__name__)
 
@@ -17,6 +17,7 @@ def test_init():
 
     sensor = Sensor()
     LOG.info(sensor)
+
 
 def test_get_pitch():
     """Test get_pitch method."""
@@ -28,25 +29,28 @@ def test_get_pitch():
 
     assert result.unit == unit.um
 
+
 def test_get_n_px():
     """Test get_n_px method."""
 
-    sensor = Sensor(n_px = (640, 512) * unit.pix)
+    sensor = Sensor(n_px=(640, 512) * unit.pix)
 
     result = sensor.get_n_px()
     LOG.info(result)
-    
+
     assert result.unit == unit.pix
+
 
 def test_get_n_bin():
     """Test get_n_bin method."""
 
-    sensor = Sensor(pitch=10 * unit.um, n_bin = 4 * unit.dimensionless_unscaled)
+    sensor = Sensor(pitch=10 * unit.um, n_bin=4 * unit.dimensionless_unscaled)
 
     result = sensor.get_n_bin()
     LOG.info(result)
 
     assert result.unit == unit.dimensionless_unscaled
+
 
 def test_get_shape() -> tuple:
     """Test get_shape method."""
@@ -59,6 +63,7 @@ def test_get_shape() -> tuple:
     assert result[0].decompose().unit == unit.m
     assert result[1].decompose().unit == unit.m
 
+
 def test_get_area():
     """Test get_area method."""
 
@@ -68,6 +73,7 @@ def test_get_area():
     LOG.info(result)
 
     assert result.decompose().unit == unit.m**2
+
 
 def test_get_pixel_area():
     """Test get_pixel_area method."""
@@ -79,39 +85,52 @@ def test_get_pixel_area():
 
     assert result.decompose().unit == unit.m**2
 
+
 def test_get_dark_noise():
     """Test get_dark_noise method."""
 
     ke = 1e3 * unit.electron
-    sensor = Sensor(integration_time=166.7 * unit.ms, i_dark=140 * (ke / unit.pix / unit.s))
+    sensor = Sensor(
+        integration_time=166.7 * unit.ms, i_dark=140 * (ke / unit.pix / unit.s)
+    )
 
     result = sensor.get_dark_noise()
     LOG.info(result)
 
     assert result.decompose().unit == (unit.electron / unit.pix)
 
+
 def test_get_quantization_noise():
     """Test get_quantization_noise method."""
-    
+
     ke = 1e3 * unit.electron
-    sensor = Sensor(n_well = 19 * ke, n_bit = 14 * unit.bit)
+    sensor = Sensor(n_well=19 * ke, n_bit=14 * unit.bit)
 
     result = sensor.get_quantization_noise()
     LOG.info(result)
 
     assert result.decompose().unit == unit.electron
 
+
 def test_get_noise():
     """Test get_noise method."""
 
     ke = 1e3 * unit.electron
     signal = 6 * 10**6 * unit.electron
-    sensor = Sensor(integration_time=166.7 * unit.ms, i_dark=140 * (ke / unit.pix / unit.s), n_well = 19 * ke, n_bit = 14 * unit.bit, n_bin=1 * unit.dimensionless_unscaled, noise_read=500 * unit.electron)
+    sensor = Sensor(
+        integration_time=166.7 * unit.ms,
+        i_dark=140 * (ke / unit.pix / unit.s),
+        n_well=19 * ke,
+        n_bit=14 * unit.bit,
+        n_bin=1 * unit.dimensionless_unscaled,
+        noise_read=500 * unit.electron,
+    )
 
     result = sensor.get_noise(signal)
     LOG.info(result)
 
     assert result.decompose().unit == unit.electron
+
 
 def test_get_integration_time():
     """Test get_integration_time method."""
@@ -122,6 +141,7 @@ def test_get_integration_time():
     LOG.info(result)
 
     assert result.decompose().unit == unit.second
+
 
 def test_get_efficiency():
     """Test get_efficiency method."""
