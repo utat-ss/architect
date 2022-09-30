@@ -39,7 +39,8 @@ def test_get_transmittance():
 def test_get_ratio_cropped_light_through_slit():
     """Test get_ratio_cropped_light_through_slit."""
     hyperspec = HyperspectralImager(
-        foreoptic=Foreoptic(), slit=RectSlit(size=[4, 5] * unit.mm)
+        foreoptic=Foreoptic(image_diameter=25 * unit.mm),
+        slit=RectSlit(size=[4, 5] * unit.mm),
     )
     result = hyperspec.get_ratio_cropped_light_through_slit()
     LOG.info(result)
@@ -87,20 +88,15 @@ def test_get_optical_spatial_resolution():
 def test_get_sensor_spatial_resolution():
     """Test the sensor-limited spatial resolution method."""
     system = HyperspectralImager(
-        sensor=Sensor(
-            pitch=15 * unit.um
-        ), 
-        foreoptic=Foreoptic(
-            focal_length=100 * unit.mm
-        )
+        sensor=Sensor(pitch=15 * unit.um),
+        foreoptic=Foreoptic(focal_length=100 * unit.mm),
     )
 
-    result = system.get_sensor_spatial_resolution(
-        target_distance=1 * unit.km
-    )
+    result = system.get_sensor_spatial_resolution(target_distance=1 * unit.km)
     LOG.info(result)
 
     assert result.decompose().unit == unit.m
+
 
 def test_get_spatial_resolution():
     """Test get_spatial_resolution."""
@@ -143,12 +139,12 @@ def test_get_sensor_spectral_resolution():
         )
     )
     result = system.get_sensor_spectral_resolution(
-        upper_wavelength=1700 * unit.nm,
-        lower_wavelength=900 * unit.nm
+        upper_wavelength=1700 * unit.nm, lower_wavelength=900 * unit.nm
     )
     LOG.info(result)
 
     assert result.decompose().unit == unit.m / unit.pix
+
 
 def test_get_spectral_resolution():
     """Test get_optical_spectral_resolution."""
