@@ -99,7 +99,20 @@ def test_get_optical_spectral_resolution():
 
 def test_get_sensor_spectral_resolution():
     """Test of get_optical_spectral_resolution."""
-    raise ValueError
+    system = HyperspectralImager(
+        sensor=Sensor(
+            pitch=15 * unit.um,
+            n_bin=1 * unit.dimensionless_unscaled,
+            n_px=(640, 512) * unit.pix,
+        )
+    )
+    result = system.get_sensor_spectral_resolution(
+        upper_wavelength=1700 * unit.nm,
+        lower_wavelength=900 * unit.nm
+    )
+    LOG.info(result)
+
+    assert result.decompose().unit == unit.m / unit.pix
 
 
 def test_get_spectral_resolution():
