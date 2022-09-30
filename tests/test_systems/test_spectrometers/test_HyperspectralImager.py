@@ -107,11 +107,11 @@ def test_get_spectral_resolution():
 
     system = HyperspectralImager(
         sensor=Sensor(
-        pitch=15 * unit.um,
-        n_bin=1 * unit.dimensionless_unscaled,
-        n_px=(640, 512) * unit.pix), 
-        diffractor=TransmissiveDiffractor(
-            fringe_frequency=600 * (1 / unit.mm))
+            pitch=15 * unit.um,
+            n_bin=1 * unit.dimensionless_unscaled,
+            n_px=(640, 512) * unit.pix,
+        ),
+        diffractor=TransmissiveDiffractor(fringe_frequency=600 * (1 / unit.mm)),
     )
     result = system.get_spectral_resolution(
         lower_wavelength=900 * unit.nm,
@@ -127,7 +127,12 @@ def test_get_spectral_resolution():
 def test_get_pointing_accuracy_constraint():
     """Test get_pointing_accuracy_constraint."""
     system = HyperspectralImager(
-        sensor=Sensor(),
+        sensor=Sensor(
+            pitch=15 * unit.um,
+            n_bin=1 * unit.dimensionless_unscaled,
+            n_px=(640, 512) * unit.pix,
+        ),
+        diffractor=TransmissiveDiffractor(fringe_frequency=600 * (1 / unit.mm)),
         foreoptic=Foreoptic(diameter=10 * unit.mm, focal_length=100 * unit.mm),
     )
 
