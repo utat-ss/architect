@@ -18,6 +18,13 @@ class RectSlit(Component):
         self.thickness = thickness
         self.diameter = diameter
 
+    def get_size(self):
+        """Get the size of the slit."""
+        if self.size is not None:
+            return self.size
+        else:
+            raise ValueError("Slit size not set.")
+
     def get_clear_area(self):
         """Get the clear aperture slit area."""
         assert self.size is not None, "Size must be specified."

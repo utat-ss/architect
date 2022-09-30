@@ -48,26 +48,40 @@ def test_get_ratio_cropped_light_through_slit():
 
 
 def test_get_signal_to_noise():
-    """Test get_signal_to_noise method."""
+    """Test get_signal_to_noise."""
 
-    wavelength = np.arange(start=900, stop=1700, step=100) * unit.nm
-    sensor = Sensor()
-    foreoptic = Foreoptic(
-        focal_length=100 * unit.mm, diameter=10 * unit.cm, image_diameter=20 * unit.mm
+    system = HyperspectralImager(
+        sensor=Sensor(
+            integration_time=10 * unit.ms,
+            pitch=10 * unit.um,
+            efficiency=luts.load("sensors/tauswir_quantum_efficiency"),
+            i_dark=10000 * (unit.electron / unit.pix / unit.s),
+        ),
+        foreoptic=Foreoptic(
+            focal_length=100 * unit.mm,
+            diameter=50 * unit.mm,
+            image_diameter=25 * unit.mm,
+        ),
+        slit=RectSlit(size=[1, 15] * unit.mm),
     )
-    slit = RectSlit(size=(1 * unit.mm, 20 * unit.mm))
-    radiance = luts.load("atmosphere/radiance_min")
-    payload = HyperspectralImager(sensor=sensor, foreoptic=foreoptic, slit=slit)
 
-    result = payload.get_signal_to_noise(radiance=radiance, wavelength=wavelength)
-    LOG.info(result)
+    result = system.get_signal_to_noise(
+        radiance=luts.load("atmosphere/radiance_min"), wavelength=400 * unit.nm
+    )
 
     assert result.decompose().unit == unit.dimensionless_unscaled
 
 
 def test_get_optical_spatial_resolution():
-    """Test the optically-limited spatial resolution method."""
-    raise ValueError
+    """Test get_optical_spatial_resolution."""
+
+    system = HyperspectralImager(foreoptic=Foreoptic(diameter=100 * unit.mm))
+    result = system.get_optical_spatial_resolution(
+        wavelength=400 * unit.nm, target_distance=1 * unit.km
+    )
+    LOG.info(result)
+
+    assert result.decompose().unit == unit.m
 
 
 def test_get_sensor_spatial_resolution():
@@ -88,8 +102,6 @@ def test_get_sensor_spatial_resolution():
 
     assert result.decompose().unit == unit.m
 
-
-
 def test_get_spatial_resolution():
     """Test get_spatial_resolution."""
     wavelength = 400 * unit.nm
@@ -108,12 +120,21 @@ def test_get_spatial_resolution():
 
 
 def test_get_optical_spectral_resolution():
-    """Test get_optical_spectral_resolution function."""
-    raise ValueError
+    """Test get_optical_spectral_resolution."""
+
+    system = HyperspectralImager(
+        diffractor=TransmissiveDiffractor(fringe_frequency=600 * 1 / unit.mm)
+    )
+    result = system.get_optical_spectral_resolution(
+        target_wavelength=1300 * unit.nm, beam_diameter=25 * unit.mm
+    )
+    LOG.info(result.decompose())
+
+    assert result.decompose().unit == unit.m
 
 
 def test_get_sensor_spectral_resolution():
-    """Test of get_optical_spectral_resolution."""
+    """Test of get_sensor_spectral_resolution."""
     system = HyperspectralImager(
         sensor=Sensor(
             pitch=15 * unit.um,
@@ -128,7 +149,6 @@ def test_get_sensor_spectral_resolution():
     LOG.info(result)
 
     assert result.decompose().unit == unit.m / unit.pix
-
 
 def test_get_spectral_resolution():
     """Test get_optical_spectral_resolution."""

@@ -43,6 +43,13 @@ class Foreoptic(Lens):
         else:
             raise ValueError("Diameter is not set.")
 
+    def get_image_diameter(self):
+        """Get the image diameter."""
+        if self.image_diameter is not None:
+            return self.image_diameter
+        else:
+            raise ValueError("Image diameter is not set.")
+
     def get_image_area(self):
         """Calculate the image area from the image diameter."""
         assert self.image_diameter is not None, "image_diameter must be set."

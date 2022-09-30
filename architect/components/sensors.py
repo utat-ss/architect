@@ -21,7 +21,7 @@ class Sensor(Component):
 
     Args:
         dimensions: Dimensions of component bounding box. Elements are ordered as (x, y, z) in the cubesat frame.
-        dt: Integration time.
+        integration_time: Integration time.
         efficiency: Quantum efficiency of the sensor.
         i_dark: Dark current.
         mass: Component mass.
@@ -37,7 +37,7 @@ class Sensor(Component):
     def __init__(
         self,
         dimensions: tuple = None,
-        dt=None,
+        integration_time=None,
         efficiency: LUT = None,
         i_dark=None,
         mass=None,
@@ -49,7 +49,7 @@ class Sensor(Component):
         pitch=None,
     ):
         super().__init__(dimensions, mass)
-        self.dt = dt
+        self.integration_time = integration_time
         self.efficiency = efficiency
         self.i_dark = i_dark
         self.n_bin = n_bin
@@ -65,6 +65,13 @@ class Sensor(Component):
             return self.pitch
         else:
             raise ValueError("Pixel pitch not set.")
+
+    def get_n_px(self):
+        """Get the pixel count."""
+        if self.n_px is not None:
+            return self.n_px
+        else:
+            raise ValueError("Pixel count not set.")
 
     def get_n_bin(self):
         """Get the number of binning operations."""
@@ -113,9 +120,9 @@ class Sensor(Component):
     def get_dark_noise(self):
         """Get the dark noise of the sensor."""
         assert self.i_dark is not None, "i_dark must be specified."
-        assert self.dt is not None, "dt amplitude must be specified."
+        assert self.integration_time is not None, "Integration time must be specified."
 
-        dark_noise = self.i_dark * self.dt
+        dark_noise = self.i_dark * self.integration_time
 
         return dark_noise
 
@@ -142,6 +149,20 @@ class Sensor(Component):
 
         return noise
 
+    def get_integration_time(self):
+        """Get the integration time."""
+        if self.integration_time is not None:
+            return self.integration_time
+        else:
+            raise ValueError("Integration time is not set.")
+
+    def get_efficiency(self, wavelength):
+        """Get the quantum efficiency of the sensor."""
+        if self.efficiency is not None:
+            return self.efficiency(wavelength)
+        else:
+            raise ValueError("Quantum efficiency is not set.")
+
 
 class TauSWIR(Sensor):
     """Teledyne FLIR Tau SWIR sensor.
@@ -154,7 +175,7 @@ class TauSWIR(Sensor):
         ke = 1e3 * unit.electron
         super().__init__(
             dimensions=(38, 38, 36) * unit.mm,
-            dt=166.7 * unit.ms,
+            integration_time=166.7 * unit.ms,
             efficiency=luts.load("sensors/tauswir_quantum_efficiency"),
             i_dark=140 * (ke / unit.pix / unit.s),
             mass=81 * unit.g,
