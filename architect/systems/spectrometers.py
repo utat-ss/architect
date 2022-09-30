@@ -146,7 +146,11 @@ class HyperspectralImager(System):
         return iFOV
 
     def get_sensor_spatial_resolution(self, target_distance):
-        """Get the sensor-limited spatial resolution."""
+        """Get the sensor-limited spatial resolution.
+
+        Ref: https://www.notion.so/utat-ss/Sensor-Limited-Spectral-Resolution-5071f076997f4b59851f73127822fb23
+
+        """
         assert self.sensor is not None, "A sensor component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."
 
@@ -269,7 +273,11 @@ class HyperspectralImager(System):
     def get_pointing_accuracy_constraint(
         self, wavelength, target_distance, tolerance=0.5
     ):
-        """Get the pointing accuracy constraint."""
+        """Get the pointing accuracy constraint.
+
+        Ref: https://www.notion.so/utat-ss/Pointing-Accuracy-vs-Spatial-Resolution-0a257bf7271142548f57bf220ca4af36
+
+        """
 
         spatial_resolution = self.get_spatial_resolution(
             wavelength=wavelength, target_distance=target_distance
