@@ -86,7 +86,7 @@ def test_get_optical_spatial_resolution():
 
 
 def test_get_sensor_spatial_resolution():
-    """Test the sensor-limited spatial resolution method."""
+    """Test get_sensor_spatial_resolution method."""
     system = HyperspectralImager(
         sensor=Sensor(pitch=15 * unit.um),
         foreoptic=Foreoptic(focal_length=100 * unit.mm),
