@@ -130,7 +130,7 @@ def test_get_optical_spectral_resolution():
 
 
 def test_get_sensor_spectral_resolution():
-    """Test of get_sensor_spectral_resolution."""
+    """Test get_sensor_spectral_resolution."""
     system = HyperspectralImager(
         sensor=Sensor(
             pitch=15 * unit.um,
