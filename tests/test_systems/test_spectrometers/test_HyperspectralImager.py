@@ -9,6 +9,7 @@ import numpy as np
 
 # project
 from architect import components, luts
+from architect.components.diffractors import TransmissiveDiffractor
 from architect.components.foreoptics import Foreoptic
 from architect.components.masks import RectSlit
 from architect.components.sensors import Sensor
@@ -104,7 +105,14 @@ def test_get_sensor_spectral_resolution():
 def test_get_spectral_resolution():
     """Test get_optical_spectral_resolution."""
 
-    system = HyperspectralImager(sensor=Sensor())
+    system = HyperspectralImager(
+        sensor=Sensor(
+        pitch=15 * unit.um,
+        n_bin=1 * unit.dimensionless_unscaled,
+        n_px=(640, 512) * unit.pix), 
+        diffractor=TransmissiveDiffractor(
+            fringe_frequency=600 * (1 / unit.mm))
+    )
     result = system.get_spectral_resolution(
         lower_wavelength=900 * unit.nm,
         upper_wavelength=1700 * unit.nm,
