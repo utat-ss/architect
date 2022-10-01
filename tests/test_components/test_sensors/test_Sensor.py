@@ -21,13 +21,13 @@ def test_init():
 
 def test_get_pitch():
     """Test get_pitch method."""
-
-    sensor = Sensor(pitch=10 * unit.um)
+    pitch = 10 * unit.um
+    sensor = Sensor(pitch=pitch)
 
     result = sensor.get_pitch()
     LOG.info(result)
 
-    assert result.unit == unit.um
+    assert result == pitch
 
 
 def test_get_n_px():
