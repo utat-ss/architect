@@ -33,26 +33,28 @@ def test_get_pitch():
 def test_get_n_px():
     """Test get_n_px method."""
 
-    sensor = Sensor(n_px=(640, 512) * unit.pix)
+    n_px = (640, 512) * unit.pix
+    sensor = Sensor(n_px=n_px)
 
     result = sensor.get_n_px()
-    LOG.info(result)
+    # LOG.info(result)
 
-    assert result.unit == unit.pix
+    assert (result == n_px).all()
 
 
 def test_get_n_bin():
     """Test get_n_bin method."""
 
-    sensor = Sensor(pitch=10 * unit.um, n_bin=4 * unit.dimensionless_unscaled)
+    n_bin = 4 * unit.dimensionless_unscaled
+    sensor = Sensor(n_bin=n_bin)
 
     result = sensor.get_n_bin()
     LOG.info(result)
 
-    assert result.unit == unit.dimensionless_unscaled
+    assert result == n_bin
 
 
-def test_get_shape() -> tuple:
+def test_get_shape():
     """Test get_shape method."""
 
     sensor = Sensor(n_px=(640, 512), pitch=10 * unit.um)
@@ -135,12 +137,13 @@ def test_get_noise():
 def test_get_integration_time():
     """Test get_integration_time method."""
 
-    sensor = Sensor(integration_time=166.7 * unit.ms)
+    integration_time=166.7 * unit.ms
+    sensor = Sensor(integration_time=integration_time)
 
     result = sensor.get_integration_time()
     LOG.info(result)
 
-    assert result.decompose().unit == unit.second
+    assert result == integration_time
 
 
 def test_get_efficiency():
