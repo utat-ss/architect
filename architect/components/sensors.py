@@ -134,8 +134,8 @@ class Sensor(Component):
         assert self.noise_read is not None, "noise_read must be specified."
 
         noise = np.sqrt(
-            signal
-            + self.n_bin * self.get_dark_noise() ** 2
+            signal * unit.electron
+            + self.n_bin * (self.get_dark_noise() * unit.pix) ** 2
             + self.get_quantization_noise() ** 2
             + self.n_bin * self.noise_read**2
         )
