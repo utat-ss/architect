@@ -80,6 +80,13 @@ class Sensor(Component):
         else:
             raise ValueError("Number of binning operations not set.")
 
+    def get_n_px(self):
+        """Get the number of pixels."""
+        if self.n_px is not None:
+            return self.n_px
+        else:
+            raise ValueError("Number of pixels not set.")
+
     def get_shape(self) -> tuple:
         """Get the dimensions of the sensor face."""
         assert self.n_px is not None, "n_px must be specified."

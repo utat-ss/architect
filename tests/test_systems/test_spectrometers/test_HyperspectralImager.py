@@ -36,9 +36,16 @@ def test_get_transmittance():
     assert result.unit == unit.percent
 
 
-def test_ratio_cropped_light_through_slit():
-    """Test that the ratio of cropped light through the slit is correct."""
-    raise ValueError
+def test_get_ratio_cropped_light_through_slit():
+    """Test get_ratio_cropped_light_through_slit."""
+    hyperspec = HyperspectralImager(
+        foreoptic=Foreoptic(image_diameter=25 * unit.mm),
+        slit=RectSlit(size=[4, 5] * unit.mm),
+    )
+    result = hyperspec.get_ratio_cropped_light_through_slit()
+    LOG.info(result)
+
+    assert result.decompose().unit == unit.dimensionless_unscaled
 
 
 def test_get_signal_to_noise():
@@ -79,14 +86,14 @@ def test_get_optical_spatial_resolution():
 
 
 def test_get_sensor_spatial_resolution():
-    """Test get_sensor_spatial_resolution."""
-
+    """Test get_sensor_spatial_resolution method."""
     system = HyperspectralImager(
-        sensor=Sensor(pitch=10 * unit.um),
+        sensor=Sensor(pitch=15 * unit.um),
         foreoptic=Foreoptic(focal_length=100 * unit.mm),
     )
+
     result = system.get_sensor_spatial_resolution(target_distance=1 * unit.km)
-    LOG.info(result.decompose())
+    LOG.info(result)
 
     assert result.decompose().unit == unit.m
 
@@ -124,26 +131,32 @@ def test_get_optical_spectral_resolution():
 
 def test_get_sensor_spectral_resolution():
     """Test get_sensor_spectral_resolution."""
-
     system = HyperspectralImager(
         sensor=Sensor(
-            n_px=(640, 512) * (unit.pix) / (unit.pix),
+            pitch=15 * unit.um,
             n_bin=1 * unit.dimensionless_unscaled,
-        ),
-        pitch=10 * unit.um,
+            n_px=(640, 512) * unit.pix,
+        )
     )
     result = system.get_sensor_spectral_resolution(
-        lower_wavelength=900 * unit.nm, upper_wavelength=1700 * unit.nm
+        upper_wavelength=1700 * unit.nm, lower_wavelength=900 * unit.nm
     )
-    LOG.info(result.decompose())
+    LOG.info(result)
 
-    assert result.decompose().unit == unit.m
+    assert result.decompose().unit == unit.m / unit.pix
 
 
 def test_get_spectral_resolution():
     """Test get_optical_spectral_resolution."""
 
-    system = HyperspectralImager(sensor=Sensor())
+    system = HyperspectralImager(
+        sensor=Sensor(
+            pitch=15 * unit.um,
+            n_bin=1 * unit.dimensionless_unscaled,
+            n_px=(640, 512) * unit.pix,
+        ),
+        diffractor=TransmissiveDiffractor(fringe_frequency=600 * (1 / unit.mm)),
+    )
     result = system.get_spectral_resolution(
         lower_wavelength=900 * unit.nm,
         upper_wavelength=1700 * unit.nm,
@@ -158,7 +171,12 @@ def test_get_spectral_resolution():
 def test_get_pointing_accuracy_constraint():
     """Test get_pointing_accuracy_constraint."""
     system = HyperspectralImager(
-        sensor=Sensor(),
+        sensor=Sensor(
+            pitch=15 * unit.um,
+            n_bin=1 * unit.dimensionless_unscaled,
+            n_px=(640, 512) * unit.pix,
+        ),
+        diffractor=TransmissiveDiffractor(fringe_frequency=600 * (1 / unit.mm)),
         foreoptic=Foreoptic(diameter=10 * unit.mm, focal_length=100 * unit.mm),
     )
 

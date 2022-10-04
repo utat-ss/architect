@@ -58,10 +58,18 @@ class HyperspectralImager(System):
 
     def get_ratio_cropped_light_through_slit(self):
         """Get the ratio of the light area passing through the slit to the area
-        of the image of the foreoptic."""
+        of the image of the foreoptic.
+
+        Ref: https://www.notion.so/utat-ss/Ratio-of-Cropped-Light-through-Slit-d49a933b72fe40738c3ebeecd5b37491
+
+        """
+        assert self.foreoptic is not None, "Foreoptic must be set"
+        assert self.slit is not None, "Slit must be set"
+
         effective_width = min(
             self.slit.get_size()[0], self.foreoptic.get_image_diameter()
         )
+
         effective_slit_area = effective_width * self.slit.get_size()[1]
         ratio = effective_slit_area / self.foreoptic.get_image_area()
 
@@ -142,7 +150,7 @@ class HyperspectralImager(System):
         assert self.slit is not None, "A slit component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."
 
-        fov = 2 * np.arctan(self.slit.size / (2 * self.foreoptic.focal_length))
+        fov = 2 * np.arctan(self.slit.get_size() / (2 * self.foreoptic.focal_length))
 
         return fov
 
@@ -156,7 +164,11 @@ class HyperspectralImager(System):
         return iFOV
 
     def get_sensor_spatial_resolution(self, target_distance):
-        """Get the sensor-limited spatial resolution."""
+        """Get the sensor-limited spatial resolution.
+
+        Ref: https://www.notion.so/utat-ss/Sensor-Limited-Spectral-Resolution-5071f076997f4b59851f73127822fb23
+
+        """
         assert self.sensor is not None, "A sensor component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."
 
@@ -287,7 +299,11 @@ class HyperspectralImager(System):
     def get_pointing_accuracy_constraint(
         self, wavelength, target_distance, tolerance=0.5
     ):
-        """Get the pointing accuracy constraint."""
+        """Get the pointing accuracy constraint.
+
+        Ref: https://www.notion.so/utat-ss/Pointing-Accuracy-vs-Spatial-Resolution-0a257bf7271142548f57bf220ca4af36
+
+        """
 
         spatial_resolution = self.get_spatial_resolution(
             wavelength=wavelength, target_distance=target_distance
