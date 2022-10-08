@@ -312,6 +312,18 @@ class HyperspectralImager(System):
         constraint_angle = np.arctan((tolerance * spatial_resolution) / target_distance)
 
         return constraint_angle
+    
+    def get_ground_target_error(self, orbital_altitude, skew_angle):
+        """
+        Get the ground target error from the skew angle error.
+
+        Ref:https://www.notion.so/utat-ss/Create-tradebook-for-uncertainty-in-ground-target-vs-uncertainty-in-pointing-accuracy-ee938e1ee2fc40f2891f574ddfeac495
+        
+        """
+
+        ground_error = np.tan(skew_angle) * orbital_altitude
+
+        return ground_error
 
 
 class FINCHEye(HyperspectralImager):
