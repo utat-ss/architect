@@ -88,15 +88,15 @@ def test_get_pixel_area():
     assert result.decompose().unit == unit.m**2
 
 
-def test_get_dark_noise():
-    """Test get_dark_noise method."""
+def test_get_mean_dark_signal():
+    """Test get_mean_dark_signal method."""
 
     ke = 1e3 * unit.electron
     sensor = Sensor(
         integration_time=166.7 * unit.ms, i_dark=140 * (ke / unit.pix / unit.s)
     )
 
-    result = sensor.get_dark_noise()
+    result = sensor.get_mean_dark_signal()
     LOG.info(result)
 
     assert result.decompose().unit == (unit.electron / unit.pix)
@@ -137,7 +137,7 @@ def test_get_noise():
 def test_get_integration_time():
     """Test get_integration_time method."""
 
-    integration_time=166.7 * unit.ms
+    integration_time = 166.7 * unit.ms
     sensor = Sensor(integration_time=integration_time)
 
     result = sensor.get_integration_time()

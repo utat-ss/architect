@@ -7,6 +7,7 @@ import math
 # external
 import astropy.units as unit
 import numpy as np
+from astropy.units import Quantity
 
 # project
 from architect import luts
@@ -36,17 +37,17 @@ class Sensor(Component):
 
     def __init__(
         self,
-        dimensions: tuple = None,
-        integration_time=None,
+        dimensions: tuple[Quantity[unit.m], Quantity[unit.m], Quantity[unit.m]] = None,
+        integration_time: Quantity[unit.s] = None,
         efficiency: LUT = None,
-        i_dark=None,
-        mass=None,
+        i_dark: Quantity[unit.electron / unit.pix / unit.s] = None,
+        mass: Quantity[unit.kg] = None,
         n_bin=None,
         n_bit=None,
-        n_px: tuple = None,
+        n_px: tuple[int, int] = None,
         n_well=None,
         noise_read=None,
-        pitch=None,
+        pitch: Quantity[unit.m] = None,
     ):
         super().__init__(dimensions, mass)
         self.integration_time = integration_time
@@ -80,13 +81,6 @@ class Sensor(Component):
         else:
             raise ValueError("Number of binning operations not set.")
 
-    def get_n_px(self):
-        """Get the number of pixels."""
-        if self.n_px is not None:
-            return self.n_px
-        else:
-            raise ValueError("Number of pixels not set.")
-
     def get_shape(self) -> tuple:
         """Get the dimensions of the sensor face."""
         assert self.n_px is not None, "n_px must be specified."
@@ -117,14 +111,29 @@ class Sensor(Component):
 
         return pixel_area
 
-    def get_dark_noise(self):
-        """Get the dark noise of the sensor."""
+    def get_mean_dark_signal(self) -> Quantity[unit.electron / unit.pix]:
+        """Get the mean dark signal.
+
+        Ref: https://www.notion.so/utat-ss/Mean-Dark-Signal-55519f6c43654fae9464b578da2965d9
+
+        """
         assert self.i_dark is not None, "i_dark must be specified."
         assert self.integration_time is not None, "Integration time must be specified."
 
         dark_noise = self.i_dark * self.integration_time
 
         return dark_noise
+
+    def get_dark_shot_noise(self):
+        """Get the dark shot noise.
+
+        Ref: https://www.notion.so/utat-ss/Dark-Shot-Noise-d0632bd2a0444d7eb814beed1224ba06
+
+        """
+
+        dark_shot_noise = np.sqrt(self.get_mean_dark_signal())
+
+        return dark_shot_noise
 
     def get_quantization_noise(self):
         """Get the quantization noise of the sensor."""
@@ -142,21 +151,21 @@ class Sensor(Component):
 
         noise = np.sqrt(
             signal * unit.electron
-            + self.n_bin * (self.get_dark_noise() * unit.pix) ** 2
+            + self.n_bin * (self.get_mean_dark_signal() * unit.pix) ** 2
             + self.get_quantization_noise() ** 2
             + self.n_bin * self.noise_read**2
         )
 
         return noise
 
-    def get_integration_time(self):
+    def get_integration_time(self) -> Quantity[unit.s]:
         """Get the integration time."""
         if self.integration_time is not None:
             return self.integration_time
         else:
             raise ValueError("Integration time is not set.")
 
-    def get_efficiency(self, wavelength):
+    def get_efficiency(self, wavelength: Quantity[unit.m]):
         """Get the quantum efficiency of the sensor."""
         if self.efficiency is not None:
             return self.efficiency(wavelength)

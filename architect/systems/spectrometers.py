@@ -6,6 +6,7 @@ import math
 import astropy.constants as const
 import astropy.units as unit
 import numpy as np
+from astropy.units import Quantity
 
 # project
 from architect.components import Component
@@ -75,18 +76,20 @@ class HyperspectralImager(System):
 
         return ratio
 
-    def get_signal_to_noise(self, radiance: LUT, wavelength):
+    def get_signal_to_noise(self, radiance: LUT, wavelength: Quantity[unit.m]):
         """Get the signal to noise ratio of the system.
 
         Ref: https://www.notion.so/utat-ss/Signal-to-Noise-6a3a5b8b744d41ada40410d5251cc8ac
 
         """
 
-        snr = signal / self.get_noise()
+        snr = (
+            self.get_signal(radiance=radiance, wavelength=wavelength) / self.get_noise()
+        )
 
         return snr
 
-    def get_signal(wavelength):
+    def get_signal(self, wavelength, radiance: LUT):
         """Get the signal.
 
         Ref: https://www.notion.so/utat-ss/Signal-1819461a3a2b4fdeab8b9c26133ff8e2
@@ -125,14 +128,17 @@ class HyperspectralImager(System):
 
         return signal
 
-    def get_noise(self):
+    def get_noise(self, wavelength, radiance: LUT):
         """Get the noise.
 
         Ref: https://www.notion.so/utat-ss/Noise-21ff532ac4334fbeab4aabf6372c9848
 
         """
         noise = np.sqrt(
-            (signal.decompose() * unit.electron)
+            (
+                self.get_signal(wavelength=wavelength, radiance=radiance).decompose()
+                * unit.electron
+            )
             + self.sensor.get_n_bin() * (self.sensor.get_dark_noise() * unit.pix) ** 2
             + self.sensor.get_quantization_noise() ** 2
             + self.sensor.get_n_bin() * self.sensor.get_noise_read() ** 2
