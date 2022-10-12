@@ -187,3 +187,14 @@ def test_get_pointing_accuracy_constraint():
     LOG.info(result.to(unit.degree))
 
     assert result.unit == unit.rad
+
+
+def test_get_ground_target_error():
+    """Test get_ground_target_error method."""
+
+    spectrometer = HyperspectralImager()
+
+    result = spectrometer.get_ground_target_error(550 * unit.km, 30 * unit.deg)
+    LOG.info(result)
+
+    assert result.unit == unit.km
