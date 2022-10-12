@@ -82,7 +82,7 @@ class HyperspectralImager(System):
 
         """
 
-        snr = signal / self.get_noise()
+        snr = self.get_signal / self.get_noise()
 
         return snr
 
@@ -131,6 +131,7 @@ class HyperspectralImager(System):
         Ref: https://www.notion.so/utat-ss/Noise-21ff532ac4334fbeab4aabf6372c9848
 
         """
+        signal = self.get_signal
         noise = np.sqrt(
             (signal.decompose() * unit.electron)
             + self.sensor.get_n_bin() * (self.sensor.get_dark_noise() * unit.pix) ** 2
