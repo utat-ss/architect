@@ -222,7 +222,9 @@ class HyperspectralImager(System):
         Ref: https://www.notion.so/utat-ss/Absolute-Spatial-Resolution-bd475362664e46578b113ff3bfb51e76
 
         """
-        if self.spatial_resolution is None:
+        if self.spatial_resolution is not None:
+            spatial_resolution = self.spatial_resolution
+        else:
             sensor_spatial_resolution = self.get_sensor_spatial_resolution(
                 target_distance=target_distance
             )
@@ -236,8 +238,6 @@ class HyperspectralImager(System):
             spatial_resolution = np.maximum(
                 sensor_spatial_resolution, optical_spatial_resolution
             )
-        else:
-            spatial_resolution = self.spatial_resolution
 
         return spatial_resolution
 
