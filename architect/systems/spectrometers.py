@@ -6,6 +6,7 @@ import math
 import astropy.constants as const
 import astropy.units as unit
 import numpy as np
+from astropy.units import Quantity
 
 # project
 from architect.components import Component
@@ -76,7 +77,7 @@ class HyperspectralImager(System):
 
         return ratio
 
-    def get_signal_to_noise(self, radiance: LUT, wavelength):
+    def get_signal_to_noise(self, radiance: LUT, wavelength: Quantity[unit.m]):
         """Get the signal to noise ratio of the system.
         Ref: https://www.notion.so/utat-ss/Signal-to-Noise-6a3a5b8b744d41ada40410d5251cc8ac
         """
