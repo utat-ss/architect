@@ -83,7 +83,7 @@ class HyperspectralImager(System):
         """
 
         snr = (
-            self.get_signal(radiance=radiance, wavelength=wavelength) / self.get_noise(wavelength, radiance)
+            self.get_signal(radiance=radiance, wavelength=wavelength) / self.get_noise(wavelength=wavelength, radiance=radiance)
         )
 
         return snr
