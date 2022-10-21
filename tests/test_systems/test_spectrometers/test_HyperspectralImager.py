@@ -197,4 +197,4 @@ def test_get_ground_target_error():
     result = spectrometer.get_ground_target_error(550 * unit.km, 30 * unit.deg)
     LOG.info(result)
 
-    assert result.unit == unit.km
+    assert result.decompose().unit == unit.km
