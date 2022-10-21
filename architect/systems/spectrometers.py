@@ -95,6 +95,7 @@ class HyperspectralImager(System):
         assert self.sensor is not None, "A sensor component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."
         assert self.slit is not None, "A slit component must be specified."
+        assert isinstance(wavelength, Quantity) and wavelength.decompose().unit == unit.m, "x must be a Quantity of unit.m"
 
         signal1 = (
             (wavelength.to(unit.m) / (const.h * const.c))
