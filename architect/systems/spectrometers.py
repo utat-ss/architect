@@ -135,9 +135,9 @@ class HyperspectralImager(System):
                 self.get_signal(wavelength=wavelength, radiance=radiance).decompose()
                 * unit.electron
             )
-            + self.sensor.get_n_bin() * (self.sensor.get_dark_noise() * unit.pix) ** 2
+            + self.sensor.get_n_bin() * (self.sensor.get_mean_dark_signal() * unit.pix) ** 2
             + self.sensor.get_quantization_noise() ** 2
-            + self.sensor.get_n_bin() * self.sensor.get_noise(self.get_signal(wavelength=wavelength, radiance=radiance)) ** 2
+            + self.sensor.get_n_bin() * self.sensor.get_noise_read() ** 2
         )
 
         return noise

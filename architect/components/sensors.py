@@ -90,6 +90,13 @@ class Sensor(Component):
 
         return size
 
+    def get_noise_read(self):
+        """Get the noise read."""
+        if self.noise_read is not None:
+            return self.noise_read
+        else:
+            raise ValueError("Noise read not set.")
+
     def get_area(self):
         """Get the area of the sensor face."""
 

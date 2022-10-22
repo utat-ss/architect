@@ -57,6 +57,10 @@ def test_get_signal_to_noise():
             pitch=10 * unit.um,
             efficiency=luts.load("sensors/tauswir_quantum_efficiency"),
             i_dark=10000 * (unit.electron / unit.pix / unit.s),
+            n_bin=1 * unit.dimensionless_unscaled,
+            n_well=19 * 1e3 * unit.electron,
+            n_bit=14 * unit.bit,
+            noise_read=500 * unit.electron,
         ),
         foreoptic=Foreoptic(
             focal_length=100 * unit.mm,
