@@ -15,7 +15,7 @@ repos:
   - id: pyupgrade
 
 - repo: https://github.com/myint/docformatter
-  rev: v1.4
+  rev: v1.5.0
   hooks:
   - id: docformatter
     args: [--blank, --in-place, --recursive, --wrap-descriptions=88, --wrap-summaries=80] # does not yet support toml config
