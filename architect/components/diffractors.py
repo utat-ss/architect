@@ -160,7 +160,7 @@ class VPHGrating(TransmissiveDiffractor):
         self.index_dcg_amplitude = index_dcg_amplitude
 
     def get_diffraction_angle(
-        self, incident_angle, wavelength, n_initial=1, n_final=1, order=1
+        self, wavelength: unit.m, incident_angle, order=1, n_initial=1, n_final=1
     ):
         """Get the angle of the diffracted ray at the specified wavelengh.
 
@@ -278,7 +278,7 @@ class VPHGrism(VPHGrating):
 
         return angle_out
 
-    def get_undeviated_wavelength(self, angle_in, order=1, index_in=1, index_out=1):
+    def get_undeviated_wavelength(self, angle_in, order=1, index_in=1):
         """Calculates the undeviated wavelength."""
         assert self.apex_angle is not None, "Apex angle must be specified."
         assert self.index_prism is not None, "Index prism amplitude must be specified."

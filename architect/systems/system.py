@@ -1,3 +1,4 @@
+"""System class."""
 # project
 from architect import Artifact
 from architect.components import Component

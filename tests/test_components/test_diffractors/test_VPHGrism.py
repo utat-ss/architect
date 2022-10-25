@@ -4,8 +4,6 @@ import logging
 
 # external
 import astropy.units as unit
-import numpy as np
-import pytest
 
 # project
 from architect.components.diffractors import VPHGrism

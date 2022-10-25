@@ -1,3 +1,4 @@
+"""Satellite system classes."""
 # external
 import astropy.constants as const
 import astropy.units as unit

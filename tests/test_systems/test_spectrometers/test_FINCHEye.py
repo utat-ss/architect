@@ -1,3 +1,4 @@
+"""FINCHEye class tests."""
 # stdlib
 import logging
 

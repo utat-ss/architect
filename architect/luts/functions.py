@@ -35,6 +35,7 @@ class LUT:
         self.name = name
 
     def get_table(self):
+        """Get a pandas DataFrame of the LUT data."""
         data = {f"X [{self.x.unit}]": self.x.value, f"Y [{self.y.unit}]": self.y.value}
 
         df = pd.DataFrame.from_dict(data)
@@ -63,6 +64,8 @@ class LUT:
 
 
 def build_index(search_path: Path):
+    """Locate and index all LUT CSV files in the given search path."""
+    LOG.info(f"Building LUT index from {search_path}")
     for item in search_path.iterdir():
         if item.is_file() and item.suffix == ".csv":
             name = item.relative_to(Path(__file__).parent).with_suffix("").as_posix()
@@ -78,6 +81,7 @@ def build_index(search_path: Path):
 
 
 def load(name: str):
+    """Load a LUT from the index."""
     lut = LUT(path=index[name], name=name)
     return lut
 

@@ -1,3 +1,4 @@
+"""Spectrometer classes."""
 # stdlib
 import logging
 import math
@@ -43,6 +44,7 @@ class HyperspectralImager(System):
             **components,
         )
         self.spatial_resolution = spatial_resolution
+
     def get_transmittance(self):
         """Get the net optical transmittance of the system by accounting for the
         transmittance losses of all lens components."""
@@ -79,23 +81,29 @@ class HyperspectralImager(System):
 
     def get_signal_to_noise(self, radiance: LUT, wavelength: Quantity[unit.m]):
         """Get the signal to noise ratio of the system.
+
         Ref: https://www.notion.so/utat-ss/Signal-to-Noise-6a3a5b8b744d41ada40410d5251cc8ac
+
         """
 
-        snr = (
-            self.get_signal(radiance=radiance, wavelength=wavelength) / self.get_noise(wavelength=wavelength, radiance=radiance)
-        )
+        snr = self.get_signal(
+            radiance=radiance, wavelength=wavelength
+        ) / self.get_noise(wavelength=wavelength, radiance=radiance)
 
         return snr
 
     def get_signal(self, wavelength, radiance: LUT):
         """Get the signal.
+
         Ref: https://www.notion.so/utat-ss/Signal-1819461a3a2b4fdeab8b9c26133ff8e2
+
         """
         assert self.sensor is not None, "A sensor component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."
         assert self.slit is not None, "A slit component must be specified."
-        assert isinstance(wavelength, Quantity) and wavelength.decompose().unit == unit.m, "x must be a Quantity of unit.m"
+        assert (
+            isinstance(wavelength, Quantity) and wavelength.decompose().unit == unit.m
+        ), "x must be a Quantity of unit.m"
 
         signal1 = (
             (wavelength.to(unit.m) / (const.h * const.c))
@@ -128,14 +136,17 @@ class HyperspectralImager(System):
 
     def get_noise(self, wavelength, radiance: LUT):
         """Get the noise.
+
         Ref: https://www.notion.so/utat-ss/Noise-21ff532ac4334fbeab4aabf6372c9848
+
         """
         noise = np.sqrt(
             (
                 self.get_signal(wavelength=wavelength, radiance=radiance).decompose()
                 * unit.electron
             )
-            + self.sensor.get_n_bin() * (self.sensor.get_mean_dark_signal() * unit.pix) ** 2
+            + self.sensor.get_n_bin()
+            * (self.sensor.get_mean_dark_signal() * unit.pix) ** 2
             + self.sensor.get_quantization_noise() ** 2
             + self.sensor.get_n_bin() * self.sensor.get_noise_read() ** 2
         )
@@ -310,7 +321,7 @@ class HyperspectralImager(System):
         """
 
         spatial_resolution = self.get_spatial_resolution(
-        wavelength=wavelength, target_distance=target_distance
+            wavelength=wavelength, target_distance=target_distance
         )
 
         constraint_angle = np.arctan((tolerance * spatial_resolution) / target_distance)
@@ -318,8 +329,7 @@ class HyperspectralImager(System):
         return constraint_angle
 
     def get_ground_target_error(self, orbital_altitude, skew_angle):
-        """
-        Get the ground target error from the skew angle error.
+        """Get the ground target error from the skew angle error.
 
         Ref:https://www.notion.so/utat-ss/Create-tradebook-for-uncertainty-in-ground-target-vs-uncertainty-in-pointing-accuracy-ee938e1ee2fc40f2891f574ddfeac495
 

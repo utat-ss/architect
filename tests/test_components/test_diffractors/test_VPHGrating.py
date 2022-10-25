@@ -4,13 +4,9 @@ import logging
 
 # external
 import astropy.units as unit
-import numpy as np
-import pytest
 
 # project
-from architect import components, luts
 from architect.components.diffractors import VPHGrating
-from architect.libs.physlib import snell
 
 LOG = logging.getLogger(__name__)
 

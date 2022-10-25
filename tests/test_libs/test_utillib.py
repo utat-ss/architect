@@ -2,11 +2,6 @@
 
 # stdlib
 import logging
-from pathlib import Path
-
-# external
-import numpy as np
-import pytest
 
 # project
 from architect.libs import utillib

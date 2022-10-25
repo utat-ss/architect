@@ -4,7 +4,6 @@
 import logging
 
 # external
-import astropy.constants as const
 import numpy as np
 
 # project
