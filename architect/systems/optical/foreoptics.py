@@ -6,6 +6,7 @@ import logging
 # external
 import astropy.units as unit
 import numpy as np
+from astropy.units import Quantity
 
 # project
 from architect.luts import LUT
@@ -24,7 +25,7 @@ class Foreoptic(Lens):
         focal_length: unit.m = None,
         mass: unit.kg = None,
         length: unit.m = None,
-        transmittance: int | LUT = None,
+        transmittance: Quantity[unit.percent] | LUT = None,
     ):
         super().__init__(
             diameter=diameter,
@@ -71,16 +72,3 @@ class Foreoptic(Lens):
         n = self.focal_length / self.diameter
 
         return n
-
-
-class Chromar(Foreoptic):
-    """Chromar foreoptic component."""
-
-    def __init__(self):
-        super().__init__(
-            diameter=80 * unit.mm,
-            focal_length=100 * unit.mm,
-            mass=250 * unit.g,
-            length=100 * unit.mm,
-            transmittance=None,
-        )
