@@ -1,3 +1,2 @@
-"""Import system classes."""
-from .system import System  # isort: skip
-from . import satellites
+"""Import Component."""
+from .component import Component

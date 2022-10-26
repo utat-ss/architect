@@ -2,11 +2,7 @@
 # stdlib
 import logging
 
-# external
-import astropy.units as unit
-
 # project
-from architect.components import Component
 from architect.systems import System
 
 LOG = logging.getLogger(__name__)
@@ -18,15 +14,23 @@ def test_init():
     LOG.info(system)
 
 
-def test_get_mass():
-    """Test get_mass."""
-    system = System(
-        component_a=Component(mass=1 * unit.kg),
-        component_b=Component(mass=2 * unit.kg),
-        component_c=Component(mass=3 * unit.kg),
-    )
+def test_get_attrs_table():
+    """Test get_attrs_table method."""
+    system = System()
 
-    result = system.get_mass()
-    LOG.info(result)
+    system.some_property = "some_value"
 
-    assert result == 6 * unit.kg
+    table = system.get_attrs_table()
+
+    LOG.info(f"Attribute table:\n{table}")
+
+
+def test_to_latex():
+    """Test to_latex method."""
+    system = System()
+
+    system.some_property = "some_value"
+
+    table = system.to_latex()
+
+    LOG.info(f"Attribute LaTeX table:\n{table}")

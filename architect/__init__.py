@@ -1,2 +1,2 @@
 """The Architect package."""
-from .artifact import Artifact
+from .systems.system import System  # isort:skip
