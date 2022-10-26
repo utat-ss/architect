@@ -6,11 +6,11 @@ import numpy as np
 from astropy.units import Quantity
 
 # project
-from architect.systems import System
+from architect.systems import Component
 from architect.systems.optical.spectrometers import FINCHEye
 
 
-class Satellite(System):
+class Satellite(Component):
     """Base class for satellite systems."""
 
     def __init__(self, altitude: Quantity[unit.m] = None):

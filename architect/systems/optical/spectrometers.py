@@ -11,14 +11,14 @@ from astropy.units import Quantity
 
 # project
 from architect.luts import LUT
-from architect.systems import Component, System
+from architect.systems import Component
 from architect.systems.optical.lenses import Lens
 from architect.systems.optical.sensors import Sensor, TauSWIR
 
 LOG = logging.getLogger(__name__)
 
 
-class HyperspectralImager(System):
+class HyperspectralImager(Component):
     """A hyperspectral imager class.
 
     A hyperspectral imager captures light and diffracts it into a spectrum which is then
