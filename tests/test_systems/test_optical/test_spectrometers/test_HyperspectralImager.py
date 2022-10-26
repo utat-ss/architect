@@ -7,7 +7,7 @@ import logging
 import astropy.units as unit
 
 # project
-from architect import components, luts
+from architect import luts
 from architect.systems.optical.diffractors import TransmissiveDiffractor
 from architect.systems.optical.foreoptics import Foreoptic
 from architect.systems.optical.masks import RectSlit
@@ -106,8 +106,8 @@ def test_get_spatial_resolution():
     wavelength = 400 * unit.nm
     target_distance = 1 * unit.km
 
-    sensor = components.sensors.TauSWIR()
-    foreoptic = components.foreoptics.Chromar()
+    sensor = Sensor(pitch=15 * unit.m)
+    foreoptic = Foreoptic(focal_length=100 * unit.mm, diameter=50 * unit.mm)
     system = HyperspectralImager(sensor=sensor, foreoptic=foreoptic)
 
     result = system.get_spatial_resolution(

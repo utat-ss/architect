@@ -3,7 +3,7 @@
 import astropy.units as unit
 
 # project
-from architect import System
+from architect.systems import System
 
 
 class Component(System):

@@ -49,7 +49,7 @@ class HyperspectralImager(System):
         transmittance losses of all lens components."""
 
         transmittance = 100 * unit.percent
-        for component in self.components:
+        for component in self.systems:
             if isinstance(component, Lens):
                 transmittance *= (
                     component.transmittance
@@ -171,7 +171,9 @@ class HyperspectralImager(System):
         assert self.sensor is not None, "A sensor component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."
 
-        iFOV = 2 * np.arctan(self.sensor.pitch / (2 * self.foreoptic.focal_length))
+        iFOV = 2 * np.arctan(
+            self.sensor.get_pitch() / (2 * self.foreoptic.get_focal_length())
+        )
 
         return iFOV
 
@@ -370,19 +372,19 @@ class FINCHEye(HyperspectralImager):
         """
 
         dim_x = max(
-            component.dimensions[0]
-            for component in self.components
-            if component is not None
+            component.get_dimensions()[0]
+            for component in self.systems
+            if isinstance(component, Component)
         )
         dim_y = max(
-            component.dimensions[1]
-            for component in self.components
-            if component is not None
+            component.get_dimensions()[1]
+            for component in self.systems
+            if isinstance(component, Component)
         )
         dim_z = sum(
-            component.dimensions[2]
-            for component in self.components
-            if component is not None
+            component.get_dimensions()[2]
+            for component in self.systems
+            if isinstance(component, Component)
         )
 
         dimensions = (dim_x, dim_y, dim_z)

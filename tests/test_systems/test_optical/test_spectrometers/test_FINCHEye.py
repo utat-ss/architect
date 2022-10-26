@@ -6,7 +6,9 @@ import logging
 import astropy.units as unit
 
 # project
-from architect import components
+from architect.systems.optical.diffractors import TransmissiveDiffractor
+from architect.systems.optical.foreoptics import Foreoptic
+from architect.systems.optical.lenses import Lens
 from architect.systems.optical.spectrometers import FINCHEye
 
 LOG = logging.getLogger(__name__)
@@ -22,11 +24,7 @@ def test_init():
 def test_get_dimensions():
     """Test get_dimensions method."""
 
-    payload = FINCHEye(
-        foreoptic=components.foreoptics.Foreoptic(
-            diameter=50 * unit.mm, length=60 * unit.mm
-        )
-    )
+    payload = FINCHEye(foreoptic=Foreoptic(diameter=50 * unit.mm, length=60 * unit.mm))
 
     result = payload.get_dimensions()
     LOG.info(result)
@@ -40,10 +38,8 @@ def test_get_sensor_wavelength_mapping():
     """Test get_sensor_wavelength_mapping method."""
 
     payload = FINCHEye(
-        grism=components.diffractors.TransmissiveDiffractor(
-            fringe_frequency=600 * (1 / unit.mm)
-        ),
-        focuser=components.lenses.Lens(focal_length=10 * unit.mm),
+        grism=TransmissiveDiffractor(fringe_frequency=600 * (1 / unit.mm)),
+        focuser=Lens(focal_length=10 * unit.mm),
     )
 
     result = payload.get_sensor_wavelength_mapping(wavelength=900 * unit.nm)

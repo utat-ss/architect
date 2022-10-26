@@ -19,11 +19,11 @@ class Foreoptic(Lens):
 
     def __init__(
         self,
-        diameter=None,
-        image_diameter=None,
-        focal_length=None,
-        mass=None,
-        length=None,
+        diameter: unit.m = None,
+        image_diameter: unit.m = None,
+        focal_length: unit.m = None,
+        mass: unit.kg = None,
+        length: unit.m = None,
         transmittance: int | LUT = None,
     ):
         super().__init__(

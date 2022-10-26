@@ -4,7 +4,9 @@
 import logging
 
 # external
+import astropy.units as unit
 import numpy as np
+from astropy.units import Quantity
 
 # project
 from architect.luts import LUT
@@ -33,6 +35,11 @@ class Lens(Component):
         transmittance: int | LUT = None,
     ):
         super().__init__(mass=mass, dimensions=(diameter, diameter, thickness))
+        assert (
+            focal_length is None
+            or isinstance(focal_length, Quantity)
+            and focal_length.decompose().unit == unit.m
+        ), "focal_length must be a Quantity of unit.m"
         self.focal_length = focal_length
         self.index = index
         self.transmittance = transmittance
