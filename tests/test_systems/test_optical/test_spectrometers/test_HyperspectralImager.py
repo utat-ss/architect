@@ -35,6 +35,17 @@ def test_get_transmittance():
     assert result.unit == unit.percent
 
 
+def test_get_transmittance_LUT():
+    """Test get_transmittance method with LUTs."""
+
+    spectrometer = HyperspectralImager(foreoptic=Foreoptic(transmittance=0.5))
+
+    result = spectrometer.get_transmittance()
+    LOG.info(result)
+
+    assert result.unit == unit.percent
+
+
 def test_get_ratio_cropped_light_through_slit():
     """Test get_ratio_cropped_light_through_slit."""
     hyperspec = HyperspectralImager(
@@ -56,7 +67,7 @@ def test_get_signal_to_noise():
             pitch=10 * unit.um,
             efficiency=luts.load("sensors/tauswir_quantum_efficiency"),
             i_dark=10000 * (unit.electron / unit.pix / unit.s),
-            n_bin=1 * unit.dimensionless_unscaled,
+            n_bin=1,
             n_well=19 * 1e3 * unit.electron,
             n_bit=14 * unit.bit,
             noise_read=500 * unit.electron,

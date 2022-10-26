@@ -12,13 +12,14 @@ from astropy.units import Quantity
 # project
 from architect.luts import LUT
 from architect.systems import Component
+from architect.systems.optical import OpticalComponent
 from architect.systems.optical.lenses import Lens
 from architect.systems.optical.sensors import Sensor, TauSWIR
 
 LOG = logging.getLogger(__name__)
 
 
-class HyperspectralImager(Component):
+class HyperspectralImager(OpticalComponent):
     """A hyperspectral imager class.
 
     A hyperspectral imager captures light and diffracts it into a spectrum which is then
@@ -44,21 +45,6 @@ class HyperspectralImager(Component):
         )
         self.spatial_resolution = spatial_resolution
 
-    def get_transmittance(self):
-        """Get the net optical transmittance of the system by accounting for the
-        transmittance losses of all lens components."""
-
-        transmittance = 100 * unit.percent
-        for component in self.systems:
-            if isinstance(component, Lens):
-                transmittance *= (
-                    component.transmittance
-                    if component.transmittance is not None
-                    else 1
-                )
-
-        return transmittance
-
     def get_ratio_cropped_light_through_slit(self):
         """Get the ratio of the light area passing through the slit to the area
         of the image of the foreoptic.
@@ -78,7 +64,7 @@ class HyperspectralImager(Component):
 
         return ratio
 
-    def get_signal_to_noise(self, radiance: LUT, wavelength: Quantity[unit.m]):
+    def get_signal_to_noise(self, radiance: LUT, wavelength: unit.m):
         """Get the signal to noise ratio of the system.
 
         Ref: https://www.notion.so/utat-ss/Signal-to-Noise-6a3a5b8b744d41ada40410d5251cc8ac
@@ -91,7 +77,7 @@ class HyperspectralImager(Component):
 
         return snr
 
-    def get_signal(self, wavelength, radiance: LUT):
+    def get_signal(self, wavelength: unit.m, radiance: LUT):
         """Get the signal.
 
         Ref: https://www.notion.so/utat-ss/Signal-1819461a3a2b4fdeab8b9c26133ff8e2
@@ -102,36 +88,24 @@ class HyperspectralImager(Component):
         assert self.slit is not None, "A slit component must be specified."
         assert (
             isinstance(wavelength, Quantity) and wavelength.decompose().unit == unit.m
-        ), "x must be a Quantity of unit.m"
+        ), "wavelength must be a Quantity of unit.m"
 
-        signal1 = (
-            (wavelength.to(unit.m) / (const.h * const.c))
-            * radiance(wavelength)
-            * (math.pi / 4)
-            * (self.sensor.get_integration_time().to(unit.s))
-        )  # [sr-1 m-3]
-        assert signal1.unit == unit.sr**-1 * unit.m**-3
-        signal2 = self.sensor.get_pixel_area().to(unit.m**2) / (
-            ((self.foreoptic.get_f_number()).decompose()) ** 2 * 1 / unit.sr
-        )  # [m2 sr]
-        assert signal2.unit == unit.m**2 * unit.sr
-        signal3 = (
-            (self.sensor.get_efficiency(wavelength)).decompose()
-            * unit.electron
-            * self.get_transmittance().value
-        )  # [electron]
-        assert signal3.unit == unit.electron
-        signal4 = (
-            self.get_ratio_cropped_light_through_slit()
-            * (800 * 10 ** (-9))
-            * unit.meter
-        )  # [dimensionless * m]
-        assert signal4.unit == unit.m
+        signal_constants = (math.pi / 4) * (1 / (const.h * const.c))
+        signal_sensor = (
+            self.sensor.get_pixel_area()
+            * self.sensor.get_efficiency(wavelength)
+            * self.sensor.get_integration_time()
+        )
+        signal_optic = (
+            (1 / self.foreoptic.get_f_number() ** 2)
+            * self.get_transmittance(wavelength)
+            * self.get_ratio_cropped_light_through_slit()
+        )
+        signal_light = wavelength * radiance(wavelength)
 
-        signal = signal1 * signal2 * signal3 * signal4
-        LOG.info(f"Signal: {signal.decompose()}")
+        signal_target = signal_constants * signal_sensor * signal_optic * signal_light
 
-        return signal
+        return signal_target
 
     def get_noise(self, wavelength, radiance: LUT):
         """Get the noise.

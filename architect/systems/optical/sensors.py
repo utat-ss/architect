@@ -49,7 +49,7 @@ class Sensor(Component):
         noise_read=None,
         pitch: Quantity[unit.m] = None,
     ):
-        super().__init__(dimensions, mass)
+        super().__init__(dimensions=dimensions, mass=mass)
         self.integration_time = integration_time
         self.efficiency = efficiency
         self.i_dark = i_dark

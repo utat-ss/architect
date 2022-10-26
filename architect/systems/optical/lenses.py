@@ -10,18 +10,15 @@ from astropy.units import Quantity
 
 # project
 from architect.luts import LUT
-from architect.systems import Component
+from architect.systems.optical import OpticalComponent
 
 LOG = logging.getLogger(__name__)
 
 
-class Lens(Component):
+class Lens(OpticalComponent):
     """Generic lens component.
 
     Modelled using thin lens (paraxial) approximations.
-
-    Args:
-        index: Index of refraction of the lens.
 
     """
 
@@ -32,17 +29,15 @@ class Lens(Component):
         index=None,
         mass=None,
         thickness=None,
-        transmittance: int | LUT = None,
+        transmittance: Quantity[unit.pct] | LUT = None,
     ):
-        super().__init__(mass=mass, dimensions=(diameter, diameter, thickness))
-        assert (
-            focal_length is None
-            or isinstance(focal_length, Quantity)
-            and focal_length.decompose().unit == unit.m
-        ), "focal_length must be a Quantity of unit.m"
+        super().__init__(
+            mass=mass,
+            dimensions=(diameter, diameter, thickness),
+            index=index,
+            transmittance=transmittance,
+        )
         self.focal_length = focal_length
-        self.index = index
-        self.transmittance = transmittance
         self.diameter = diameter
         self.thickness = thickness
 
