@@ -48,7 +48,9 @@ def test_get_transmittance_from_subsystems():
     result = spectrometer.get_transmittance()
     LOG.info(result)
 
-    assert result == 12.5 * unit.pct
+    ans = unit.isclose(a=result, b=12.5 * unit.pct)
+
+    assert ans
 
 
 def test_get_transmittance_from_LUT():
