@@ -28,11 +28,4 @@ jobs:
   
     - name: Run tests
       run: |
-        poetry run pytest -v --cov-report=xml
-
-    - name: Upload coverage to Codecov 
-      uses: codecov/codecov-action@master
-      with:
-        files: coverage.xml
-        name: codecov-umbrella
-        fail_ci_if_error: false
+        poetry run pytest -v
