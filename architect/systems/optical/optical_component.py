@@ -1,12 +1,16 @@
 """Optical component class."""
+# stdlib
+import logging
+
 # external
 import astropy.units as unit
-import numpy as np
 from astropy.units import Quantity
 
 # project
 from architect.luts import LUT
 from architect.systems import Component, System
+
+LOG = logging.getLogger(__name__)
 
 
 class OpticalComponent(Component):
@@ -28,24 +32,25 @@ class OpticalComponent(Component):
         self.index = index
         self.transmittance = transmittance
 
-    def get_transmittance(self, wavelength=None):
-        """Get the transmittance."""
+    def get_transmittance(self, wavelength: unit.m = None):
+        """Get the transmittance.
+
+        Assumes a linear optical path.
+
+        """
         if self.transmittance is not None:
             if isinstance(self.transmittance, LUT):
+                assert wavelength is not None, "wavelength must be set."
                 transmittance = self.transmittance(wavelength)
             else:
                 transmittance = self.transmittance
-
-            transmittance = transmittance * np.prod(
-                [
-                    component.get_transmittance(wavelength)
-                    for component in self.systems
-                    if isinstance(component, OpticalComponent)
-                ]
-            )
-            return transmittance
         else:
-            raise ValueError("transmittance is not set.")
+            transmittance = 100 * unit.pct
+            for system in self.systems:
+                if isinstance(system, OpticalComponent):
+                    transmittance = transmittance * system.get_transmittance(wavelength)
+
+        return transmittance.to(unit.pct)
 
     def get_index(self):
         """Get the index of refraction."""

@@ -40,14 +40,14 @@ class Sensor(Component):
         dimensions: tuple[Quantity[unit.m], Quantity[unit.m], Quantity[unit.m]] = None,
         integration_time: Quantity[unit.s] = None,
         efficiency: LUT = None,
-        i_dark: Quantity[unit.electron / unit.pix / unit.s] = None,
-        mass: Quantity[unit.kg] = None,
+        i_dark: unit.electron / unit.pix / unit.s = None,
+        mass: unit.kg = None,
         n_bin=None,
         n_bit=None,
         n_px: tuple[int, int] = None,
         n_well=None,
         noise_read=None,
-        pitch: Quantity[unit.m] = None,
+        pitch: unit.m = None,
     ):
         super().__init__(dimensions=dimensions, mass=mass)
         self.integration_time = integration_time
@@ -85,7 +85,7 @@ class Sensor(Component):
         if self.n_bin is not None:
             return self.n_bin
         else:
-            raise ValueError("Number of binning operations not set.")
+            raise ValueError("bin is not set.")
 
     def get_shape(self) -> tuple:
         """Get the dimensions of the sensor face."""

@@ -7,7 +7,6 @@ import math
 import astropy.constants as const
 import astropy.units as unit
 import numpy as np
-from astropy.units import Quantity
 
 # project
 from architect.luts import LUT
@@ -86,9 +85,6 @@ class HyperspectralImager(OpticalComponent):
         assert self.sensor is not None, "A sensor component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."
         assert self.slit is not None, "A slit component must be specified."
-        assert (
-            isinstance(wavelength, Quantity) and wavelength.decompose().unit == unit.m
-        ), "wavelength must be a Quantity of unit.m"
 
         signal_constants = (math.pi / 4) * (1 / (const.h * const.c))
         signal_sensor = (
@@ -125,6 +121,16 @@ class HyperspectralImager(OpticalComponent):
         )
 
         return noise
+
+    def get_shot_noise(self, wavelength: unit.m, radiance: LUT):
+        """Get the shot noise.
+
+        Ref: https://www.notion.so/utat-ss/Shot-Noise-9616225cc4ca49a292f9620b71ad3194
+
+        """
+        shot_noise = np.sqrt(self.get_signal(wavelength=wavelength, radiance=radiance))
+
+        return shot_noise
 
     def get_FOV(self):
         """Get the field of view vector.

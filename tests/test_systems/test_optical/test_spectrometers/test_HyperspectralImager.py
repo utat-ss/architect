@@ -5,11 +5,13 @@ import logging
 
 # external
 import astropy.units as unit
+import numpy as np
 
 # project
 from architect import luts
 from architect.systems.optical.diffractors import TransmissiveDiffractor
 from architect.systems.optical.foreoptics import Foreoptic
+from architect.systems.optical.lenses import Lens
 from architect.systems.optical.masks import RectSlit
 from architect.systems.optical.sensors import Sensor
 from architect.systems.optical.spectrometers import HyperspectralImager
@@ -27,23 +29,51 @@ def test_init():
 def test_get_transmittance():
     """Test get_transmittance method."""
 
-    spectrometer = HyperspectralImager(foreoptic=Foreoptic(transmittance=0.5))
+    spectrometer = HyperspectralImager(transmittance=50 * unit.pct)
 
     result = spectrometer.get_transmittance()
     LOG.info(result)
 
-    assert result.unit == unit.percent
+    assert result == 50 * unit.pct
 
 
-def test_get_transmittance_LUT():
+def test_get_transmittance_from_subsystems():
+    """Test get_transmittance method from subsystems."""
+
+    spectrometer = HyperspectralImager(
+        foreoptic=Foreoptic(transmittance=50 * unit.pct),
+        lens=Lens(transmittance=25 * unit.pct),
+    )
+
+    result = spectrometer.get_transmittance()
+    LOG.info(result)
+
+    assert result == 12.5 * unit.pct
+
+
+def test_get_transmittance_from_LUT():
     """Test get_transmittance method with LUTs."""
 
-    spectrometer = HyperspectralImager(foreoptic=Foreoptic(transmittance=0.5))
+    spectrometer = HyperspectralImager(transmittance=luts.load("test_lut"))
 
-    result = spectrometer.get_transmittance()
+    result = spectrometer.get_transmittance(wavelength=1300 * unit.nm)
     LOG.info(result)
 
-    assert result.unit == unit.percent
+
+def test_get_transmittance_from_subsystem_LUTs():
+    """Test get_transmittance method from subsystems with multiple LUTs."""
+
+    spectrometer = HyperspectralImager(
+        foreoptic=Foreoptic(transmittance=luts.load("test_lut")),
+        lens=Lens(transmittance=luts.load("test_lut")),
+    )
+
+    result = spectrometer.get_transmittance(
+        wavelength=np.arange(900, 1700, 10) * unit.nm
+    )
+    LOG.info(result)
+
+    assert result.unit == unit.pct
 
 
 def test_get_ratio_cropped_light_through_slit():
@@ -56,6 +86,82 @@ def test_get_ratio_cropped_light_through_slit():
     LOG.info(result)
 
     assert result.decompose().unit == unit.dimensionless_unscaled
+
+
+def test_get_signal():
+    """Test get_signal method."""
+    system = HyperspectralImager(
+        sensor=Sensor(
+            pitch=15 * unit.um,
+            efficiency=luts.load("sensors/tauswir_quantum_efficiency"),
+            integration_time=100 * unit.ms,
+        ),
+        foreoptic=Foreoptic(
+            focal_length=100 * unit.mm,
+            diameter=100 * unit.mm,
+            image_diameter=25 * unit.mm,
+        ),
+        slit=RectSlit(size=[1, 15] * unit.mm),
+    )
+
+    result = system.get_signal(
+        wavelength=400 * unit.nm,
+        radiance=luts.load("atmosphere/radiance_min"),
+    )
+
+    assert result.decompose().unit == unit.electron
+
+
+def test_get_noise():
+    """Test get_noise method."""
+    system = HyperspectralImager(
+        sensor=Sensor(
+            pitch=15 * unit.um,
+            efficiency=luts.load("sensors/tauswir_quantum_efficiency"),
+            integration_time=100 * unit.ms,
+            n_bin=1,
+            i_dark=10000 * (unit.electron / unit.pix / unit.s),
+        ),
+        foreoptic=Foreoptic(
+            focal_length=100 * unit.mm,
+            diameter=100 * unit.mm,
+            image_diameter=25 * unit.mm,
+        ),
+        slit=RectSlit(size=[1, 15] * unit.mm),
+    )
+
+    result = system.get_noise(
+        wavelength=400 * unit.nm,
+        radiance=luts.load("atmosphere/radiance_min"),
+    )
+
+    assert result.decompose().unit == unit.electron
+
+
+def test_get_shot_noise():
+    """Test get_shot_noise method."""
+    system = HyperspectralImager(
+        sensor=Sensor(
+            pitch=15 * unit.um,
+            efficiency=luts.load("sensors/tauswir_quantum_efficiency"),
+            integration_time=100 * unit.ms,
+            n_bin=1,
+            i_dark=10000 * (unit.electron / unit.pix / unit.s),
+        ),
+        foreoptic=Foreoptic(
+            focal_length=100 * unit.mm,
+            diameter=100 * unit.mm,
+            image_diameter=25 * unit.mm,
+        ),
+        slit=RectSlit(size=[1, 15] * unit.mm),
+    )
+
+    result = system.get_shot_noise(
+        wavelength=400 * unit.nm,
+        radiance=luts.load("atmosphere/radiance_min"),
+    )
+
+    assert result.decompose().unit == unit.electron**2
 
 
 def test_get_signal_to_noise():
