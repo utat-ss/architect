@@ -1,11 +1,8 @@
 [![Python Version](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Pre-Commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
-[![GitHub repo size](https://img.shields.io/github/repo-size/spacesys-finch/payload-designer)](https://github.com/spacesys-finch/payload-designer)
-[![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/spacesys-finch/payload-designer)](https://github.com/spacesys-finch/payload-designer)
-![Lines of code](https://img.shields.io/tokei/lines/github/spacesys-finch/payload-designer)
-[![Pytest](https://github.com/spacesys-finch/payload-designer/actions/workflows/pytest.yml/badge.svg)](https://github.com/spacesys-finch/payload-designer/actions/workflows/pytest.yml)
-[![codecov](https://codecov.io/gh/spacesys-finch/payload-designer/branch/main/graph/badge.svg?token=E2N1A55HGR)](https://codecov.io/gh/spacesys-finch/payload-designer)
+[![GitHub repo size](https://img.shields.io/github/repo-size/spacesys-finch/architect)](https://github.com/spacesys-finch/architect)
+[![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/spacesys-finch/architect)](https://github.com/spacesys-finch/architect)
+![Lines of code](https://img.shields.io/tokei/lines/github/spacesys-finch/architect)
 
 
 <img src="img/architect-logo.png" height="128">
