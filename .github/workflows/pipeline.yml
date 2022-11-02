@@ -1,4 +1,4 @@
-name: Pytest
+name: Pipeline
 on:
   push:
     branches:
@@ -25,7 +25,11 @@ jobs:
         poetry config virtualenvs.in-project true
         poetry run pip install --upgrade setuptools==57.5.0
         poetry install
+
+    - name: Pre-commit
+      run: |
+        poetry run pre-commit run --all-files
   
-    - name: Run tests
+    - name: Pytest
       run: |
         poetry run pytest -v
