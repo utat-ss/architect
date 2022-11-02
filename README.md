@@ -3,6 +3,7 @@
 [![GitHub repo size](https://img.shields.io/github/repo-size/spacesys-finch/architect)](https://github.com/spacesys-finch/architect)
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/spacesys-finch/architect)](https://github.com/spacesys-finch/architect)
 ![Lines of code](https://img.shields.io/tokei/lines/github/spacesys-finch/architect)
+[![Pipeline](https://github.com/spacesys-finch/architect/actions/workflows/pipeline.yml/badge.svg)](https://github.com/spacesys-finch/architect/actions/workflows/pipeline.yml)
 
 
 <img src="img/architect-logo.png" height="128">
