@@ -208,7 +208,7 @@ def test_get_ground_target_error():
 
     spectrometer = HyperspectralImager()
 
-    result = spectrometer.get_ground_target_error(550 * unit.km, 30 * unit.deg)
+    result = spectrometer.get_ground_target_error(550 * unit.km, 0 * unit.deg, 30 * unit.deg)
     LOG.info(result)
 
     assert result.decompose().unit == unit.m

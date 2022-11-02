@@ -303,14 +303,20 @@ class HyperspectralImager(OpticalComponent):
 
         return constraint_angle
 
-    def get_ground_target_error(self, orbital_altitude, skew_angle):
+    def get_ground_target_error(self, orbital_altitude, desired_pointing_angle, skew_angle):
         """Get the ground target error from the skew angle error.
 
-        Ref:https://www.notion.so/utat-ss/Create-tradebook-for-uncertainty-in-ground-target-vs-uncertainty-in-pointing-accuracy-ee938e1ee2fc40f2891f574ddfeac495
+        If satellite pointing directly at nadir:
+        Ref: https://www.notion.so/utat-ss/Create-tradebook-for-uncertainty-in-ground-target-vs-uncertainty-in-pointing-accuracy-ee938e1ee2fc40f2891f574ddfeac495
+
+        If satellite not pointing directly at nadir:
+        Ref: https://utat-ss.notion.site/Ground-Target-Error-When-Not-At-Nadir-22b3069f4a0344b08339e5004f90438b
 
         """
-
-        ground_error = np.tan(skew_angle) * orbital_altitude
+        if desired_pointing_angle == 0:
+            ground_error =  orbital_altitude * np.tan(skew_angle)
+        else:
+            ground_error = orbital_altitude * (np.tan(desired_pointing_angle + skew_angle) - np.tan(desired_pointing_angle))
 
         return ground_error
 
