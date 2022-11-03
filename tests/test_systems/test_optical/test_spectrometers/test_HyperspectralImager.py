@@ -114,6 +114,61 @@ def test_get_signal():
     assert result.decompose().unit == unit.electron
 
 
+def test_get_signal_constants():
+    """Test get_signal method."""
+    system = HyperspectralImager()
+
+    result = system.get_signal_constants()
+    LOG.info(result)
+
+    assert result.decompose().unit == 1 / (unit.joule * unit.m)
+
+
+def test_get_signal_sensor():
+    """Test get_signal_sensor method."""
+    system = HyperspectralImager(
+        sensor=Sensor(
+            pitch=15 * unit.um,
+            efficiency=luts.load("sensors/tauswir_quantum_efficiency"),
+            integration_time=100 * unit.ms,
+        )
+    )
+
+    result = system.get_signal_sensor(wavelength=400 * unit.nm)
+    LOG.info(result)
+
+    assert result.decompose().unit == unit.electron * (unit.meter) ** 2 * unit.second
+
+
+def test_get_signal_optic():
+    """Test get_signal_optic method."""
+    system = HyperspectralImager(
+        foreoptic=Foreoptic(
+            focal_length=100 * unit.mm,
+            diameter=100 * unit.mm,
+            image_diameter=25 * unit.mm,
+        ),
+        slit=RectSlit(size=[1, 15] * unit.mm),
+    )
+
+    result = system.get_signal_optic(wavelength=400 * unit.nm)
+    LOG.info(result)
+
+    assert result.unit == unit.pct
+
+
+def test_get_signal_light():
+    """Test get_signal_light method."""
+    system = HyperspectralImager()
+
+    result = system.get_signal_light(
+        wavelength=400 * unit.nm, radiance=luts.load("atmosphere/radiance_min")
+    )
+    LOG.info(result)
+
+    assert result.decompose().unit == unit.Watt / (unit.steradian * (unit.meter) ** 2)
+
+
 def test_get_noise():
     """Test get_noise method."""
     system = HyperspectralImager(

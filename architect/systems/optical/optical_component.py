@@ -32,7 +32,7 @@ class OpticalComponent(Component):
         self.index = index
         self.transmittance = transmittance
 
-    def get_transmittance(self, wavelength: unit.m = None):
+    def get_transmittance(self, wavelength: unit.m = None) -> unit.pct:
         """Get the transmittance.
 
         Assumes a linear optical path.

@@ -82,26 +82,76 @@ class HyperspectralImager(OpticalComponent):
         Ref: https://www.notion.so/utat-ss/Signal-1819461a3a2b4fdeab8b9c26133ff8e2
 
         """
-        assert self.sensor is not None, "A sensor component must be specified."
-        assert self.foreoptic is not None, "A foreoptic component must be specified."
+
         assert self.slit is not None, "A slit component must be specified."
 
+        signal_target = (
+            self.get_signal_constants()
+            * self.get_signal_sensor(wavelength)
+            * self.get_signal_optic(wavelength=wavelength)
+            * self.get_signal_light(wavelength=wavelength, radiance=radiance)
+        )
+
+        return signal_target
+
+    def get_signal_constants(self) -> 1 / (unit.joule * unit.meter):
+        """Get the signal constants.
+
+        Ref: https://www.notion.so/utat-ss/Signal-Constants-c7d896fe85b94c07afd0e740ca1e3932
+
+        """
         signal_constants = (math.pi / 4) * (1 / (const.h * const.c))
+
+        return signal_constants
+
+    def get_signal_sensor(
+        self, wavelength: unit.m
+    ) -> unit.electron * (unit.meter) ** 2 * unit.second:
+        """Get the signal sensor.
+
+        Ref: https://www.notion.so/utat-ss/Signal-Sensor-9023723ef7be4c1abfe901240a03ecf2
+
+        """
+        assert self.sensor is not None, "A sensor component must be specified."
+
         signal_sensor = (
             self.sensor.get_pixel_area()
             * self.sensor.get_efficiency(wavelength)
             * self.sensor.get_integration_time()
         )
+
+        return signal_sensor
+
+    def get_signal_optic(self, wavelength: unit.m) -> unit.pct:
+        """Get the signal optic.
+
+        Ref: https://www.notion.so/utat-ss/Optical-Signal-e083cfda8db3416eb407e23a57131898
+
+        """
+        assert self.foreoptic is not None, "A foreoptic component must be specified."
+
         signal_optic = (
             (1 / self.foreoptic.get_f_number() ** 2)
             * self.get_transmittance(wavelength)
             * self.get_ratio_cropped_light_through_slit()
         )
+
+        LOG.debug(f"Transmittance: {self.get_transmittance(wavelength)}")
+
+        return signal_optic
+
+    def get_signal_light(
+        self, wavelength: unit.m, radiance: LUT
+    ) -> unit.Watt / (unit.steradian * (unit.meter) ** 2):
+        """Get the signal light.
+
+        Ref: https://www.notion.so/utat-ss/Signal-Incoming-Light-83c2990dd77c4371a2ba997840ca649b
+
+        """
+
         signal_light = wavelength * radiance(wavelength)
 
-        signal_target = signal_constants * signal_sensor * signal_optic * signal_light
-
-        return signal_target
+        return signal_light
 
     def get_noise(self, wavelength, radiance: LUT):
         """Get the noise.
@@ -128,7 +178,9 @@ class HyperspectralImager(OpticalComponent):
         Ref: https://www.notion.so/utat-ss/Shot-Noise-9616225cc4ca49a292f9620b71ad3194
 
         """
-        shot_noise = np.sqrt(self.get_signal(wavelength=wavelength, radiance=radiance))
+        shot_noise = np.sqrt(
+            self.get_signal(wavelength=wavelength, radiance=radiance)
+        )  # may need to convert to electron
 
         return shot_noise
 
