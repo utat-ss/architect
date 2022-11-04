@@ -48,11 +48,6 @@ This section will take you through the procedure to take your development enviro
     poetry --version
     ```
 
-    Configure poetry to create its virtual environments within the project's directory. This makes it easier to clean your machine when you delete the project. The `.venv` folders can get pretty big.
-    ```
-    poetry config virtualenvs.in-project true
-    ```
-
 1. Clone the repository.
 
     It is recommended that you use [Github Desktop](https://desktop.github.com/) to clone the project repository.
