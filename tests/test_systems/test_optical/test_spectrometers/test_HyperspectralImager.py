@@ -371,7 +371,11 @@ def test_get_ground_target_error():
 
     spectrometer = HyperspectralImager()
 
-    result = spectrometer.get_ground_target_error(550 * unit.km, 30 * unit.deg)
+    orbital_altitude = 550 * unit.km
+    skew_angle = 30 * unit.deg
+    pointing_accuracy = 0.001 * unit.deg
+
+    result = spectrometer.get_ground_target_error(orbital_altitude, skew_angle, pointing_accuracy)
     LOG.info(result)
 
     assert result.decompose().unit == unit.m
