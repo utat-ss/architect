@@ -303,13 +303,14 @@ class HyperspectralImager(OpticalComponent):
 
         return constraint_angle
 
-    def get_ground_target_error(self, orbital_altitude, skew_angle, pointing_accuracy: unit.deg = 0):
-        """Get the ground target error from the skew angle error.
+    def get_ground_target_error(self, orbital_altitude: unit.deg, skew_angle: unit.deg, pointing_accuracy: unit.deg = 0) -> unit.m:
+        """Get the ground target error from the pointing accuracy.
 
         Ref: https://www.notion.so/utat-ss/Ground-Target-Error-vs-Pointing-Accuracy-22b3069f4a0344b08339e5004f90438b
 
         """
-        ground_error = orbital_altitude * (np.tan(pointing_accuracy + skew_angle) - np.tan(pointing_accuracy))
+
+        ground_error = orbital_altitude * (np.tan(skew_angle + pointing_accuracy) - np.tan(skew_angle))
 
         return ground_error
 
