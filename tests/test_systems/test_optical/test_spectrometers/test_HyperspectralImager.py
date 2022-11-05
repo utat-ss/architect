@@ -159,14 +159,14 @@ def test_get_signal_optic():
 
 def test_get_signal_light():
     """Test get_signal_light method."""
-    system = HyperspectralImager()
+    system = HyperspectralImager(sensor=Sensor())
 
     result = system.get_signal_light(
         wavelength=400 * unit.nm, radiance=luts.load("atmosphere/radiance_min")
     )
     LOG.info(result)
 
-    assert result.decompose().unit == unit.Watt / (unit.steradian * (unit.meter) ** 2)
+    assert result.decompose().unit == unit.Watt / (unit.steradian * unit.meter)
 
 
 def test_get_noise():
@@ -375,7 +375,9 @@ def test_get_ground_target_error():
     skew_angle = 30 * unit.deg
     pointing_accuracy = 0.001 * unit.deg
 
-    result = spectrometer.get_ground_target_error(orbital_altitude, skew_angle, pointing_accuracy)
+    result = spectrometer.get_ground_target_error(
+        orbital_altitude, skew_angle, pointing_accuracy
+    )
     LOG.info(result)
 
     assert result.decompose().unit == unit.m

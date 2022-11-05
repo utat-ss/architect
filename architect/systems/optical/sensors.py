@@ -32,6 +32,7 @@ class Sensor(Component):
         n_well: Sensor well depth.
         noise_read: Readout noise.
         pitch: Pixel pitch. The distance between the centerpoints of adjacent pixels.
+        waveband: Waveband. The range of wavelengths the sensor is able to measure.
 
     """
 
@@ -48,6 +49,7 @@ class Sensor(Component):
         n_well=None,
         noise_read=None,
         pitch: unit.m = None,
+        waveband: unit.m = None,
     ):
         super().__init__(dimensions=dimensions, mass=mass)
         self.integration_time = integration_time
@@ -58,6 +60,7 @@ class Sensor(Component):
         self.n_px = n_px
         self.n_well = n_well
         self.noise_read = noise_read
+        self.waveband = waveband
 
         assert (
             pitch is None
@@ -185,6 +188,13 @@ class Sensor(Component):
         else:
             raise ValueError("Quantum efficiency is not set.")
 
+    def get_waveband(self) -> Quantity[unit.m]:
+        """Get the waveband of the sensor."""
+        if self.waveband is not None:
+            return self.waveband
+        else:
+            raise ValueError("Waveband is not set.")
+
 
 class TauSWIR(Sensor):
     """Teledyne FLIR Tau SWIR sensor.
@@ -207,4 +217,5 @@ class TauSWIR(Sensor):
             n_well=19 * ke,
             noise_read=500 * unit.electron,
             pitch=15 * unit.um,
+            waveband=800 * unit.nm,
         )

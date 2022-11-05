@@ -142,14 +142,14 @@ class HyperspectralImager(OpticalComponent):
 
     def get_signal_light(
         self, wavelength: unit.m, radiance: LUT
-    ) -> unit.Watt / (unit.steradian * (unit.meter) ** 2):
+    ) -> unit.Watt / (unit.steradian * unit.meter):
         """Get the signal light.
 
         Ref: https://www.notion.so/utat-ss/Signal-Incoming-Light-83c2990dd77c4371a2ba997840ca649b
 
         """
 
-        signal_light = wavelength * radiance(wavelength)
+        signal_light = wavelength * radiance(wavelength) * self.sensor.get_waveband()
 
         return signal_light
 
@@ -361,14 +361,22 @@ class HyperspectralImager(OpticalComponent):
 
         return constraint_angle
 
-    def get_ground_target_error(self, orbital_altitude: unit.km, skew_angle: unit.deg, pointing_accuracy: unit.deg = 0) -> unit.m:
+    def get_ground_target_error(
+        self,
+        orbital_altitude: unit.km,
+        skew_angle: unit.deg,
+        pointing_accuracy: unit.deg = 0,
+    ) -> unit.m:
         """Get the ground target error from the pointing accuracy.
 
         Ref: https://www.notion.so/utat-ss/Ground-Target-Error-vs-Pointing-Accuracy-22b3069f4a0344b08339e5004f90438b
 
         """
 
-        ground_error = (orbital_altitude * (np.tan(skew_angle + pointing_accuracy) - np.tan(skew_angle))).to(unit.m)
+        ground_error = (
+            orbital_altitude
+            * (np.tan(skew_angle + pointing_accuracy) - np.tan(skew_angle))
+        ).to(unit.m)
 
         return ground_error
 
