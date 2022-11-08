@@ -74,9 +74,9 @@ class HyperspectralImager(OpticalComponent):
             radiance=radiance, wavelength=wavelength
         ) / self.get_noise(wavelength=wavelength, radiance=radiance)
 
-        return snr
+        return snr.decompose()
 
-    def get_signal(self, wavelength: unit.m, radiance: LUT):
+    def get_signal(self, wavelength: unit.m, radiance: LUT) -> unit.electron:
         """Get the signal.
 
         Ref: https://www.notion.so/utat-ss/Signal-1819461a3a2b4fdeab8b9c26133ff8e2
@@ -142,16 +142,16 @@ class HyperspectralImager(OpticalComponent):
 
     def get_signal_light(
         self, wavelength: unit.m, radiance: LUT
-    ) -> unit.Watt / (unit.steradian * (unit.meter) ** 2):
+    ) -> unit.Watt / (unit.steradian * unit.meter):
         """Get the signal light.
 
         Ref: https://www.notion.so/utat-ss/Signal-Incoming-Light-83c2990dd77c4371a2ba997840ca649b
 
         """
 
-        signal_light = wavelength * radiance(wavelength)
+        signal_light = wavelength * radiance(wavelength) * self.sensor.get_waveband()
 
-        return signal_light
+        return signal_light * unit.sr  # for unit test
 
     def get_noise(self, wavelength, radiance: LUT):
         """Get the noise.
@@ -160,10 +160,7 @@ class HyperspectralImager(OpticalComponent):
 
         """
         noise = np.sqrt(
-            (
-                self.get_signal(wavelength=wavelength, radiance=radiance).decompose()
-                * unit.electron
-            )
+            self.get_shot_noise(wavelength=wavelength, radiance=radiance) ** 2
             + self.sensor.get_n_bin()
             * (self.sensor.get_mean_dark_signal() * unit.pix) ** 2
             + self.sensor.get_quantization_noise() ** 2
@@ -179,7 +176,7 @@ class HyperspectralImager(OpticalComponent):
 
         """
         shot_noise = np.sqrt(
-            self.get_signal(wavelength=wavelength, radiance=radiance)
+            self.get_signal(wavelength=wavelength, radiance=radiance) * unit.electron
         )  # may need to convert to electron
 
         return shot_noise

@@ -155,4 +155,4 @@ def test_get_efficiency():
     result = sensor.get_efficiency(wavelength)
     LOG.info(result)
 
-    assert result.unit == unit.pct
+    assert result.unit == unit.pct * unit.electron

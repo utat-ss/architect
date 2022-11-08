@@ -97,6 +97,7 @@ def test_get_signal():
             pitch=15 * unit.um,
             efficiency=luts.load("sensors/tauswir_quantum_efficiency"),
             integration_time=100 * unit.ms,
+            waveband=800 * unit.m,
         ),
         foreoptic=Foreoptic(
             focal_length=100 * unit.mm,
@@ -159,14 +160,14 @@ def test_get_signal_optic():
 
 def test_get_signal_light():
     """Test get_signal_light method."""
-    system = HyperspectralImager()
+    system = HyperspectralImager(sensor=Sensor(waveband=800 * unit.nm))
 
     result = system.get_signal_light(
         wavelength=400 * unit.nm, radiance=luts.load("atmosphere/radiance_min")
     )
     LOG.info(result)
 
-    assert result.decompose().unit == unit.Watt / (unit.steradian * (unit.meter) ** 2)
+    assert result.decompose().unit == unit.Watt / unit.meter
 
 
 def test_get_noise():
@@ -178,6 +179,10 @@ def test_get_noise():
             integration_time=100 * unit.ms,
             n_bin=1,
             i_dark=10000 * (unit.electron / unit.pix / unit.s),
+            waveband=800 * unit.m,
+            n_well=19 * 1e3 * unit.electron,
+            n_bit=14 * unit.bit,
+            noise_read=500 * unit.electron,
         ),
         foreoptic=Foreoptic(
             focal_length=100 * unit.mm,
@@ -204,6 +209,7 @@ def test_get_shot_noise():
             integration_time=100 * unit.ms,
             n_bin=1,
             i_dark=10000 * (unit.electron / unit.pix / unit.s),
+            waveband=800 * unit.nm,
         ),
         foreoptic=Foreoptic(
             focal_length=100 * unit.mm,
@@ -218,7 +224,7 @@ def test_get_shot_noise():
         radiance=luts.load("atmosphere/radiance_min"),
     )
 
-    assert result.decompose().unit == unit.electron**2
+    assert result.decompose().unit == unit.electron
 
 
 def test_get_signal_to_noise():
@@ -234,6 +240,7 @@ def test_get_signal_to_noise():
             n_well=19 * 1e3 * unit.electron,
             n_bit=14 * unit.bit,
             noise_read=500 * unit.electron,
+            waveband=800 * unit.m,
         ),
         foreoptic=Foreoptic(
             focal_length=100 * unit.mm,
