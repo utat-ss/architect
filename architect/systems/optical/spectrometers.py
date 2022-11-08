@@ -151,7 +151,7 @@ class HyperspectralImager(OpticalComponent):
 
         signal_light = wavelength * radiance(wavelength) * self.sensor.get_waveband()
 
-        return signal_light
+        return signal_light * unit.sr  # for unit test
 
     def get_noise(self, wavelength, radiance: LUT):
         """Get the noise.
@@ -160,10 +160,7 @@ class HyperspectralImager(OpticalComponent):
 
         """
         noise = np.sqrt(
-            (
-                self.get_signal(wavelength=wavelength, radiance=radiance).decompose()
-                * unit.electron
-            )
+            self.get_shot_noise(wavelength=wavelength, radiance=radiance) ** 2
             + self.sensor.get_n_bin()
             * (self.sensor.get_mean_dark_signal() * unit.pix) ** 2
             + self.sensor.get_quantization_noise() ** 2
@@ -179,7 +176,7 @@ class HyperspectralImager(OpticalComponent):
 
         """
         shot_noise = np.sqrt(
-            self.get_signal(wavelength=wavelength, radiance=radiance)
+            self.get_signal(wavelength=wavelength, radiance=radiance) * unit.electron
         )  # may need to convert to electron
 
         return shot_noise
