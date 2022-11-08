@@ -74,7 +74,7 @@ class HyperspectralImager(OpticalComponent):
             radiance=radiance, wavelength=wavelength
         ) / self.get_noise(wavelength=wavelength, radiance=radiance)
 
-        return snr
+        return snr.decompose()
 
     def get_signal(self, wavelength: unit.m, radiance: LUT) -> unit.electron:
         """Get the signal.
