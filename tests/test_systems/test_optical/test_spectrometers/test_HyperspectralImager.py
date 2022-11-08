@@ -97,6 +97,7 @@ def test_get_signal():
             pitch=15 * unit.um,
             efficiency=luts.load("sensors/tauswir_quantum_efficiency"),
             integration_time=100 * unit.ms,
+            waveband=800 * unit.m,
         ),
         foreoptic=Foreoptic(
             focal_length=100 * unit.mm,
@@ -159,7 +160,7 @@ def test_get_signal_optic():
 
 def test_get_signal_light():
     """Test get_signal_light method."""
-    system = HyperspectralImager(sensor=Sensor())
+    system = HyperspectralImager(sensor=Sensor(waveband=800 * unit.m))
 
     result = system.get_signal_light(
         wavelength=400 * unit.nm, radiance=luts.load("atmosphere/radiance_min")
@@ -178,6 +179,7 @@ def test_get_noise():
             integration_time=100 * unit.ms,
             n_bin=1,
             i_dark=10000 * (unit.electron / unit.pix / unit.s),
+            waveband=800 * unit.m,
         ),
         foreoptic=Foreoptic(
             focal_length=100 * unit.mm,
@@ -234,6 +236,7 @@ def test_get_signal_to_noise():
             n_well=19 * 1e3 * unit.electron,
             n_bit=14 * unit.bit,
             noise_read=500 * unit.electron,
+            waveband=800 * unit.m,
         ),
         foreoptic=Foreoptic(
             focal_length=100 * unit.mm,

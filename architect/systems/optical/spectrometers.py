@@ -76,7 +76,7 @@ class HyperspectralImager(OpticalComponent):
 
         return snr
 
-    def get_signal(self, wavelength: unit.m, radiance: LUT):
+    def get_signal(self, wavelength: unit.m, radiance: LUT) -> unit.electron:
         """Get the signal.
 
         Ref: https://www.notion.so/utat-ss/Signal-1819461a3a2b4fdeab8b9c26133ff8e2

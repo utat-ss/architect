@@ -61,12 +61,6 @@ class Sensor(Component):
         self.n_well = n_well
         self.noise_read = noise_read
         self.waveband = waveband
-
-        assert (
-            pitch is None
-            or isinstance(pitch, Quantity)
-            and pitch.decompose().unit == unit.m
-        ), "pitch must be a Quantity of unit.m"
         self.pitch = pitch
 
     def get_pitch(self):
