@@ -9,7 +9,9 @@
 <img src="img/architect-logo.png" height="128">
 
 # Architect
-A systems engineering tool developed to support the design of the FINCH Eye CubeSat built by the [University of Toronto Aerospace Team](https://www.utat.ca/space-systems):milky_way:. Architect enables tradeoff analyses of complex systems and components through mathematical modelling. It supports efficient visualization of high-dimensional parameter spaces.
+Architect is a general-purpose, extensible, and developer-friendly systems engineering design tool built to support tradeoff analyses for the missions undertaken by the [University of Toronto Aerospace Team](https://www.utat.ca/space-systems):milky_way:.
+
+At its core, it's a library of mathematical models that describe systems across various engineering domains (i.e. optical, electrical, mechanical, thermal, space systems, etc) whose interactions can be modelled analytically using an object-oriented approach.
 
 <img src="img/utat-logo.png" height="64">
 
@@ -92,10 +94,8 @@ poetry add <package>
 This is poetry's version of `pip install <package>`.
 
 ## Testing 🧪
-This repo uses [pytest](https://pytest.org/) for unit testing. To run all unit tests, call:
-```
-pytest
-```
+This repo uses [pytest](https://pytest.org/) for unit testing. To run all unit tests, go to the Testing tab in VSCode and hit Run Tests.
+
 This is also a good check to make sure your environment is properly set up. If the tests fail to run, check to confirm you followed the setup instructions correctly.
 
 ## Pre-Commit ✅
@@ -114,12 +114,7 @@ Branches are organized as follow:
 
 1. `main`: the branch containing the most recent working release. All code in this branch should run perfectly without any known errors.
 
-1. `dev`: branched off of `main`; the most updated version of the project with the newest features and bug fixes.
-
 1. `<feature>`: branched off of `dev`; a feature branch. Features must be tested thoroughly before being merged into dev.
-
-## Taking on Tickets 🎫
-Check out the issues tab to see all open tickets.
 
 ## Upgrading Python Version ⬆️
 When the project changes python version, it is neccesary to create a new poetry environment with the updated python installation. To do so, proceed as follows:
