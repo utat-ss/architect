@@ -1,0 +1,35 @@
+name: Pipeline
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@master
+
+    - name: Set up Python
+      uses: actions/setup-python@master
+      with:
+        python-version: 3.10.x
+
+    - name: Install dependencies
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        poetry config virtualenvs.in-project true
+        poetry run pip install --upgrade setuptools==57.5.0
+        poetry install
+
+    - name: Pre-commit
+      run: |
+        poetry run pre-commit run --all-files
+  
+    - name: Pytest
+      run: |
+        poetry run pytest -v

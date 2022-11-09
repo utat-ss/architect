@@ -1,31 +1,32 @@
 [tool.poetry]
-name = "payload-designer"
+name = "architect"
 version = "0.1.0"
 description = ""
 authors = ["UTAT"]
 
 [tool.poetry.dependencies]
-docopts = "^0.6.1"
-numpy = "^1.21.5"
-pandas = "^1.3.5"
-plotly = "^5.5.0"
-python = ">=3.7.1,<3.11"
-scipy = "^1.7.3"
+astropy = "^5.0.4"
+numpy = "^1.22"
+pandas = "^1.4.2"
+python = ">=3.10,<3.11"
+plot = {git = "https://github.com/DM1122/plot", rev = "main"}
 
 [tool.poetry.dev-dependencies]
-black = "^21.12b0"
-docformatter = "^1.4"
-isort = "^5.10.1"
+ipykernel = "^6.13.0"
+nbformat = "^5.3.0"
 pre-commit = "^2.16.0"
-pylint = "^2.12.2"
-pylint-runner = "^0.6.0"
+pylint = "^v2.13.5"
 pytest = "^6.2.5"
 pytest-cov = "^3.0.0"
-pytest-html = "^3.1.1"
+mypy = "^0.971"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+strict = false
+ignore_missing_imports = true
 
 [tool.isort]
 profile = "black"
@@ -37,6 +38,14 @@ import_heading_firstparty="project"
 [tool.black]
 line-length = 88
 
+[tool.autoflake]
+remove-all-unused-imports = true
+remove-unused-variables = true
+remove-duplicate-keys = true
+ignore-init-module-imports = true
+ignore-pass-statements = true
+ignore-pass-after-docstring = true
+
 [tool.docformatter] # https://github.com/myint/docformatter/pull/77
 blank = true
 force-wrap = false
@@ -44,32 +53,34 @@ in-place = true
 make-summary-multi-line = false
 pre-summary-newline = false
 recursive = true
-wrap-descriptions = 70
+wrap-descriptions = 88
 wrap-summaries = 80
 
-[tool.pylint.messages_control]
+[tool.pylint.master]
+ignore-patterns="^((?!\\.py).)*$"  # ignore files that are not python files
+recursive="yes"
+disable = ["invalid-name","too-many-arguments", "too-many-locals", "arguments-differ", "unnecessary-lambda", "too-many-instance-attributes", "protected-access", "duplicate-code", "too-few-public-methods", "logging-fstring-interpolation", "not-callable", "too-many-statements", "pointless-statement", "not-context-manager","fixme","too-many-branches","too-many-lines","line-too-long","anomalous-backslash-in-string","too-many-function-args","missing-final-newline","no-member","no-else-return","arguments-renamed", "cyclic-import", "unbalanced-tuple-unpacking"]
 max-line-length = 88
-disable = ["invalid-name","too-many-arguments", "too-many-locals", "arguments-differ", "unnecessary-lambda", "too-many-instance-attributes", "protected-access", "duplicate-code", "too-few-public-methods", "logging-fstring-interpolation", "not-callable", "too-many-statements", "pointless-statement", "not-context-manager","fixme","too-many-branches","too-many-lines","line-too-long"]
 generated-members=["numpy.*","torch.*","pygame.*"] # https://github.com/pytorch/pytorch/issues/701
 
-[tool.coverage.run]
-data_file = "logs/pytest/pytest-coverage"
-omit = ["tests/*"]
-
 [tool.pytest.ini_options]
-addopts = "--html=logs/pytest/pytest-report.html --self-contained-html --cov=./" 
-testpaths = ["tests"]
-log_cli = false
-log_cli_level = "INFO"
-log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
-log_cli_date_format = "%Y-%m-%d %H:%M:%S"
-log_level = "DEBUG"
-log_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(funcName)s:%(lineno)s)"
-log_date_format = "%Y-%m-%d %H:%M:%S"
+addopts = ["--cov", "--cov-report=xml:logs/coverage.xml", "--durations=0", "--new-first", "--strict-config", "--failed-first", "--verbose"] 
+console_output_style = "count"
+faulthandler_timeout = 10
 log_auto_indent = true
-markers = [
-    "slow: tests that are slow to run (deselect with '-m \"not slow\"').",
-    "plot: tests that produce plots.",
-    "timed: tests that run many times using timeit module.",
-    "star: a starred test. Marker should be removed once testing is complete."
-]
+log_cli = false
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_level = "INFO"
+log_date_format = "%Y-%m-%d %H:%M:%S"
+log_file = "logs/pytest.log"
+log_file_date_format = "%Y-%m-%d %H:%M:%S"
+log_file_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(funcName)s:%(lineno)s)"
+log_file_level = "DEBUG"
+log_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(funcName)s:%(lineno)s)"
+log_level = "DEBUG"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+data_file = "logs/.coverage"
+omit = ["tests/*"]

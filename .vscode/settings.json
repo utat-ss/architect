@@ -1,0 +1,11 @@
+{
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": false,
+    "python.linting.prospectorEnabled": false,
+    "python.linting.mypyEnabled": true
+}
