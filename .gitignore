@@ -9,3 +9,5 @@ output
 scrap.txt
 temp-plot.html
 tmp
+*.ppm
+*.mp4
