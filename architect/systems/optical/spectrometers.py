@@ -221,23 +221,16 @@ class HyperspectralImager(OpticalComponent):
                 * self.sensor.get_pitch()
                 / self.foreoptic.get_focal_length()
             )
-            * (
-                np.cos(
-                    np.arctan(
-                        (self.sensors.dimensions[0] / 2) / (self.foreoptic.focal_length)
-                    )
-                )
+            * np.power(
+                np.cos(np.arctan((19 * unit.mm) / (self.foreoptic.focal_length))), 2
             )
-            ^ 2
-            / (
+            / np.power(
                 np.cos(
-                    np.arctan(
-                        (self.sensors.dimensions[0] / 2)
-                        / (self.foreoptic.focal_length + skew_angle)
-                    )
-                )
+                    np.arctan((19 * unit.mm) / (self.foreoptic.focal_length))
+                    + skew_angle
+                ),
+                2,
             )
-            ^ 2
         )
 
         return spatial_resolution
