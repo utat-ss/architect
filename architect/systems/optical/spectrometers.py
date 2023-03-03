@@ -206,19 +206,31 @@ class HyperspectralImager(OpticalComponent):
 
         return iFOV
 
-    def get_sensor_spatial_resolution(self, target_distance):
+    def get_sensor_spatial_resolution(self, target_distance, skew_angle):
         """Get the sensor-limited spatial resolution.
 
-        Ref: https://www.notion.so/utat-ss/Sensor-Limited-Spectral-Resolution-5071f076997f4b59851f73127822fb23
+        Ref: https://www.notion.so/utat-ss/Sensor-Limited-Spatial-Resolution-e009528833ec4aebba532476aab15bef
 
         """
         assert self.sensor is not None, "A sensor component must be specified."
         assert self.foreoptic is not None, "A foreoptic component must be specified."
 
         spatial_resolution = (
-            target_distance
-            * self.sensor.get_pitch()
-            / self.foreoptic.get_focal_length()
+            (
+                target_distance
+                * self.sensor.get_pitch()
+                / self.foreoptic.get_focal_length()
+            )
+            * np.power(
+                np.cos(np.arctan((19 * unit.mm) / (self.foreoptic.focal_length))), 2
+            )
+            / np.power(
+                np.cos(
+                    np.arctan((19 * unit.mm) / (self.foreoptic.focal_length))
+                    + skew_angle
+                ),
+                2,
+            )
         )
 
         return spatial_resolution
@@ -268,7 +280,8 @@ class HyperspectralImager(OpticalComponent):
             spatial_resolution = self.spatial_resolution
         else:
             sensor_spatial_resolution = self.get_sensor_spatial_resolution(
-                target_distance=target_distance
+                target_distance=target_distance,
+                skew_angle=skew_angle,
             )
 
             optical_spatial_resolution = self.get_optical_spatial_resolution(
