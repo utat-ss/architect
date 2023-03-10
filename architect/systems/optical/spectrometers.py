@@ -377,6 +377,23 @@ class HyperspectralImager(OpticalComponent):
 
         return ground_error
 
+    def get_bandpass(
+        self,
+        slit_width,
+        incident_angle,
+        spectral_order,
+    ) -> unit.nm:
+        """Get the theoretical spectral bandpass.
+
+        Ref: https://www.notion.so/utat-ss/Full-Width-Half-Maximum-1445b844f63147f3a113468b510140c6?pvs=4
+
+        """
+
+        bandpass = (
+            slit_width * self.diffractor.get_fringe_frequency() * np.cos(incident_angle))/(spectral_order * self.foreoptic.get_focal_length()
+            )
+
+        return bandpass
 
 class FINCHEye(HyperspectralImager):
     """A compact hyperspectral imaging payload."""

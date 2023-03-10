@@ -125,6 +125,16 @@ class TransmissiveDiffractor(Component):
 
         return emergent_beam_width
 
+    def get_fringe_frequency(self):
+        """Get the fringe frequency."""
+        if self.fringe_frequency is not None:
+            return self.fringe_frequency
+        else:
+            raise ValueError("Fringe frequency not set.")
+
+    def get_groove_spacing(self):
+        """Get the distance between the fringes."""
+        
 
 class VPHGrating(TransmissiveDiffractor):
     """Volume-phase holographic grating component. Model assumes fringes are
