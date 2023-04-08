@@ -43,4 +43,4 @@ class RectSlit(Component):
         else:
             area = self.get_size()[0] * self.get_size()[1]
 
-        return area
+        return area.flatten()

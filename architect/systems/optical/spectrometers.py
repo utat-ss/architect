@@ -54,11 +54,13 @@ class HyperspectralImager(OpticalComponent):
         assert self.foreoptic is not None, "Foreoptic must be set"
         assert self.slit is not None, "Slit must be set"
 
-        effective_width = min(
+        """
+        effective_width = np.min(
             self.slit.get_size()[0], self.foreoptic.get_image_diameter()
         )
+        """
 
-        effective_slit_area = effective_width * self.slit.get_size()[1]
+        effective_slit_area = self.slit.get_size()[0] * self.slit.get_size()[1]
         ratio = effective_slit_area / self.foreoptic.get_image_area()
 
         return ratio
