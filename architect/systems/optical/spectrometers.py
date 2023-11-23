@@ -57,7 +57,6 @@ class HyperspectralImager(OpticalComponent):
         effective_width = min(
             self.slit.get_size()[0], self.foreoptic.get_image_diameter()
         )
-
         effective_slit_area = effective_width * self.slit.get_size()[1]
         ratio = effective_slit_area / self.foreoptic.get_image_area()
 
@@ -70,9 +69,7 @@ class HyperspectralImager(OpticalComponent):
 
         """
 
-        snr = self.get_signal(
-            radiance=radiance, wavelength=wavelength
-        ) / self.get_noise(wavelength=wavelength, radiance=radiance)
+        snr = self.get_signal(radiance=radiance, wavelength=wavelength) / self.get_noise(wavelength=wavelength, radiance=radiance)
 
         return snr.decompose()
 
@@ -233,9 +230,7 @@ class HyperspectralImager(OpticalComponent):
             skew_angle: the skew angles in the across and along-track directions.
 
         """
-
         fov = self.get_FOV()
-
         swath = altitude * (
             np.tan(skew_angle + 0.5 * fov) - np.tan(skew_angle - 0.5 * fov)
         )
