@@ -188,6 +188,15 @@ class Sensor(Component):
             return self.waveband
         else:
             raise ValueError("Waveband is not set.")
+        
+    def get_datacube_size(self):
+        """Get the size of datacube in bit."""
+
+        npxx = self.n_px[0] # 640 px, pixels on the sensor in the across-track direction -> spatial information
+        npxy = self.n_px[1] # 512 px, pixels on the sensor in the along-track direction -> spectral information
+        nbit = self.n_bit # bit depth
+        D = npxx * npxx * npxy * nbit
+        return D
 
 
 class TauSWIR(Sensor):
