@@ -377,6 +377,26 @@ class HyperspectralImager(OpticalComponent):
 
         return ground_error
 
+    def get_slew_rate(
+        self,
+        swath,
+        frame_rate,
+        number_of_frames,
+        orbital_altitude,
+        time
+    ):
+        """Get the slew rate from the frame rate of the sensor.
+
+        Ref: https://www.notion.so/utat-ss/Slew-Rate-94e15b1c616e407ab0454d273893fad7?pvs=4
+
+        """
+        term1 = (swath * frame_rate * time) / (number_of_frames * orbital_altitude)
+        term2 = (swath * frame_rate) / (number_of_frames * orbital_altitude)
+
+        slew_rate = (1 / (1 + term1 * term1)) * term2
+
+        return slew_rate
+
 
 class FINCHEye(HyperspectralImager):
     """A compact hyperspectral imaging payload."""
